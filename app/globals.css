@@ -112,11 +112,17 @@
   --sidebar-ring: oklch(0.527 0.154 150.069);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
   }
-  body {
-    @apply bg-background text-foreground;
+  .error-message {
+    @apply text-sm text-red-500;
+  }
+  .auth-title {
+    @apply text-center text-2xl font-bold tracking-wide;
+  }
+  .auth-footer {
+    @apply flex flex-col items-center justify-center space-y-4 text-center text-sm;
   }
 }
