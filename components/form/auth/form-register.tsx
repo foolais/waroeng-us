@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/card";
 import { FormFieldInput } from "../form-field";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { registerCredentials } from "@/lib/action/action-auth";
 
 interface iFormRegister {
-  username: string;
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -20,11 +21,16 @@ interface iFormRegister {
 
 const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
   const [formValues, setFormValues] = useState<iFormRegister>({
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [state, formAction, isPending] = useActionState(
+    registerCredentials,
+    null,
+  );
 
   return (
     <Card className="w-[350px]">
@@ -32,15 +38,20 @@ const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
         <CardTitle className="auth-title">Create an account</CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form id="form-register" action={formAction}>
           <div className="grid w-full items-center gap-4">
             <FormFieldInput
-              name="username"
-              label="Username"
-              value={(formValues as iFormRegister).username}
+              name="name"
+              label="Name"
+              value={(formValues as iFormRegister).name}
               setFormValues={setFormValues}
-              placeholder="johndoe@me.com"
-              type="username"
+              placeholder="John"
+              type="name"
+              error={
+                typeof state?.error === "object" && "name" in state.error
+                  ? state.error.name
+                  : []
+              }
             />
             <FormFieldInput
               name="email"
@@ -49,6 +60,11 @@ const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
               setFormValues={setFormValues}
               placeholder="johndoe@me.com"
               type="email"
+              error={
+                typeof state?.error === "object" && "email" in state.error
+                  ? state.error.email
+                  : []
+              }
             />
             <FormFieldInput
               name="password"
@@ -57,6 +73,11 @@ const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
               setFormValues={setFormValues}
               placeholder="********"
               type="password"
+              error={
+                typeof state?.error === "object" && "password" in state.error
+                  ? state.error.password
+                  : []
+              }
             />
             <FormFieldInput
               name="confirmPassword"
@@ -65,12 +86,20 @@ const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
               setFormValues={setFormValues}
               placeholder="********"
               type="confirmPassword"
+              error={
+                typeof state?.error === "object" &&
+                "confirmPassword" in state.error
+                  ? state.error.confirmPassword
+                  : []
+              }
             />
           </div>
         </form>
       </CardContent>
       <CardFooter className="auth-footer">
-        <Button className="w-full">Register</Button>
+        <Button className="w-full" form="form-register" disabled={isPending}>
+          {isPending ? "Registering..." : "Register"}
+        </Button>
         <p>
           Already have an account?{" "}
           <Button
