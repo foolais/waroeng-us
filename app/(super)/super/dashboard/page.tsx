@@ -1,4 +1,4 @@
-const SuperDashboard = () => {
+const SuperDashboard = async () => {
   return <div>SuperDashboard</div>;
 };
 
