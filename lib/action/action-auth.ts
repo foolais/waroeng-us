@@ -58,12 +58,30 @@ export const loginCredentials = async (
   }
 
   const { email, password } = validatedFields.data;
+  const data = await prisma.user.findUnique({ where: { email } });
+
+  if (!data) return { error: true, message: "Invalid email or password" };
+
+  const { role, storeId } = data || {};
+
+  let redirectUrl = "/";
+  switch (role) {
+    case "SUPER_ADMIN":
+      redirectUrl = "/super/dashboard";
+      break;
+    case "ADMIN":
+      redirectUrl = `/${storeId}/admin/dashboard`;
+      break;
+    case "CASHIER":
+      redirectUrl = `/${storeId}/dashboard`;
+      break;
+  }
 
   try {
     await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirectTo: redirectUrl,
     });
     return { success: true, message: "Login successful" };
   } catch (error) {

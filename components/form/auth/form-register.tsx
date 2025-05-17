@@ -11,6 +11,7 @@ import { FormFieldInput } from "../form-field";
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { registerCredentials } from "@/lib/action/action-auth";
+import { Loader2 } from "lucide-react";
 
 interface iFormRegister {
   name: string;
@@ -99,6 +100,7 @@ const FormRegister = ({ onToggleForm }: { onToggleForm?: () => void }) => {
       <CardFooter className="auth-footer">
         <Button className="w-full" form="form-register" disabled={isPending}>
           {isPending ? "Registering..." : "Register"}
+          {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
         <p>
           Already have an account?{" "}

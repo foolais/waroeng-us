@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/card";
 import { FormFieldInput } from "../form-field";
 import { Button } from "@/components/ui/button";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { loginCredentials } from "@/lib/action/action-auth";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { Loader2 } from "lucide-react";
 
 interface iFormLogin {
   email: string;
@@ -26,28 +25,6 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
   });
 
   const [state, formAction, isPending] = useActionState(loginCredentials, null);
-
-  const router = useRouter();
-  const { data: session } = useSession();
-
-  useEffect(() => {
-    if (state && state.success && session?.user) {
-      const { role, store_id } = session.user;
-      let redirectUrl = "/";
-      switch (role) {
-        case "SUPER_ADMIN":
-          redirectUrl = "/super/dashboard";
-          break;
-        case "ADMIN":
-          redirectUrl = `/${store_id}/admin/dashboard`;
-          break;
-        case "CASHIER":
-          redirectUrl = `/${store_id}/dashboard`;
-          break;
-      }
-      router.push(redirectUrl);
-    }
-  }, [session?.user, state, router]);
 
   return (
     <Card className="w-[350px]">
@@ -95,6 +72,7 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
           disabled={isPending || !!state?.success}
         >
           {isPending ? "Logging in..." : "Login"}
+          {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
         <p>
           Don&apos;t have an account?{" "}
