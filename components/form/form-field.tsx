@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { cn } from "@/lib/utils";
 
 interface iFormFieldInputProps<T>
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -26,7 +27,7 @@ export const FormFieldInput = <T,>({
   const errorMessage = useMemo(() => error?.join(" & "), [error]);
 
   return (
-    <div className="flex flex-col space-y-1.5">
+    <div className={cn("flex flex-col", label && "space-y-1.5")}>
       <Label htmlFor={name as string}>{label}</Label>
       <Input
         id={name as string}

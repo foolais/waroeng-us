@@ -30,3 +30,5 @@ export const adminSidenavItems = [
     icon: Users,
   },
 ];
+
+export const ITEM_PER_PAGE = 10;

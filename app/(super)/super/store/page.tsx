@@ -1,38 +1,50 @@
 import { DataTable } from "@/components/table/data-table";
-import React from "react";
+import React, { Suspense } from "react";
 import { superStoreColumns } from "@/components/table/super-store/super-store-columns";
 import FilterSuperStore from "@/components/form/filter/super/container-filter-super-store";
+import { getAllStore } from "@/lib/action/action-store";
+import { STORE_STATUS } from "@prisma/client";
+import { notFound } from "next/navigation";
+import { TableSkeleton } from "@/components/table/table-skeleton";
+import TablePagination from "@/components/table/table-pagination";
 
-const dummy = [
-  {
-    no: 1,
-    id: "ajsdfakdghka",
-    name: "Store 1",
-    status: "ACTIVE" as const,
-    created_at: new Date(),
-    updated_at: new Date(),
-    createdById: "ajsdfakdghka",
-    updatedById: "ajsdfakdghka",
-  },
-  {
-    no: 2,
-    id: "ashfjkajsahfkja",
-    name: "Store 2",
-    status: "INACTIVE" as const,
-    created_at: new Date(),
-    updated_at: new Date(),
-    createdById: "ajsdfakdghka",
-    updatedById: "ajsdfakdghka",
-  },
-];
+interface iProps {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}
 
-const SuperStorePage = () => {
+const SuperStorePage = async ({ searchParams }: iProps) => {
+  const { page, search = "", status = "ALL" } = await searchParams;
+  const p = page ? parseInt(page) : 1;
+
+  if (p === 0) return notFound();
+
+  const storePromise = getAllStore(p, search, status as STORE_STATUS);
+
   return (
     <div>
       <FilterSuperStore />
-      <DataTable columns={superStoreColumns} data={dummy} />
+      <Suspense fallback={<TableSkeleton />}>
+        <DataTableWrapper storesPromise={storePromise} page={p} />
+      </Suspense>
     </div>
   );
 };
+
+async function DataTableWrapper({
+  storesPromise,
+  page,
+}: {
+  storesPromise: ReturnType<typeof getAllStore>;
+  page: number;
+}) {
+  const stores = await storesPromise;
+
+  return (
+    <>
+      <DataTable columns={superStoreColumns} data={stores?.data ?? []} />
+      <TablePagination currentPage={page} count={stores?.count ?? 0} />
+    </>
+  );
+}
 
 export default SuperStorePage;
