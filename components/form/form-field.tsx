@@ -5,7 +5,7 @@ import { Label } from "../ui/label";
 interface iFormFieldInputProps<T>
   extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
-  label: string;
+  label?: string;
   error?: string[];
   value: string;
   setFormValues?: React.Dispatch<React.SetStateAction<T>>;

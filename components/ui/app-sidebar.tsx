@@ -25,7 +25,9 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
 
   return (
     <Sidebar collapsible="icon" variant="floating">
-      <SidebarHeader className={isCollapsed ? "flex-center" : "px-3"}>
+      <SidebarHeader
+        className={cn(isCollapsed ? "flex-center" : "px-3", "mt-2")}
+      >
         <Title />
       </SidebarHeader>
       <SidebarContent>
