@@ -126,3 +126,12 @@
     @apply flex flex-col items-center justify-center space-y-4 text-center text-sm;
   }
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

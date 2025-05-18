@@ -1,0 +1,64 @@
+"use client";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { adminSidenavItems, superSidenavItems } from "@/lib/data";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import Title from "./title";
+import LogoutButton from "../button/logout-btn";
+
+const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
+  const items = type === "SUPER" ? superSidenavItems : adminSidenavItems;
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
+  return (
+    <Sidebar collapsible="icon" variant="floating">
+      <SidebarHeader className={isCollapsed ? "flex-center" : "px-3"}>
+        <Title />
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarMenu
+          className={cn(
+            isCollapsed ? "item-center flex justify-center" : "items-start",
+            "flex",
+          )}
+        >
+          {items.map((item) => (
+            <SidebarMenuItem
+              key={item.title}
+              className={isCollapsed ? "mx-auto" : "mx-auto w-full px-2"}
+            >
+              <SidebarMenuButton asChild>
+                <Link href={item.url}>
+                  <item.icon size={isCollapsed ? 20 : 24} />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+      <SidebarFooter className="my-2">
+        <SidebarMenu className={isCollapsed ? "" : "px-2"}>
+          <SidebarMenuItem
+            className={cn("flex", isCollapsed ? "mx-auto" : "justify-start")}
+          >
+            <LogoutButton isCollapsed={isCollapsed} />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  );
+};
+
+export default AppSidebar;

@@ -1,5 +1,5 @@
-const SuperDashboard = async () => {
-  return <div>SuperDashboard</div>;
+const SuperDashboardPage = async () => {
+  return <div>Hello World</div>;
 };
 
-export default SuperDashboard;
+export default SuperDashboardPage;
