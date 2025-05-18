@@ -36,7 +36,7 @@ export const FilterSuperStoreStatus = () => {
           role="combobox"
           aria-label="Select status"
           aria-expanded={open}
-          className="w-[100px] justify-between"
+          className="w-[48%] justify-between sm:w-[100px]"
         >
           {filter.status
             ? statusOptions.find((data) => data.value === filter.status)?.label

@@ -3,7 +3,13 @@
 import { FormFieldInput } from "../form-field";
 import { useSuperStoreFilter } from "@/store/super/useSuperFilter";
 
-const FilterSearch = ({ placeholder }: { placeholder: string }) => {
+const FilterSearch = ({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) => {
   const { filter, setFilter } = useSuperStoreFilter();
 
   return (
@@ -12,6 +18,7 @@ const FilterSearch = ({ placeholder }: { placeholder: string }) => {
       placeholder={placeholder}
       value={filter.search}
       onChange={(e) => setFilter({ search: e.target.value })}
+      className={className}
     />
   );
 };

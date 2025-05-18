@@ -18,7 +18,7 @@ export const FilterSuperStoreButton = () => {
   };
 
   return (
-    <Button className="w-[100px]" onClick={handleSearch}>
+    <Button className="w-[48%] sm:w-[100px]" onClick={handleSearch}>
       Search <SearchIcon />
     </Button>
   );

@@ -125,6 +125,9 @@
   .auth-footer {
     @apply flex flex-col items-center justify-center space-y-4 text-center text-sm;
   }
+  .header-title {
+    @apply text-lg font-semibold capitalize;
+  }
 }
 
 @layer base {

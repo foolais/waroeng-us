@@ -11,14 +11,15 @@ import {
 import { Button } from "../ui/button";
 import { PlusIcon } from "lucide-react";
 import FormCreateStore from "../form/super/form-create-store";
+import { cn } from "@/lib/utils";
 
-const DialogCreateStore = () => {
+const DialogCreateStore = ({ className }: { className?: string }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex-center gap-1 sm:w-auto">
+        <Button className={cn("flex items-center gap-1", className)}>
           <span className="">Create</span>
           <PlusIcon />
         </Button>
@@ -30,7 +31,7 @@ const DialogCreateStore = () => {
         }}
       >
         <DialogHeader className="mb-2">
-          <DialogTitle>Create a new store</DialogTitle>
+          <DialogTitle>Create a New Store</DialogTitle>
         </DialogHeader>
         <FormCreateStore onCloseDialog={() => setOpen(false)} />
       </DialogContent>

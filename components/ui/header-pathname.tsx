@@ -6,7 +6,9 @@ const HeaderPathname = () => {
   const pathaname = usePathname().split("/");
   const lastPathname = pathaname[pathaname.length - 1];
 
-  return <h1 className="text-lg font-semibold capitalize">{lastPathname}</h1>;
+  return (
+    <h1 className="header-title hidden sm:block">{lastPathname} Management</h1>
+  );
 };
 
 export default HeaderPathname;
