@@ -44,8 +44,8 @@ export const superStoreColumns: ColumnDef<Store>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const { name } = row.original;
-      return <TableActionStore name={name} />;
+      const { id, name } = row.original;
+      return <TableActionStore id={id} name={name} />;
     },
   },
 ];

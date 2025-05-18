@@ -1,6 +1,7 @@
 "use client";
 
 import DialogForm from "@/components/dialog/dialog-form";
+import FormDetailStore from "@/components/form/super/store/form-detail-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,10 +25,11 @@ import { InfoIcon, MoreHorizontal, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 interface iProps {
+  id: string;
   name: string;
 }
 
-const TableActionStore = ({ name }: iProps) => {
+const TableActionStore = ({ id, name }: iProps) => {
   const [openStatus, setOpenStatus] = useState({
     value: false,
     type: "",
@@ -80,7 +82,7 @@ const TableActionStore = ({ name }: iProps) => {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-red-500">
-                  {`Are you sure to delete Store ${name}?`}
+                  {`Are you sure to delete ${name}?`}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
@@ -105,19 +107,19 @@ const TableActionStore = ({ name }: iProps) => {
         onClose={() => setOpenStatus({ value: false, type: "" })}
         title={
           openStatus.type === "detail"
-            ? `Detail Store ${name}`
-            : `Update Store ${name}`
+            ? `Detail for ${name}`
+            : `Update for ${name}`
         }
         description={
           openStatus.type === "detail"
-            ? `Detail Store ${name}`
-            : `Update Store ${name}`
+            ? `Detail for ${name}`
+            : `Update for ${name}`
         }
       >
         {openStatus.type === "detail" ? (
-          <p>Detail Store</p>
+          <FormDetailStore id={id} />
         ) : openStatus.type === "update" ? (
-          <p>Update Store</p>
+          <p>Update</p>
         ) : null}
       </DialogForm>
     </>

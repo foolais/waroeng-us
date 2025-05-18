@@ -1,17 +1,13 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { FormFieldCombobox, FormFieldInput } from "../form-field";
+import { FormFieldCombobox, FormFieldInput } from "../../form-field";
 import { Button } from "@/components/ui/button";
 import { createStore } from "@/lib/action/action-store";
 import { Loader2 } from "lucide-react";
 import { STORE_STATUS_OPTIONS } from "@/lib/data";
 import { toast } from "sonner";
-
-interface iFormStore {
-  name: string;
-  status: "ACTIVE" | "INACTIVE";
-}
+import { iFormStore } from "@/types/types";
 
 const FormCreateStore = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
   const [formValues, setFormValues] = useState<iFormStore>({

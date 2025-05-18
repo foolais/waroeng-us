@@ -80,3 +80,32 @@ export const createStore = async (prevState: unknown, formData: FormData) => {
     return { error: { error: [error] } };
   }
 };
+
+export const getStoreById = async (id: string) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  try {
+    const store = await prisma.store.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        created_at: true,
+        updated_at: true,
+        createdById: true,
+        updatedById: true,
+      },
+    });
+
+    if (!store) return { error: { store: ["Store not found"] } };
+
+    return store;
+  } catch (error) {
+    console.log({ error });
+    return {
+      error: { general: ["An error occurred while fetching the store"] },
+    };
+  }
+};
