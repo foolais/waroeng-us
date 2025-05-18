@@ -1,5 +1,7 @@
 import { LayoutDashboard, Store, Users } from "lucide-react";
 
+export const ITEM_PER_PAGE = 10;
+
 export const superSidenavItems = [
   {
     title: "Dashboard",
@@ -31,4 +33,13 @@ export const adminSidenavItems = [
   },
 ];
 
-export const ITEM_PER_PAGE = 10;
+export const STORE_STATUS_OPTIONS = [
+  {
+    value: "ACTIVE",
+    label: "Active",
+  },
+  {
+    value: "INACTIVE",
+    label: "Inactive",
+  },
+];

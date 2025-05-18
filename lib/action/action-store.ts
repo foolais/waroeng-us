@@ -5,6 +5,7 @@ import { prisma } from "../prisma";
 import { CreateStoreSchema } from "../zod/zod-store";
 import { ITEM_PER_PAGE } from "../data";
 import { Prisma, STORE_STATUS } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const getAllStore = async (
   currentPage: number,
@@ -62,15 +63,17 @@ export const createStore = async (prevState: unknown, formData: FormData) => {
     return { error: validatedFields.error.flatten().fieldErrors };
   }
 
-  const { name } = validatedFields.data;
+  const { name, status } = validatedFields.data;
   try {
     await prisma.store.create({
       data: {
         name,
+        status: status as STORE_STATUS,
         createdById: session?.user.id,
       },
     });
 
+    revalidatePath(`/super/store`);
     return { success: true, message: "Store created successfully" };
   } catch (error) {
     console.error(error);

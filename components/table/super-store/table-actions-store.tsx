@@ -24,11 +24,10 @@ import { InfoIcon, MoreHorizontal, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 interface iProps {
-  index: number;
   name: string;
 }
 
-const TableActionStore = ({ index, name }: iProps) => {
+const TableActionStore = ({ name }: iProps) => {
   const [openStatus, setOpenStatus] = useState({
     value: false,
     type: "",
@@ -36,7 +35,7 @@ const TableActionStore = ({ index, name }: iProps) => {
 
   const handleDelete = async () => {
     try {
-      console.log(index);
+      console.log(name);
     } catch (error) {
       console.error(error);
     }
