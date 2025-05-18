@@ -22,8 +22,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteStore } from "@/lib/action/action-store";
 import { InfoIcon, MoreHorizontal, PencilIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
 interface iProps {
   id: string;
@@ -35,10 +37,14 @@ const TableActionStore = ({ id, name }: iProps) => {
     value: false,
     type: "",
   });
+  const [isPending, startTransition] = useTransition();
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     try {
-      console.log(name);
+      startTransition(async () => {
+        await deleteStore(id);
+        toast.success("Store deleted successfully", { duration: 1500 });
+      });
     } catch (error) {
       console.error(error);
     }
@@ -91,12 +97,14 @@ const TableActionStore = ({ id, name }: iProps) => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={isPending}>
+                  Cancel
+                </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive hover:bg-destructive/70"
                   onClick={handleDelete}
                 >
-                  Yes
+                  {isPending ? "Deleting..." : "Delete"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

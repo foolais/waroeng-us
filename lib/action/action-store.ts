@@ -146,3 +146,21 @@ export const updateStore = async (
     };
   }
 };
+
+export const deleteStore = async (id: string) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  try {
+    await prisma.store.delete({
+      where: { id },
+    });
+    revalidatePath(`/super/store`);
+    return { success: true, message: "Store deleted successfully" };
+  } catch (error) {
+    console.log({ error });
+    return {
+      error: { general: ["An error occurred while fetching the store"] },
+    };
+  }
+};
