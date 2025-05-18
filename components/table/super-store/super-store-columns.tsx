@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { Store } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import TableActionStore from "./table-actions-store";
 
 export const superStoreColumns: ColumnDef<Store>[] = [
   {
@@ -37,6 +38,14 @@ export const superStoreColumns: ColumnDef<Store>[] = [
     cell: ({ getValue }) => {
       const date = getValue<Date>();
       return formatDate(date);
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const { name } = row.original;
+      return <TableActionStore index={row.index} name={name} />;
     },
   },
 ];

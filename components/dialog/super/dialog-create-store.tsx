@@ -7,10 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import { PlusIcon } from "lucide-react";
-import FormCreateStore from "../form/super/form-create-store";
+import FormCreateStore from "../../form/super/form-create-store";
 import { cn } from "@/lib/utils";
 
 const DialogCreateStore = ({ className }: { className?: string }) => {

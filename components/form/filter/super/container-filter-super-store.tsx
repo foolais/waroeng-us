@@ -2,7 +2,7 @@ import React from "react";
 import FilterSearch from "../filter-search";
 import { FilterSuperStoreStatus } from "./filter-super-combobox";
 import { FilterSuperStoreButton } from "./filter-super-button";
-import DialogCreateStore from "@/components/dialog/dialog-create-store";
+import DialogCreateStore from "@/components/dialog/super/dialog-create-store";
 
 const FilterSuperStore = () => {
   return (
