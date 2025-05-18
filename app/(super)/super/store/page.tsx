@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/table/data-table";
 import React from "react";
 import { superStoreColumns } from "@/components/table/super-store/super-store-columns";
-import FilterSuperStore from "@/components/form/filter/super/filter-super-store";
+import FilterSuperStore from "@/components/form/filter/super/container-filter-super-store";
 
 const dummy = [
   {

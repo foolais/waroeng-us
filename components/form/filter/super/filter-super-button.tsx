@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 export const FilterSuperStoreButton = () => {
   const { filter } = useSuperStoreFilter();
   const router = useRouter();
-  console.log({ filter });
 
   const handleSearch = () => {
     const params = new URLSearchParams(window.location.search);
