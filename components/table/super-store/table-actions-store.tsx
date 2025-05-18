@@ -2,6 +2,7 @@
 
 import DialogForm from "@/components/dialog/dialog-form";
 import FormDetailStore from "@/components/form/super/store/form-detail-store";
+import FormUpdateStore from "@/components/form/super/store/form-update-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -119,7 +120,10 @@ const TableActionStore = ({ id, name }: iProps) => {
         {openStatus.type === "detail" ? (
           <FormDetailStore id={id} />
         ) : openStatus.type === "update" ? (
-          <p>Update</p>
+          <FormUpdateStore
+            onCloseDialog={() => setOpenStatus({ value: false, type: "" })}
+            id={id}
+          />
         ) : null}
       </DialogForm>
     </>

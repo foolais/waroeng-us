@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
-import { CreateStoreSchema } from "../zod/zod-store";
+import { StoreSchema } from "../zod/zod-store";
 import { ITEM_PER_PAGE } from "../data";
 import { Prisma, STORE_STATUS } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -56,7 +56,7 @@ export const createStore = async (prevState: unknown, formData: FormData) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
 
-  const validatedFields = CreateStoreSchema.safeParse(
+  const validatedFields = StoreSchema.safeParse(
     Object.fromEntries(formData.entries()),
   );
   if (!validatedFields.success) {
@@ -102,6 +102,43 @@ export const getStoreById = async (id: string) => {
     if (!store) return { error: { store: ["Store not found"] } };
 
     return store;
+  } catch (error) {
+    console.log({ error });
+    return {
+      error: { general: ["An error occurred while fetching the store"] },
+    };
+  }
+};
+
+export const updateStore = async (
+  id: string,
+  prevState: unknown,
+  formData: FormData,
+) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  const validatedFields = StoreSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+  if (!validatedFields.success) {
+    return { error: validatedFields.error.flatten().fieldErrors };
+  }
+
+  const { name, status } = validatedFields.data;
+
+  try {
+    await prisma.store.update({
+      where: { id },
+      data: {
+        name,
+        status: status as STORE_STATUS,
+        updatedById: session?.user.id,
+      },
+    });
+
+    revalidatePath(`/super/store`);
+    return { success: true, message: "Store updated successfully" };
   } catch (error) {
     console.log({ error });
     return {

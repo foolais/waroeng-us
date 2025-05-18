@@ -1,21 +1,49 @@
-"use client";
-
-import { useActionState, useEffect, useRef, useState } from "react";
-import { FormFieldCombobox, FormFieldInput } from "../../form-field";
-import { Button } from "@/components/ui/button";
-import { createStore } from "@/lib/action/action-store";
-import { Loader2 } from "lucide-react";
-import { STORE_STATUS_OPTIONS } from "@/lib/data";
-import { toast } from "sonner";
+import { getStoreById, updateStore } from "@/lib/action/action-store";
 import { iFormStore } from "@/types/types";
+import React, {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import FormStoreSkeleton from "./form-store-skeleton";
+import { FormFieldCombobox, FormFieldInput } from "../../form-field";
+import { STORE_STATUS_OPTIONS } from "@/lib/data";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
-const FormCreateStore = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
+const FormUpdateStore = ({
+  onCloseDialog,
+  id,
+}: {
+  onCloseDialog: () => void;
+  id: string;
+}) => {
   const [formValues, setFormValues] = useState<iFormStore>({
     name: "",
     status: "ACTIVE",
   });
   const hasRun = useRef(false);
-  const [state, formAction, isPending] = useActionState(createStore, null);
+  const [isPending, startTransition] = useTransition();
+
+  const [state, formAction, isLoading] = useActionState(
+    updateStore.bind(null, id),
+    null,
+  );
+
+  useEffect(() => {
+    startTransition(async () => {
+      const data = await getStoreById(id);
+      if (!("error" in data)) {
+        setFormValues({
+          name: data.name ?? "",
+          status: data.status,
+        });
+      }
+    });
+  }, [id]);
 
   useEffect(() => {
     if (!hasRun.current && state?.success && state?.message) {
@@ -25,8 +53,10 @@ const FormCreateStore = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
     }
   }, [state, onCloseDialog]);
 
+  if (isPending) return <FormStoreSkeleton />;
+
   return (
-    <form id="form-create-store" action={formAction}>
+    <form id="form-update-store" action={formAction}>
       <div className="grid w-full items-center gap-4">
         <FormFieldInput
           name="name"
@@ -35,7 +65,7 @@ const FormCreateStore = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
           setFormValues={setFormValues}
           placeholder="Enter Store Name"
           error={state?.error && "name" in state.error ? state.error.name : []}
-          disabled={isPending}
+          disabled={isLoading}
         />
         <FormFieldCombobox
           name="status"
@@ -58,13 +88,13 @@ const FormCreateStore = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
         />
       </div>
       <div className="mt-4 flex items-center justify-end">
-        <Button disabled={isPending} form="form-create-store">
-          {isPending ? "Creating..." : "Create Store"}
-          {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+        <Button disabled={isLoading} form="form-update-store">
+          {isLoading ? "Updating..." : "Update Store"}
+          {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
       </div>
     </form>
   );
 };
 
-export default FormCreateStore;
+export default FormUpdateStore;
