@@ -15,11 +15,13 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Title from "./title";
 import LogoutButton from "../button/logout-btn";
+import { usePathname } from "next/navigation";
 
 const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
   const items = type === "SUPER" ? superSidenavItems : adminSidenavItems;
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -30,7 +32,7 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
         <SidebarMenu
           className={cn(
             isCollapsed ? "item-center flex justify-center" : "items-start",
-            "flex",
+            "mt-1 flex",
           )}
         >
           {items.map((item) => (
@@ -38,7 +40,10 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
               key={item.title}
               className={isCollapsed ? "mx-auto" : "mx-auto w-full px-2"}
             >
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                variant={item.url === pathname ? "outline" : "default"}
+              >
                 <Link href={item.url}>
                   <item.icon size={isCollapsed ? 20 : 24} />
                   <span>{item.title}</span>
