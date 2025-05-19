@@ -3,6 +3,7 @@ import FilterSearch from "../filter-search";
 import { FilterStoreCombobox } from "../store/filter-store";
 import { FilterUserStatus } from "./filter-user";
 import FilterUserButton from "./filter-user-button";
+import DialogCreateUser from "@/components/dialog/user/dialog-create-user";
 
 const ContainerFilterUser = () => {
   return (
@@ -27,6 +28,7 @@ const ContainerFilterUser = () => {
       <div className="order-1 flex w-full items-center justify-between sm:order-2 sm:w-auto">
         <h1 className="header-title sm:hidden">User Management</h1>
         {/* Dialog Create */}
+        <DialogCreateUser />
       </div>
     </div>
   );

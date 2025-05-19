@@ -8,7 +8,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     <div className="h-dvh w-screen">
       <SidebarProvider>
         <AppSidebar type="SUPER" />
-        <main className="w-full py-4 pr-4 pl-4 md:pl-0">
+        <main className="w-full py-4 pr-4 pl-4 lg:pl-0">
           <div className="mb-1 flex items-center justify-between">
             <div className="flex-center">
               <SidebarTrigger />

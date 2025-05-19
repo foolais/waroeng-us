@@ -17,7 +17,7 @@ const ContainerFilterStore = () => {
       </div>
       {/* Desktop */}
       <div className="hidden items-center gap-2 sm:order-1 sm:flex">
-        <FilterSearch placeholder="Search Store Here" />
+        <FilterSearch placeholder="Search Store Here" className="w-[40vw]" />
         <FilterStoreStatusCombobox />
         <FilterStoreButton />
       </div>
