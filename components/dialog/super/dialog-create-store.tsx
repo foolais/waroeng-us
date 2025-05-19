@@ -10,7 +10,7 @@ import {
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { PlusIcon } from "lucide-react";
-import FormCreateStore from "../../form/super/store/form-create-store";
+import FormCreateStore from "../../form/store/form-create-store";
 import { cn } from "@/lib/utils";
 
 const DialogCreateStore = ({ className }: { className?: string }) => {

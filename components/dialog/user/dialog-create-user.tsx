@@ -1,5 +1,6 @@
 "use client";
 
+import FormCreateUser from "@/components/form/user/form-create-user";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,14 +24,15 @@ const DialogCreateUser = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[425px]"
+        className="max-h-[600px] overflow-y-auto"
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
       >
         <DialogHeader className="mb-2">
-          <DialogTitle>Create a New Store</DialogTitle>
+          <DialogTitle>Create a New User</DialogTitle>
         </DialogHeader>
+        <FormCreateUser />
       </DialogContent>
     </Dialog>
   );

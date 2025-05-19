@@ -1,7 +1,7 @@
 import { getStoreById } from "@/lib/action/action-store";
 import { iFormStore } from "@/types/types";
 import React, { useEffect, useState, useTransition } from "react";
-import { FormFieldInput } from "../../form-field";
+import { FormFieldInput } from "../form-field";
 import FormStoreSkeleton from "./form-store-skeleton";
 
 const FormDetailStore = ({ id }: { id: string }) => {

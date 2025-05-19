@@ -1,8 +1,8 @@
 "use client";
 
 import DialogForm from "@/components/dialog/dialog-form";
-import FormDetailStore from "@/components/form/super/store/form-detail-store";
-import FormUpdateStore from "@/components/form/super/store/form-update-store";
+import FormDetailStore from "@/components/form/store/form-detail-store";
+import FormUpdateStore from "@/components/form/store/form-update-store";
 import {
   AlertDialog,
   AlertDialogAction,
