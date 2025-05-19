@@ -1,7 +1,7 @@
 "use client";
 
-import { FormFieldInput } from "../form-field";
-import { useSuperStoreFilter } from "@/store/super/useSuperFilter";
+import { FormFieldInput } from "../form/form-field";
+import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 
 const FilterSearch = ({
   placeholder,

@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/table/data-table";
 import React, { Suspense } from "react";
 import { superStoreColumns } from "@/components/table/super-store/super-store-columns";
-import FilterSuperStore from "@/components/form/filter/super/container-filter-super-store";
+import ContainerFilterStore from "@/components/filter/store/container-filter-store";
 import { getAllStore } from "@/lib/action/action-store";
 import { STORE_STATUS } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -22,7 +22,7 @@ const SuperStorePage = async ({ searchParams }: iProps) => {
 
   return (
     <div>
-      <FilterSuperStore />
+      <ContainerFilterStore />
       <Suspense fallback={<TableSkeleton />}>
         <DataTableWrapper storesPromise={storePromise} page={p} />
       </Suspense>

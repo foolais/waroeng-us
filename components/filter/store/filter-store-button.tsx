@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useSuperStoreFilter } from "@/store/super/useSuperFilter";
+import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export const FilterSuperStoreButton = () => {
+export const FilterStoreButton = () => {
   const { filter } = useSuperStoreFilter();
   const router = useRouter();
 
@@ -23,3 +23,5 @@ export const FilterSuperStoreButton = () => {
     </Button>
   );
 };
+
+export default FilterStoreButton;

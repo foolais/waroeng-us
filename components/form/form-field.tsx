@@ -69,6 +69,7 @@ interface ComboboxProps {
   name: string;
   label: string;
   placeholder: string;
+  widthClassName?: string;
   data: SelectData[];
   value: string;
   setValue: (value: string) => void;
@@ -78,12 +79,14 @@ interface ComboboxProps {
   isLoadingQuery?: boolean;
   isDisabled?: boolean;
   error?: string[];
+  isHiddenLabel?: boolean;
 }
 
 export const FormFieldCombobox = ({
   name,
   label,
   placeholder,
+  widthClassName,
   data,
   value,
   setValue,
@@ -92,6 +95,7 @@ export const FormFieldCombobox = ({
   isQuerySearch = false,
   isLoadingQuery = false,
   isDisabled = false,
+  isHiddenLabel = false,
   error,
 }: ComboboxProps) => {
   const [open, setOpen] = useState(false);
@@ -107,8 +111,13 @@ export const FormFieldCombobox = ({
   };
 
   return (
-    <div className="flex w-full flex-col space-y-1.5">
-      <Label>{label}</Label>
+    <div
+      className={cn(
+        "flex flex-col space-y-1.5",
+        widthClassName ? widthClassName : "w-full",
+      )}
+    >
+      {!isHiddenLabel && <Label>{label}</Label>}
       <input type="hidden" name={name} value={value} />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -116,7 +125,10 @@ export const FormFieldCombobox = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className={cn(
+              "justify-between",
+              widthClassName ? widthClassName : "w-full",
+            )}
             disabled={isLoadingQuery || isDisabled}
           >
             {selectedItem ? (
@@ -127,7 +139,9 @@ export const FormFieldCombobox = ({
             <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[375px] p-0">
+        <PopoverContent
+          className={cn("p-0", widthClassName ? widthClassName : "w-[375px]")}
+        >
           <Command shouldFilter={!isQuerySearch}>
             {isQuerySearch ? (
               <CommandInput
