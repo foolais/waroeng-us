@@ -9,11 +9,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useUserImage } from "@/store/user/useUserFilter";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 const DialogCreateUser = () => {
   const [open, setOpen] = useState(false);
+  const { url, setUrl } = useUserImage();
+
+  const onClose = async () => {
+    if (!url) return;
+
+    const formData = new FormData();
+    formData.set("file", url);
+    try {
+      await fetch(`/api/upload?imageUrl=${url}`, {
+        method: "DELETE",
+      });
+      setUrl("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -24,10 +41,12 @@ const DialogCreateUser = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="max-h-[600px] overflow-y-auto"
+        className="max-h-[650px] overflow-y-auto"
+        onEscapeKeyDown={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
+        onCloseAutoFocus={onClose}
       >
         <DialogHeader className="mb-2">
           <DialogTitle>Create a New User</DialogTitle>

@@ -20,3 +20,13 @@ export const useSuperUserFilter = create<SuperUserStore>((set) => ({
   setFilter: (filter) =>
     set((state) => ({ filter: { ...state.filter, ...filter } })),
 }));
+
+interface UserImageStore {
+  url: string;
+  setUrl: (url: string) => void;
+}
+
+export const useUserImage = create<UserImageStore>((set) => ({
+  url: "",
+  setUrl: (url) => set(() => ({ url })),
+}));
