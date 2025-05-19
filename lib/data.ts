@@ -43,3 +43,13 @@ export const STORE_STATUS_OPTIONS = [
     label: "Inactive",
   },
 ];
+
+export const roleOptions = [
+  { value: "ADMIN", label: "Admin" },
+  { value: "CASHIER", label: "Cashier" },
+];
+
+export const genderOptions = [
+  { value: "MALE", label: "Male" },
+  { value: "FEMALE", label: "Female" },
+];

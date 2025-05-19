@@ -35,7 +35,7 @@ export const FormFieldInput = <T,>({
     setFormValues?.((prev) => ({ ...prev, [name]: e.target.value }));
   };
 
-  const errorMessage = useMemo(() => error?.join(" & "), [error]);
+  const errorMessage = useMemo(() => error?.[0], [error]);
 
   return (
     <div className={cn("flex flex-col", label && "space-y-1.5")}>
@@ -48,11 +48,7 @@ export const FormFieldInput = <T,>({
         {...rest}
       />
       {errorMessage && (
-        <div
-          aria-live="polite"
-          aria-atomic="true"
-          className="mt-1 text-sm text-red-600"
-        >
+        <div aria-live="polite" aria-atomic="true" className="error-message">
           {errorMessage}
         </div>
       )}

@@ -4,13 +4,14 @@ import FormCreateUser from "@/components/form/user/form-create-user";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useUserImage } from "@/store/user/useUserFilter";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, X } from "lucide-react";
 import { useState } from "react";
 
 const DialogCreateUser = () => {
@@ -46,12 +47,16 @@ const DialogCreateUser = () => {
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
-        onCloseAutoFocus={onClose}
       >
         <DialogHeader className="mb-2">
           <DialogTitle>Create a New User</DialogTitle>
+          <DialogClose asChild className="absolute top-4 right-4 z-10">
+            <Button onClick={onClose} size="icon" variant="destructive">
+              <X />
+            </Button>
+          </DialogClose>
         </DialogHeader>
-        <FormCreateUser />
+        <FormCreateUser onCloseDialog={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

@@ -1,7 +1,14 @@
 "use client";
 
 import { iFromUser } from "@/types/types";
-import { useActionState, useRef, useState, useTransition } from "react";
+import {
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { FormFieldCombobox, FormFieldInput } from "../form-field";
 import { ImageUp, Loader2, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,18 +16,12 @@ import { createUser } from "@/lib/action/action-user";
 import { type PutBlobResult } from "@vercel/blob";
 import Image from "next/image";
 import { useUserImage } from "@/store/user/useUserFilter";
+import { genderOptions, roleOptions } from "@/lib/data";
+import { getAllStore } from "@/lib/action/action-store";
+import { toast } from "sonner";
+import { debounce } from "lodash";
 
-const roleOptions = [
-  { value: "ADMIN", label: "Admin" },
-  { value: "CASHIER", label: "Cashier" },
-];
-
-const genderOptions = [
-  { value: "MALE", label: "Male" },
-  { value: "FEMALE", label: "Female" },
-];
-
-const FormCreateUser = () => {
+const FormCreateUser = ({ onCloseDialog }: { onCloseDialog: () => void }) => {
   const [formValues, setFormValues] = useState<iFromUser>({
     image: "",
     name: "",
@@ -35,12 +36,82 @@ const FormCreateUser = () => {
   });
   const [image, setImage] = useState("");
   const [message, setMessage] = useState("");
+  const [storeValue, setStoreValue] = useState("");
+  const [storesData, setStoresData] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [isSearching, setIsSearching] = useState(false);
   const { setUrl } = useUserImage();
 
+  const hasRun = useRef(false);
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [isUploading, startTransition] = useTransition();
 
-  const [state, formAction, isPending] = useActionState(createUser, null);
+  const [state, formAction, isPending] = useActionState(
+    createUser.bind(null, image),
+    null,
+  );
+
+  // Memoized debounced fetch function
+  const debouncedFetchTools = useMemo(
+    () =>
+      debounce(async (query: string) => {
+        try {
+          setIsSearching(true);
+          const { data } = await getAllStore(
+            1,
+            encodeURIComponent(query),
+            "ACTIVE",
+          );
+
+          const mappedData = Array.isArray(data)
+            ? data.map((tool) => ({
+                value: tool.id,
+                label: tool.name,
+              }))
+            : [];
+
+          setStoresData(mappedData);
+        } catch (error) {
+          console.error("Search error:", error);
+          toast.error(
+            `Failed to search tools: ${error instanceof Error ? error.message : String(error)}`,
+          );
+          setStoresData([]);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300),
+    [],
+  );
+
+  // Handle search query changes
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      debouncedFetchTools(query);
+    }
+  };
+
+  // Clean up debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchTools.cancel();
+    };
+  }, [debouncedFetchTools]);
+
+  // Initial data load
+  useEffect(() => {
+    debouncedFetchTools("");
+  }, [debouncedFetchTools]);
+
+  //toast when success create user
+  useEffect(() => {
+    if (!hasRun.current && state?.success && state?.message) {
+      toast.success(state.message, { duration: 1500 });
+      onCloseDialog();
+      hasRun.current = true;
+    }
+  }, [state, onCloseDialog]);
 
   const handleUploadImage = () => {
     if (!inputImageRef.current?.files) return null;
@@ -67,6 +138,7 @@ const FormCreateUser = () => {
         setUrl(img.url);
       } catch (error) {
         console.log(error);
+        toast.error(`Failed to upload image`);
       }
     });
   };
@@ -94,7 +166,7 @@ const FormCreateUser = () => {
         <div className="flex flex-col gap-6">
           <div className="flex-center flex-col gap-2">
             <label
-              htmlFor="input-image"
+              htmlFor="image"
               className="flex-center relative aspect-square h-[200px] w-[200px] cursor-pointer flex-col rounded-md border-2 border-dashed object-cover"
             >
               {isUploading && (
@@ -107,10 +179,11 @@ const FormCreateUser = () => {
                   <ImageUp size={100} strokeWidth={0.5} />
                   <p className="mb-1 text-sm font-semibold">Upload Image</p>
                   <input
+                    id="image"
+                    name="image"
                     type="file"
                     ref={inputImageRef}
                     onChange={handleUploadImage}
-                    id="input-image"
                     className="hidden"
                     accept="image/*"
                     disabled={isUploading}
@@ -278,15 +351,17 @@ const FormCreateUser = () => {
             name="storeId"
             label="Store"
             placeholder="Select Store"
-            data={roleOptions}
-            value={formValues.role}
-            setValue={() =>
-              setFormValues((prev) => ({ ...prev, role: "CASHIER" }))
-            }
+            isLoadingQuery={isSearching}
+            widthClassName="w-full"
+            data={storesData}
+            value={storeValue}
+            setValue={setStoreValue}
+            isQuerySearch
+            onSearch={handleSearch}
             onChangeForm={(val) =>
               setFormValues((prev) => ({
                 ...prev,
-                role: val as "ADMIN" | "CASHIER",
+                storeId: val as "ADMIN" | "CASHIER",
               }))
             }
             error={

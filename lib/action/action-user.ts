@@ -2,8 +2,16 @@
 
 import { auth } from "@/auth";
 import { UserSchema } from "../zod/zod-user";
+import { revalidatePath } from "next/cache";
+import { prisma } from "../prisma";
+import { Role } from "@prisma/client";
+import { hashSync } from "bcrypt-ts";
 
-export const createUser = async (prevState: unknown, formData: FormData) => {
+export const createUser = async (
+  image: string,
+  prevState: unknown,
+  formData: FormData,
+) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
 
@@ -15,6 +23,26 @@ export const createUser = async (prevState: unknown, formData: FormData) => {
   }
 
   const data = validatedFields.data;
+  const payload = {
+    name: data.name,
+    email: data.email,
+    role: data.role as Role,
+  };
+  const hashedPassword = hashSync(data.password, 10);
 
-  console.log({ data });
+  try {
+    await prisma.user.create({
+      data: {
+        ...payload,
+        password: hashedPassword,
+        image: image as string,
+      },
+    });
+
+    revalidatePath(`/super/user`);
+    return { success: true, message: "User created successfully" };
+  } catch (error) {
+    console.error(error);
+    return { error: { error: [error] } };
+  }
 };
