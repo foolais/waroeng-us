@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { UserSchema } from "../zod/zod-user";
 import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
-import { Role } from "@prisma/client";
+import { Gender, Role } from "@prisma/client";
 import { hashSync } from "bcrypt-ts";
 
 export const createUser = async (
@@ -26,7 +26,11 @@ export const createUser = async (
   const payload = {
     name: data.name,
     email: data.email,
+    gender: data.gender as Gender,
     role: data.role as Role,
+    phone: data.phone,
+    address: data.address,
+    storeId: data.storeId,
   };
   const hashedPassword = hashSync(data.password, 10);
 

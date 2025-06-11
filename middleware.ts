@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const session = await auth();
   const isLoggedIn = !!session?.user;
   const role = session?.user.role;
-  const storeId = session?.user.store_id;
+  const storeId = session?.user.storeId;
   const { pathname } = request.nextUrl;
 
   let redirectUrl = "/";
@@ -25,12 +25,21 @@ export async function middleware(request: NextRequest) {
 
   if (
     !isLoggedIn &&
-    ProtectedRoutes.some((route) => pathname.startsWith(route))
+    ProtectedRoutes.some((route) => pathname.startsWith(route)) &&
+    pathname.startsWith(`/${storeId}`)
   ) {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 
   if (isLoggedIn && role !== "SUPER_ADMIN" && pathname.startsWith("/super")) {
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
+  }
+
+  if (
+    isLoggedIn &&
+    role !== "ADMIN" &&
+    pathname.startsWith(`/${storeId}/admin`)
+  ) {
     return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 

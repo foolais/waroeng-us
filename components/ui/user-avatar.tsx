@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { Avatar, AvatarFallback } from "./avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { headers } from "next/headers";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Separator } from "./separator";
@@ -22,6 +22,7 @@ const UserAvatar = async () => {
       <PopoverTrigger asChild>
         <div className="flex-center cursor-pointer gap-2" role="button">
           <Avatar>
+            <AvatarImage src={session?.user?.image ?? ""} alt="Avatar" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <div className="hidden flex-col sm:flex">
