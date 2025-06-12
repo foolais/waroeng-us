@@ -7,6 +7,11 @@ import { ITEM_PER_PAGE } from "../data";
 import { Prisma, STORE_STATUS } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
+interface IStore {
+  name: string;
+  status: STORE_STATUS;
+}
+
 export const getAllStore = async (
   currentPage: number,
   search: string,
@@ -81,6 +86,28 @@ export const createStore = async (prevState: unknown, formData: FormData) => {
   }
 };
 
+export const createStoreNew = async (data: IStore) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  const { name, status } = data;
+  try {
+    await prisma.store.create({
+      data: {
+        name,
+        status: status as STORE_STATUS,
+        createdById: session?.user.id,
+      },
+    });
+
+    revalidatePath(`/super/store`);
+    return { success: true, message: "Store created successfully" };
+  } catch (error) {
+    console.error(error);
+    return { error: { error: [error] } };
+  }
+};
+
 export const getStoreById = async (id: string) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
@@ -126,6 +153,32 @@ export const updateStore = async (
   }
 
   const { name, status } = validatedFields.data;
+
+  try {
+    await prisma.store.update({
+      where: { id },
+      data: {
+        name,
+        status: status as STORE_STATUS,
+        updatedById: session?.user.id,
+      },
+    });
+
+    revalidatePath(`/super/store`);
+    return { success: true, message: "Store updated successfully" };
+  } catch (error) {
+    console.log({ error });
+    return {
+      error: { general: ["An error occurred while fetching the store"] },
+    };
+  }
+};
+
+export const updateStoreNew = async (id: string, data: IStore) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  const { name, status } = data;
 
   try {
     await prisma.store.update({

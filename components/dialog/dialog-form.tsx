@@ -10,7 +10,7 @@ interface DialogFormProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  description: string;
+  description?: string;
   children: React.ReactNode;
 }
 
@@ -31,7 +31,7 @@ const DialogForm = ({
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {children}
       </DialogContent>

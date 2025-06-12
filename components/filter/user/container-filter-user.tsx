@@ -1,4 +1,3 @@
-import React from "react";
 import FilterSearch from "../filter-search";
 import { FilterStoreCombobox } from "../store/filter-store";
 import { FilterUserStatus } from "./filter-user";

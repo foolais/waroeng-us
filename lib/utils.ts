@@ -9,3 +9,14 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDate(date: Date) {
   return moment(date).format("LL");
 }
+
+export function getButtonText(
+  type: "CREATE" | "UPDATE" | "DETAIL",
+  name: string,
+  isPending: boolean,
+) {
+  if (isPending) {
+    return type === "CREATE" ? "Creating..." : "Updating...";
+  }
+  return type === "CREATE" ? `Create ${name}` : "Save Changes";
+}

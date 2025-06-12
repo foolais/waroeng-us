@@ -1,8 +1,7 @@
 "use client";
 
 import DialogForm from "@/components/dialog/dialog-form";
-import FormDetailStore from "@/components/form/store/form-detail-store";
-import FormUpdateStore from "@/components/form/store/form-update-store";
+import FormStore from "@/components/form/store/form-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -114,23 +113,19 @@ const TableActionStore = ({ id, name }: iProps) => {
       <DialogForm
         isOpen={openStatus.value}
         onClose={() => setOpenStatus({ value: false, type: "" })}
-        title={
-          openStatus.type === "detail"
-            ? `Detail for ${name}`
-            : `Update for ${name}`
-        }
-        description={
-          openStatus.type === "detail"
-            ? `Detail for ${name}`
-            : `Update for ${name}`
-        }
+        title={openStatus.type === "detail" ? `Detail Store` : `Update Store`}
       >
         {openStatus.type === "detail" ? (
-          <FormDetailStore id={id} />
+          <FormStore
+            type="DETAIL"
+            onClose={() => setOpenStatus({ value: false, type: "" })}
+            storeId={id}
+          />
         ) : openStatus.type === "update" ? (
-          <FormUpdateStore
-            onCloseDialog={() => setOpenStatus({ value: false, type: "" })}
-            id={id}
+          <FormStore
+            type="UPDATE"
+            onClose={() => setOpenStatus({ value: false, type: "" })}
+            storeId={id}
           />
         ) : null}
       </DialogForm>

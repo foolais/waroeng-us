@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/table/data-table";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { superStoreColumns } from "@/components/table/super-store/super-store-columns";
 import ContainerFilterStore from "@/components/filter/store/container-filter-store";
 import { getAllStore } from "@/lib/action/action-store";
