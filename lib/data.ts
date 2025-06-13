@@ -33,7 +33,7 @@ export const adminSidenavItems = [
   },
 ];
 
-export const STORE_STATUS_OPTIONS = [
+export const storeStatusOptions = [
   {
     value: "ACTIVE",
     label: "Active",

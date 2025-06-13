@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { STORE_STATUS_OPTIONS } from "@/lib/data";
+import { storeStatusOptions } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -134,7 +134,7 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {STORE_STATUS_OPTIONS.map((option) => (
+                      {storeStatusOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>

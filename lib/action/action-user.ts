@@ -7,6 +7,19 @@ import { prisma } from "../prisma";
 import { Gender, Role } from "@prisma/client";
 import { hashSync } from "bcrypt-ts";
 
+interface IUser {
+  image?: string;
+  name: string;
+  email: string;
+  gender: "MALE" | "FEMALE";
+  address?: string;
+  phone?: string;
+  role: "ADMIN" | "CASHIER";
+  storeId: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export const createUser = async (
   image: string,
   prevState: unknown,
@@ -33,6 +46,49 @@ export const createUser = async (
     storeId: data.storeId,
   };
   const hashedPassword = hashSync(data.password, 10);
+
+  try {
+    await prisma.user.create({
+      data: {
+        ...payload,
+        password: hashedPassword,
+        image: image as string,
+      },
+    });
+
+    revalidatePath(`/super/user`);
+    return { success: true, message: "User created successfully" };
+  } catch (error) {
+    console.error(error);
+    return { error: { error: [error] } };
+  }
+};
+
+export const createUserNew = async (data: IUser) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  const {
+    name,
+    email,
+    gender,
+    address,
+    phone,
+    role,
+    storeId,
+    password,
+    image,
+  } = data;
+  const payload = {
+    name,
+    email,
+    gender,
+    role,
+    phone,
+    address,
+    storeId,
+  };
+  const hashedPassword = hashSync(password, 10);
 
   try {
     await prisma.user.create({

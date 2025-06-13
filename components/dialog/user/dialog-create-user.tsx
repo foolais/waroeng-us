@@ -1,6 +1,6 @@
 "use client";
 
-import FormCreateUser from "@/components/form/user/form-create-user";
+import FormUser from "@/components/form/user/form-user";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,7 +56,7 @@ const DialogCreateUser = () => {
             </Button>
           </DialogClose>
         </DialogHeader>
-        <FormCreateUser onCloseDialog={() => setOpen(false)} />
+        <FormUser type="CREATE" onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
