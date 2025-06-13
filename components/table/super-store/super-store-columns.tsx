@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { Store } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
@@ -20,16 +19,7 @@ export const superStoreColumns: ColumnDef<Store>[] = [
     header: () => <div className="flex-center">Status</div>,
     cell: ({ getValue }) => {
       const status = getValue<string>();
-      return (
-        <div className="flex-center mx-auto">
-          <Badge
-            className="mx-auto"
-            variant={status === "ACTIVE" ? "default" : "destructive"}
-          >
-            {status}
-          </Badge>
-        </div>
-      );
+      return <div className="flex-center mx-auto">{status}</div>;
     },
   },
   {

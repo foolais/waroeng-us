@@ -1,5 +1,6 @@
 "use client";
 
+import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { FormFieldInput } from "../form/form-field";
 import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 
@@ -24,3 +25,23 @@ const FilterSearch = ({
 };
 
 export default FilterSearch;
+
+export const FilterSearchUser = ({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) => {
+  const { filter, setFilter } = useSuperUserFilter();
+
+  return (
+    <FormFieldInput
+      name="search"
+      placeholder={placeholder}
+      value={filter.search}
+      onChange={(e) => setFilter({ search: e.target.value })}
+      className={className}
+    />
+  );
+};

@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { createUserNew } from "@/lib/action/action-user";
+import { useUserImage } from "@/store/user/useUserFilter";
 
 interface FormUserProps {
   type: "CREATE" | "UPDATE" | "DETAIL";
@@ -65,6 +66,8 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
     { value: string; label: string }[]
   >([]);
   const [isPending, startTranstion] = useTransition();
+
+  const { setUrl } = useUserImage();
 
   const debouncedFetchStores = useMemo(
     () =>
@@ -146,6 +149,7 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                       }
                       onImageUpload={(url) => {
                         field.onChange(url);
+                        setUrl(url);
                       }}
                       onImageRemove={() => {
                         field.onChange(undefined);
