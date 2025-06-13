@@ -54,7 +54,38 @@ export const genderOptions = [
   { value: "FEMALE", label: "Female" },
 ];
 
+export const storeStatusBadgeOptions = [
+  {
+    value: "ALL",
+    label: "All",
+    color: "#6B7280",
+    bgColor: "bg-gray-100 dark:bg-gray-800",
+    textColor: "text-gray-800 dark:text-gray-200",
+  },
+  {
+    value: "ACTIVE",
+    label: "Active",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    value: "INACTIVE",
+    label: "Inactive",
+    color: "#EF4444",
+    bgColor: "bg-red-50 dark:bg-red-900/20",
+    textColor: "text-red-700 dark:text-red-300",
+  },
+];
+
 export const genderBadgeOptions = [
+  {
+    value: "ALL",
+    label: "All",
+    color: "#6B7280",
+    bgColor: "bg-gray-100 dark:bg-gray-800",
+    textColor: "text-gray-800 dark:text-gray-200",
+  },
   {
     value: "MALE",
     label: "Male",
@@ -72,6 +103,13 @@ export const genderBadgeOptions = [
 ];
 
 export const roleBadgeOptions = [
+  {
+    value: "ALL",
+    label: "All",
+    color: "#6B7280",
+    bgColor: "bg-gray-100 dark:bg-gray-800",
+    textColor: "text-gray-800 dark:text-gray-200",
+  },
   {
     value: "SUPER_ADMIN",
     label: "Super Admin",

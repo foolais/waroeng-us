@@ -1,12 +1,11 @@
-import { DataTable } from "@/components/table/data-table";
 import { Suspense } from "react";
-import { superStoreColumns } from "@/components/table/super-store/super-store-columns";
 import ContainerFilterStore from "@/components/filter/store/container-filter-store";
 import { getAllStore } from "@/lib/action/action-store";
 import { STORE_STATUS } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { TableSkeleton } from "@/components/table/table-skeleton";
 import TablePagination from "@/components/table/table-pagination";
+import TableStore from "@/components/table/content/table-store";
 
 interface iProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -41,7 +40,7 @@ async function DataTableWrapper({
 
   return (
     <>
-      <DataTable columns={superStoreColumns} data={stores?.data ?? []} />
+      <TableStore data={stores?.data ?? []} />
       <TablePagination currentPage={page} count={stores?.count ?? 0} />
     </>
   );

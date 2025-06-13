@@ -1,5 +1,5 @@
 import ContainerFilterUser from "@/components/filter/user/container-filter-user";
-import TableUser from "@/components/table/super-user/table-user";
+import TableUser from "@/components/table/content/table-user";
 import TablePagination from "@/components/table/table-pagination";
 import { TableSkeleton } from "@/components/table/table-skeleton";
 import { getAllUser } from "@/lib/action/action-user";
