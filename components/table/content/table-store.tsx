@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { storeStatusBadgeOptions } from "@/lib/data";
-import TableActionStore from "../super-store/table-actions-store";
+import TableActionStore from "../action/table-actions-store";
 import { STORE_STATUS } from "@prisma/client";
 
 interface StoreTableProps {
