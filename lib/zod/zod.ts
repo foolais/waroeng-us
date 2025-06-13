@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export const LoginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z
+    .string()
+    .min(3, "Password must be more than 3 characters")
+    .max(20, "Password must be less than 20 characters"),
+});
+
 export const StoreSchema = z.object({
   name: z
     .string()

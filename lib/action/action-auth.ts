@@ -98,6 +98,64 @@ export const loginCredentials = async (
   }
 };
 
+export const loginCredentialsNew = async (data: {
+  email: string;
+  password: string;
+}) => {
+  const { email, password } = data;
+  const res = await prisma.user.findUnique({ where: { email } });
+
+  if (!res)
+    return {
+      error: true,
+      type: "credentials",
+      message: "Invalid email or password",
+    };
+
+  const { role, storeId } = res || {};
+
+  let redirectUrl = "/";
+  switch (role) {
+    case "SUPER_ADMIN":
+      redirectUrl = "/super/dashboard";
+      break;
+    case "ADMIN":
+      redirectUrl = `/${storeId}/admin/dashboard`;
+      break;
+    case "CASHIER":
+      redirectUrl = `/${storeId}/dashboard`;
+      break;
+  }
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: redirectUrl,
+    });
+    return { success: true, message: "Login successful" };
+  } catch (error) {
+    console.error(error);
+    if (error instanceof AuthError) {
+      switch (error.name) {
+        case "CredentialsSignin":
+          return {
+            error: true,
+            type: "credentials",
+            message: "Invalid email or password",
+          };
+        default:
+          return {
+            error: true,
+            type: "credentials",
+            message: "Authentication failed",
+          };
+      }
+    }
+    throw error;
+  }
+};
+
 export const logoutCredentials = async () => {
   try {
     await signOut();

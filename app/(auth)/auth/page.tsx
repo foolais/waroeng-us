@@ -1,6 +1,6 @@
 "use client";
 
-import FormLogin from "@/components/form/auth/form-login";
+import FormLogin from "@/components/form/auth/form-login-new";
 import FormRegister from "@/components/form/auth/form-register";
 import { useState } from "react";
 
