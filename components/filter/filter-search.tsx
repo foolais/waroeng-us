@@ -4,7 +4,7 @@ import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { FormFieldInput } from "../form/form-field";
 import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 
-const FilterSearch = ({
+export const FilterSearchStore = ({
   placeholder,
   className,
 }: {
@@ -23,8 +23,6 @@ const FilterSearch = ({
     />
   );
 };
-
-export default FilterSearch;
 
 export const FilterSearchUser = ({
   placeholder,

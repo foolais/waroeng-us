@@ -1,14 +1,14 @@
-import FilterSearch from "../filter-search";
 import DialogCreateStore from "@/components/dialog/super/dialog-create-store";
 import { FilterStoreStatusCombobox } from "./filter-store";
 import FilterStoreButton from "./filter-store-button";
+import { FilterSearchStore } from "../filter-search";
 
 const ContainerFilterStore = () => {
   return (
     <div className="my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-0">
       {/* Mobile */}
       <div className="order-2 flex w-full flex-col items-stretch gap-2 sm:hidden">
-        <FilterSearch placeholder="Search Store Here" className="w-full" />
+        <FilterSearchStore placeholder="Search Store Here" className="w-full" />
         <div className="flex items-center justify-between">
           <FilterStoreStatusCombobox />
           <FilterStoreButton />
@@ -16,7 +16,10 @@ const ContainerFilterStore = () => {
       </div>
       {/* Desktop */}
       <div className="hidden items-center gap-2 sm:order-1 sm:flex">
-        <FilterSearch placeholder="Search Store Here" className="w-[40vw]" />
+        <FilterSearchStore
+          placeholder="Search Store Here"
+          className="w-[40vw]"
+        />
         <FilterStoreStatusCombobox />
         <FilterStoreButton />
       </div>
