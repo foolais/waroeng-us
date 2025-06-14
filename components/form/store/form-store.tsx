@@ -26,9 +26,9 @@ import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useEffect, useTransition } from "react";
 import {
-  createStoreNew,
+  createStore,
   getStoreById,
-  updateStoreNew,
+  updateStore,
 } from "@/lib/action/action-store";
 import { toast } from "sonner";
 import FormStoreSkeleton from "./form-store-skeleton";
@@ -55,10 +55,10 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
     startTransition(async () => {
       try {
         if (type === "CREATE") {
-          const res = await createStoreNew(values);
+          const res = await createStore(values);
           if (res.success) toast.success(res.message, { duration: 1500 });
         } else if (type === "UPDATE" && storeId) {
-          const res = await updateStoreNew(storeId, values);
+          const res = await updateStore(storeId, values);
           if (res.success) toast.success(res.message, { duration: 1500 });
         }
         onClose();

@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "@/auth";
-import { LoginSchema, RegisterSchema } from "../zod/zod-auth";
+import { RegisterSchema } from "../zod/zod-auth";
 import { AuthError } from "next-auth";
 import { hashSync } from "bcrypt-ts";
 import { prisma } from "../prisma";
@@ -46,59 +46,7 @@ export const registerCredentials = async (
   }
 };
 
-export const loginCredentials = async (
-  prevState: unknown,
-  formData: FormData,
-) => {
-  const form = Object.fromEntries(formData.entries());
-
-  const validatedFields = LoginSchema.safeParse(form);
-  if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors };
-  }
-
-  const { email, password } = validatedFields.data;
-  const data = await prisma.user.findUnique({ where: { email } });
-
-  if (!data) return { error: true, message: "Invalid email or password" };
-
-  const { role, storeId } = data || {};
-
-  let redirectUrl = "/";
-  switch (role) {
-    case "SUPER_ADMIN":
-      redirectUrl = "/super/dashboard";
-      break;
-    case "ADMIN":
-      redirectUrl = `/${storeId}/admin/dashboard`;
-      break;
-    case "CASHIER":
-      redirectUrl = `/${storeId}/dashboard`;
-      break;
-  }
-
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: redirectUrl,
-    });
-    return { success: true, message: "Login successful" };
-  } catch (error) {
-    console.error(error);
-    if (error instanceof AuthError) {
-      switch (error.name) {
-        case "CredentialsSignin":
-          return { error: true, message: "Invalid email or password" };
-        default:
-          return { error: true, message: "Authentication failed" };
-      }
-    }
-    throw error;
-  }
-};
-
-export const loginCredentialsNew = async (data: {
+export const loginCredentials = async (data: {
   email: string;
   password: string;
 }) => {

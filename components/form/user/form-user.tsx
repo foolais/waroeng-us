@@ -36,7 +36,7 @@ import Combobox from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { createUserNew } from "@/lib/action/action-user";
+import { createUser } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
 
 interface FormUserProps {
@@ -114,7 +114,7 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
     startTranstion(async () => {
       try {
         if (type === "CREATE") {
-          const res = await createUserNew({
+          const res = await createUser({
             ...values,
             image: values.image as string,
             gender: values.gender as "MALE" | "FEMALE",

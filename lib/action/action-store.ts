@@ -2,7 +2,6 @@
 
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
-import { StoreSchema } from "../zod/zod-store";
 import { ITEM_PER_PAGE } from "../data";
 import { Prisma, STORE_STATUS } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -57,36 +56,7 @@ export const getAllStore = async (
   return { data, count };
 };
 
-export const createStore = async (prevState: unknown, formData: FormData) => {
-  const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
-
-  const validatedFields = StoreSchema.safeParse(
-    Object.fromEntries(formData.entries()),
-  );
-  if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors };
-  }
-
-  const { name, status } = validatedFields.data;
-  try {
-    await prisma.store.create({
-      data: {
-        name,
-        status: status as STORE_STATUS,
-        createdById: session?.user.id,
-      },
-    });
-
-    revalidatePath(`/super/store`);
-    return { success: true, message: "Store created successfully" };
-  } catch (error) {
-    console.error(error);
-    return { error: { error: [error] } };
-  }
-};
-
-export const createStoreNew = async (data: IStore) => {
+export const createStore = async (data: IStore) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
 
@@ -137,44 +107,7 @@ export const getStoreById = async (id: string) => {
   }
 };
 
-export const updateStore = async (
-  id: string,
-  prevState: unknown,
-  formData: FormData,
-) => {
-  const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
-
-  const validatedFields = StoreSchema.safeParse(
-    Object.fromEntries(formData.entries()),
-  );
-  if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors };
-  }
-
-  const { name, status } = validatedFields.data;
-
-  try {
-    await prisma.store.update({
-      where: { id },
-      data: {
-        name,
-        status: status as STORE_STATUS,
-        updatedById: session?.user.id,
-      },
-    });
-
-    revalidatePath(`/super/store`);
-    return { success: true, message: "Store updated successfully" };
-  } catch (error) {
-    console.log({ error });
-    return {
-      error: { general: ["An error occurred while fetching the store"] },
-    };
-  }
-};
-
-export const updateStoreNew = async (id: string, data: IStore) => {
+export const updateStore = async (id: string, data: IStore) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
 

@@ -7,24 +7,47 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FormFieldInput } from "../form-field";
 import { Button } from "@/components/ui/button";
-import { useActionState, useState } from "react";
-import { loginCredentials } from "@/lib/action/action-auth";
+import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
-
-interface iFormLogin {
-  email: string;
-  password: string;
-}
+import { z } from "zod";
+import { LoginSchema } from "@/lib/zod/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { loginCredentials } from "@/lib/action/action-auth";
+import { toast } from "sonner";
 
 const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
-  const [formValues, setFormValues] = useState<iFormLogin>({
-    email: "",
-    password: "",
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { email: "", password: "" },
   });
 
-  const [state, formAction, isPending] = useActionState(loginCredentials, null);
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
+    console.log({ values });
+    startTransition(async () => {
+      try {
+        const res = await loginCredentials(values);
+
+        if (res.success) toast.success(res.message, { duration: 1500 });
+        if (res.error && res.type === "credentials")
+          toast.error(res.message, { duration: 1500 });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
 
   return (
     <Card className="w-[350px]">
@@ -32,44 +55,55 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
         <CardTitle className="auth-title">Welcome Back</CardTitle>
       </CardHeader>
       <CardContent>
-        <form id="form-login" action={formAction}>
-          <div className="grid w-full items-center gap-4">
-            <FormFieldInput
-              disabled={!!state?.success}
+        <Form {...form}>
+          <form
+            id="form-login"
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
               name="email"
-              label="Email"
-              value={(formValues as iFormLogin).email}
-              setFormValues={setFormValues}
-              placeholder="johndoe@me.com"
-              type="email"
-              error={
-                typeof state?.error === "object" && "email" in state.error
-                  ? state.error.email
-                  : []
-              }
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="johndoe@me.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <FormFieldInput
-              disabled={!!state?.success}
+            <FormField
+              control={form.control}
               name="password"
-              label="Password"
-              value={(formValues as iFormLogin).password}
-              setFormValues={setFormValues}
-              placeholder="********"
-              type="password"
-              error={
-                typeof state?.error === "object" && "password" in state.error
-                  ? state.error.password
-                  : []
-              }
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="johndoe@me.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </form>
+          </form>
+        </Form>
       </CardContent>
       <CardFooter className="auth-footer">
         <Button
+          type="submit"
           className="w-full"
           form="form-login"
-          disabled={isPending || !!state?.success}
+          disabled={isPending}
         >
           {isPending ? "Logging in..." : "Login"}
           {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}

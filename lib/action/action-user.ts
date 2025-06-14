@@ -20,7 +20,7 @@ interface IUser {
   confirmPassword: string;
 }
 
-export const createUserNew = async (data: IUser) => {
+export const createUser = async (data: IUser) => {
   const session = await auth();
   if (!session) return { error: { auth: ["You must be logged in"] } };
 
