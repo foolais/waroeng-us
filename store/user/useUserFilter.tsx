@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface SuperUserFilter {
   search: string;
   store: string;
-  role: "ALL" | "ADMIN" | "CASHIER";
+  role: "ALL" | "ADMIN" | "CASHIER" | "SUPER_ADMIN";
 }
 
 interface SuperUserStore {

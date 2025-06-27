@@ -8,6 +8,7 @@ const roleOptions = [
   { value: "ALL", label: "All" },
   { value: "ADMIN", label: "Admin" },
   { value: "CASHIER", label: "Cashier" },
+  { value: "SUPER_ADMIN", label: "Super Admin" },
 ];
 
 export const FilterUserStatus = () => {
@@ -20,13 +21,17 @@ export const FilterUserStatus = () => {
       label="Role"
       isHiddenLabel
       placeholder="Filter Role"
-      widthClassName="w-[120px]"
+      widthClassName="w-[150px]"
       data={roleOptions}
       value={roleValue}
-      setValue={(val) => setRoleValue(val as "ALL" | "ADMIN" | "CASHIER")}
+      setValue={(val) =>
+        setRoleValue(val as "ALL" | "ADMIN" | "CASHIER" | "SUPER_ADMIN")
+      }
       onChangeForm={(val) => {
         const role = val === "" ? "ALL" : val;
-        setFilter({ role: role as "ALL" | "ADMIN" | "CASHIER" });
+        setFilter({
+          role: role as "ALL" | "ADMIN" | "CASHIER" | "SUPER_ADMIN",
+        });
       }}
     />
   );
