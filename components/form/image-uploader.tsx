@@ -1,26 +1,32 @@
 "use client";
 
 import { ImageUp, Trash2Icon } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { type PutBlobResult } from "@vercel/blob";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface ImageUploaderProps {
   initialImage?: string;
   onImageUpload: (url: string) => void;
   onImageRemove: () => void;
+  disabled?: boolean;
+  type?: "CREATE" | "DETAIL" | "UPDATE";
 }
 
 const ImageUploader = ({
   initialImage = "",
   onImageUpload,
   onImageRemove,
+  disabled = false,
+  type = "CREATE",
 }: ImageUploaderProps) => {
-  const [image, setImage] = useState(initialImage);
+  const [image, setImage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const inputImageRef = useRef<HTMLInputElement>(null);
+  const defaultImage = "/user.png";
 
   const handleUploadImage = useCallback(async () => {
     if (!inputImageRef.current?.files) return null;
@@ -87,6 +93,17 @@ const ImageUploader = ({
     }
   }, [image, onImageRemove]);
 
+  useEffect(() => {
+    if (type !== "CREATE" && initialImage === "") {
+      setImage(defaultImage);
+    } else if (initialImage) {
+      setImage(initialImage);
+    }
+  }, [initialImage, type]);
+
+  const showUploadButton = !image && !isUploading;
+  const showImage = image && !isUploading;
+
   return (
     <div className="flex-center flex-col gap-2">
       <label
@@ -98,7 +115,7 @@ const ImageUploader = ({
             <div className="progress" />
           </div>
         )}
-        {!image && !isUploading ? (
+        {showUploadButton && (
           <>
             <ImageUp size={100} strokeWidth={0.5} />
             <p className="mb-1 text-sm font-semibold">Upload Image</p>
@@ -112,12 +129,16 @@ const ImageUploader = ({
               disabled={isUploading}
             />
           </>
-        ) : (
+        )}
+        {showImage && (
           <>
             <Button
               size="icon"
               variant="destructive"
-              className="absolute top-2 right-2"
+              className={cn(
+                "absolute top-2 right-2",
+                disabled && "pointer-events-none hidden",
+              )}
               disabled={isUploading}
               onClick={(e) => {
                 e.preventDefault();

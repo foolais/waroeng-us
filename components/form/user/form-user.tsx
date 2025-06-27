@@ -36,15 +36,16 @@ import Combobox from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { createUser } from "@/lib/action/action-user";
+import { createUser, getUserById } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
 
 interface FormUserProps {
+  userId?: string;
   type: "CREATE" | "UPDATE" | "DETAIL";
   onClose: () => void;
 }
 
-const FormUser = ({ type, onClose }: FormUserProps) => {
+const FormUser = ({ userId, type, onClose }: FormUserProps) => {
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
@@ -65,7 +66,8 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
   const [storesData, setStoresData] = useState<
     { value: string; label: string }[]
   >([]);
-  const [isPending, startTranstion] = useTransition();
+  const [isPending, startTransition] = useTransition();
+  const [isFetching, startFetching] = useTransition();
 
   const { setUrl } = useUserImage();
 
@@ -110,16 +112,41 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
     return () => debouncedFetchStores.cancel();
   }, [debouncedFetchStores]);
 
-  const handleSubmit = (values: z.infer<typeof UserSchema>) => {
-    startTranstion(async () => {
+  // GET detail user
+  useEffect(() => {
+    if (!userId || type === "CREATE") return;
+    startFetching(async () => {
       try {
-        if (type === "CREATE") {
-          const res = await createUser({
-            ...values,
-            image: values.image as string,
-            gender: values.gender as "MALE" | "FEMALE",
-            role: values.role as "ADMIN" | "CASHIER",
+        const data = await getUserById(userId);
+        if (data && !("error" in data)) {
+          form.reset({
+            image: data.image as string,
+            name: data.name,
+            email: data.email,
+            gender: data.gender as "MALE" | "FEMALE",
+            role: data.role as "ADMIN" | "CASHIER",
+            storeId: data.storeId || undefined,
+            phone: data.phone || "",
+            address: data.address || "",
           });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [userId, type, form]);
+
+  const handleSubmit = (values: z.infer<typeof UserSchema>) => {
+    startTransition(async () => {
+      try {
+        const payload = {
+          ...values,
+          image: values.image as string,
+          gender: values.gender as "MALE" | "FEMALE",
+          role: values.role as "ADMIN" | "CASHIER",
+        };
+        if (type === "CREATE") {
+          const res = await createUser(payload);
           if (res.success) toast.success(res.message, { duration: 1500 });
         }
         onClose();
@@ -129,6 +156,8 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
       }
     });
   };
+
+  const formDisabled = isFetching || isPending || type === "DETAIL";
 
   return (
     <>
@@ -154,6 +183,8 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                       onImageRemove={() => {
                         field.onChange(undefined);
                       }}
+                      disabled={formDisabled}
+                      type={type}
                     />
                     <FormMessage />
                   </FormItem>
@@ -161,34 +192,40 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
               />
               {/* Desktop only fields */}
               <div className="hidden w-full items-center gap-4 md:grid">
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue="CASHIER"
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full cursor-pointer">
-                            <SelectValue placeholder="Select User Role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {roleOptions.map((role) => (
-                            <SelectItem key={role.value} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Hide role field for CREATE to change it bellow storeId */}
+                {type === "CREATE" && (
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue="CASHIER"
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              className="w-full cursor-pointer"
+                              disabled={formDisabled}
+                            >
+                              <SelectValue placeholder="Select User Role" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {roleOptions.map((role) => (
+                              <SelectItem key={role.value} value={role.value}>
+                                {role.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="phone"
@@ -199,6 +236,7 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                         <Input
                           type="phone"
                           placeholder="Enter Phone Number"
+                          disabled={formDisabled}
                           {...field}
                         />
                       </FormControl>
@@ -213,7 +251,11 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter Address" {...field} />
+                        <Input
+                          placeholder="Enter Address"
+                          {...field}
+                          disabled={formDisabled}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -229,7 +271,11 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter name" {...field} />
+                      <Input
+                        placeholder="Enter name"
+                        {...field}
+                        disabled={formDisabled}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -245,6 +291,7 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                       <Input
                         type="email"
                         placeholder="Enter email"
+                        disabled={formDisabled}
                         {...field}
                       />
                     </FormControl>
@@ -264,7 +311,10 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                       value={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full cursor-pointer">
+                        <SelectTrigger
+                          className="w-full cursor-pointer"
+                          disabled={formDisabled}
+                        >
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                       </FormControl>
@@ -292,6 +342,7 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                         <Input
                           type="phone"
                           placeholder="Enter Phone Number"
+                          disabled={formDisabled}
                           {...field}
                         />
                       </FormControl>
@@ -306,7 +357,11 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter Address" {...field} />
+                        <Input
+                          placeholder="Enter Address"
+                          {...field}
+                          disabled={formDisabled}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -324,7 +379,10 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-full cursor-pointer">
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
                             <SelectValue placeholder="Select User Role" />
                           </SelectTrigger>
                         </FormControl>
@@ -356,46 +414,84 @@ const FormUser = ({ type, onClose }: FormUserProps) => {
                         onSearch={handleSearch}
                         isLoading={isSearching}
                         placeholder="Select Store"
+                        disabled={formDisabled}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter Password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter Confirm Password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {type !== "CREATE" && (
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="CASHIER"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Select User Role" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {roleOptions.map((role) => (
+                            <SelectItem key={role.value} value={role.value}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {type === "CREATEz" && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter Password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter Confirm Password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
             </div>
           </div>
           {type !== "DETAIL" && (

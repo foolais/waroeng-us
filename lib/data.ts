@@ -45,6 +45,7 @@ export const storeStatusOptions = [
 ];
 
 export const roleOptions = [
+  { value: "SUPER_ADMIN", label: "Super Admin" },
   { value: "ADMIN", label: "Admin" },
   { value: "CASHIER", label: "Cashier" },
 ];

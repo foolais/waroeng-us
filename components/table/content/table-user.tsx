@@ -3,6 +3,7 @@ import Badge from "@/components/ui/badge";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { genderBadgeOptions, roleBadgeOptions } from "@/lib/data";
 import { Gender, Role } from "@prisma/client";
+import TableActionUser from "../action/table-action-user";
 
 interface UserTableProps {
   data: {
@@ -47,10 +49,10 @@ const TableUser = ({ data }: UserTableProps) => {
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {data.length ? (
-            data.map((user) => (
-              <TableRow key={user.id}>
+        {data.length ? (
+          data.map((user) => (
+            <TableBody key={user.id}>
+              <TableRow>
                 <TableCell>{user.no}</TableCell>
                 <TableCell>
                   <Avatar>
@@ -87,14 +89,15 @@ const TableUser = ({ data }: UserTableProps) => {
                     }
                   />
                 </TableCell>
+                <TableCell className="mr-4 flex items-center justify-end">
+                  <TableActionUser id={user.id} name={user.name} />;
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell>No Results</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            </TableBody>
+          ))
+        ) : (
+          <TableCaption className="pb-4">No Results</TableCaption>
+        )}
       </Table>
     </div>
   );

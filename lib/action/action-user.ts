@@ -120,3 +120,21 @@ export const getAllUser = async (
     return { error: true, message: error };
   }
 };
+
+export const getUserById = async (id: string) => {
+  const session = await auth();
+  if (!session) return { error: { auth: ["You must be logged in"] } };
+
+  try {
+    console.log({ id });
+    const user = prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!user) return { error: true, message: "User not found" };
+
+    return user;
+  } catch (error) {
+    return { error: true, message: error };
+  }
+};

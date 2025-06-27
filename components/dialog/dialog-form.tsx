@@ -12,6 +12,7 @@ interface DialogFormProps {
   title: string;
   description?: string;
   children: React.ReactNode;
+  contentClassName?: string;
 }
 
 const DialogForm = ({
@@ -20,11 +21,12 @@ const DialogForm = ({
   title,
   description,
   children,
+  contentClassName,
 }: DialogFormProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="sm:max-w-[425px]"
+        className={contentClassName ? contentClassName : "sm:max-w-[425px]"}
         onInteractOutside={(e) => {
           e.preventDefault();
         }}

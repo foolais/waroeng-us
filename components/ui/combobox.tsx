@@ -25,6 +25,7 @@ interface ComboboxProps {
   isLoading?: boolean;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 const Combobox = ({
@@ -35,6 +36,7 @@ const Combobox = ({
   isLoading = false,
   placeholder = "Select...",
   className,
+  disabled = false,
 }: ComboboxProps) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,7 +51,7 @@ const Combobox = ({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
-          disabled={isLoading}
+          disabled={isLoading || disabled}
         >
           {selectedOption ? (
             selectedOption.label
