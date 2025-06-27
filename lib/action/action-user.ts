@@ -172,6 +172,22 @@ export const updateUser = async (id: string, data: IUser) => {
     return { success: true, message: "User updated successfully" };
   } catch (error) {
     console.error(error);
-    return { error: { error: [error] } };
+    return { error: true, message: error };
+  }
+};
+
+export const deleteUser = async (id: string) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "You must be logged in" };
+
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+    revalidatePath(`/super/user`);
+    return { success: true, message: "User deleted successfully" };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
   }
 };

@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteUser } from "@/lib/action/action-user";
 import { InfoIcon, MoreHorizontal, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -40,8 +41,10 @@ const TableActionUser = ({ id, name }: iProps) => {
   const handleDelete = () => {
     try {
       startTrasition(async () => {
-        // await deleteStore(id);
-        toast.success("User deleted successfully", { duration: 1500 });
+        const res = await deleteUser(id);
+        if ("success" in res && res.success) {
+          toast.success(res.message, { duration: 1500 });
+        }
       });
     } catch (error) {
       console.error(error);
