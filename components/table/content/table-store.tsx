@@ -2,6 +2,7 @@ import Badge from "@/components/ui/badge";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -36,10 +37,10 @@ const TableStore = ({ data }: StoreTableProps) => {
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {data.length ? (
-            data.map((store) => (
-              <TableRow key={store.id}>
+        {data.length ? (
+          data.map((store) => (
+            <TableBody key={store.id}>
+              <TableRow>
                 <TableCell>{store.no}</TableCell>
                 <TableCell>{store.name}</TableCell>
                 <TableCell>
@@ -55,13 +56,11 @@ const TableStore = ({ data }: StoreTableProps) => {
                   <TableActionStore id={store.id} name={store.name} />;
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow className="flex-center bg-red-200 p-2">
-              <TableCell>No Results</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            </TableBody>
+          ))
+        ) : (
+          <TableCaption className="mb-4">No Results</TableCaption>
+        )}
       </Table>
     </div>
   );

@@ -454,7 +454,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   )}
                 />
               )}
-              {type === "CREATEz" && (
+              {type === "CREATE" && (
                 <>
                   <FormField
                     control={form.control}
