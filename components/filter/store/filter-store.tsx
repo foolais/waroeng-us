@@ -51,7 +51,7 @@ export const FilterStoreStatusCombobox = () => {
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search status..." className="h-9" />
+          <CommandInput placeholder="Cari Status..." className="h-9" />
           <CommandList>
             <CommandEmpty>No status found.</CommandEmpty>
             {statusOptions.map((option) => (

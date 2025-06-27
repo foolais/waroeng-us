@@ -5,9 +5,9 @@ import { FilterSearchStore } from "../filter-search";
 
 const ContainerFilterStore = () => {
   return (
-    <div className="my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-0">
+    <div className="container-filter">
       {/* Mobile */}
-      <div className="order-2 flex w-full flex-col items-stretch gap-2 sm:hidden">
+      <div className="container-filter-mobile">
         <FilterSearchStore placeholder="Search Store Here" className="w-full" />
         <div className="flex items-center justify-between">
           <FilterStoreStatusCombobox />
@@ -15,7 +15,7 @@ const ContainerFilterStore = () => {
         </div>
       </div>
       {/* Desktop */}
-      <div className="hidden items-center gap-2 sm:order-1 sm:flex">
+      <div className="container-filter-desktop">
         <FilterSearchStore
           placeholder="Search Store Here"
           className="w-[40vw]"
@@ -24,7 +24,7 @@ const ContainerFilterStore = () => {
         <FilterStoreButton />
       </div>
       {/* Create Btn */}
-      <div className="order-1 flex w-full items-center justify-between sm:order-2 sm:w-auto">
+      <div className="container-title">
         <h1 className="header-title sm:hidden">Store Management</h1>
         <DialogCreateStore />
       </div>

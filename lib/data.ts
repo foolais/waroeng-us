@@ -1,4 +1,4 @@
-import { LayoutDashboard, Store, Users } from "lucide-react";
+import { Armchair, LayoutDashboard, Store, Users } from "lucide-react";
 
 export const ITEM_PER_PAGE = 10;
 
@@ -17,6 +17,11 @@ export const superSidenavItems = [
     title: "User",
     url: "/super/user",
     icon: Users,
+  },
+  {
+    title: "Meja",
+    url: "/super/meja",
+    icon: Armchair,
   },
 ];
 

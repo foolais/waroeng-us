@@ -4,6 +4,7 @@ import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { FormFieldInput } from "../form/form-field";
 import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 import { useEffect } from "react";
+import { useSuperTableFilter } from "@/store/table/useTableFilter";
 
 export const FilterSearchStore = ({
   placeholder,
@@ -37,6 +38,26 @@ export const FilterSearchUser = ({
   className?: string;
 }) => {
   const { filter, setFilter } = useSuperUserFilter();
+
+  return (
+    <FormFieldInput
+      name="search"
+      placeholder={placeholder}
+      value={filter.search}
+      onChange={(e) => setFilter({ search: e.target.value })}
+      className={className}
+    />
+  );
+};
+
+export const FilterSearchTable = ({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) => {
+  const { filter, setFilter } = useSuperTableFilter();
 
   return (
     <FormFieldInput

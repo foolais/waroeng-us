@@ -7,7 +7,7 @@ const HeaderPathname = () => {
   const lastPathname = pathaname[pathaname.length - 1];
 
   return (
-    <h1 className="header-title hidden sm:block">{lastPathname} Management</h1>
+    <h1 className="header-title hidden sm:block">Manajemen {lastPathname}</h1>
   );
 };
 

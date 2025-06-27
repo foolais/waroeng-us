@@ -1,3 +1,10 @@
+export type TableStatus =
+  | "AVAILABLE"
+  | "OCCUPIED"
+  | "WAITING_ORDER"
+  | "DINING"
+  | "MAINTENANCE";
+
 export interface iFormStore {
   name: string;
   status: "ACTIVE" | "INACTIVE";
