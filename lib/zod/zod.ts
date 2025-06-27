@@ -56,11 +56,13 @@ export const UserSchema = z
     password: z
       .string()
       .min(3, "Password must be more than 3 character")
-      .max(32, "Password must be less than 32 character"),
+      .max(32, "Password must be less than 32 character")
+      .optional(),
     confirmPassword: z
       .string()
       .min(3, "Password must be more than 3 character")
-      .max(32, "Password must be less than 32 character"),
+      .max(32, "Password must be less than 32 character")
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password don't match",

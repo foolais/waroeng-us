@@ -3,6 +3,7 @@
 import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { FormFieldInput } from "../form/form-field";
 import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
+import { useEffect } from "react";
 
 export const FilterSearchStore = ({
   placeholder,
@@ -12,6 +13,10 @@ export const FilterSearchStore = ({
   className?: string;
 }) => {
   const { filter, setFilter } = useSuperStoreFilter();
+
+  useEffect(() => {
+    setFilter({ search: "" });
+  }, [setFilter]);
 
   return (
     <FormFieldInput

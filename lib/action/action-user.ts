@@ -16,13 +16,17 @@ interface IUser {
   phone?: string;
   role: "ADMIN" | "CASHIER";
   storeId: string;
-  password: string;
-  confirmPassword: string;
+  password?: string;
+  confirmPassword?: string;
 }
 
 export const createUser = async (data: IUser) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
+
+  if (!data.password) return { error: true, message: "Password is required" };
+  if (data.password !== data.confirmPassword)
+    return { error: true, message: "Passwords do not match" };
 
   const {
     name,
@@ -35,6 +39,7 @@ export const createUser = async (data: IUser) => {
     password,
     image,
   } = data;
+
   const payload = {
     name,
     email,
@@ -70,7 +75,7 @@ export const getAllUser = async (
   store: string,
 ) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   const pageSize = ITEM_PER_PAGE;
 
@@ -123,7 +128,7 @@ export const getAllUser = async (
 
 export const getUserById = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   try {
     console.log({ id });
@@ -136,5 +141,37 @@ export const getUserById = async (id: string) => {
     return user;
   } catch (error) {
     return { error: true, message: error };
+  }
+};
+
+export const updateUser = async (id: string, data: IUser) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "You must be logged in" };
+  try {
+    const { name, email, gender, address, phone, role, storeId, image } = data;
+
+    const payload = {
+      name,
+      email,
+      gender,
+      role,
+      phone,
+      address,
+      storeId,
+      image: (image as string) ?? "",
+    };
+
+    console.log({ id, payload });
+    await prisma.user.update({
+      where: { id },
+      data: {
+        ...payload,
+      },
+    });
+    revalidatePath(`/super/user`);
+    return { success: true, message: "User updated successfully" };
+  } catch (error) {
+    console.error(error);
+    return { error: { error: [error] } };
   }
 };

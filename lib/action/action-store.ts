@@ -17,7 +17,7 @@ export const getAllStore = async (
   status: "ALL" | STORE_STATUS,
 ) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   const pageSize = ITEM_PER_PAGE;
 
@@ -58,7 +58,7 @@ export const getAllStore = async (
 
 export const createStore = async (data: IStore) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   const { name, status } = data;
   try {
@@ -80,7 +80,7 @@ export const createStore = async (data: IStore) => {
 
 export const getStoreById = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   try {
     const store = await prisma.store.findUnique({
@@ -109,7 +109,7 @@ export const getStoreById = async (id: string) => {
 
 export const updateStore = async (id: string, data: IStore) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   const { name, status } = data;
 
@@ -135,7 +135,7 @@ export const updateStore = async (id: string, data: IStore) => {
 
 export const deleteStore = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: { auth: ["You must be logged in"] } };
+  if (!session) return { error: true, message: "You must be logged in" };
 
   try {
     await prisma.store.delete({

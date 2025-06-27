@@ -36,7 +36,7 @@ import Combobox from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { createUser, getUserById } from "@/lib/action/action-user";
+import { createUser, getUserById, updateUser } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
 
 interface FormUserProps {
@@ -147,6 +147,9 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
         };
         if (type === "CREATE") {
           const res = await createUser(payload);
+          if (res.success) toast.success(res.message, { duration: 1500 });
+        } else if (type === "UPDATE" && userId) {
+          const res = await updateUser(userId, payload);
           if (res.success) toast.success(res.message, { duration: 1500 });
         }
         onClose();
