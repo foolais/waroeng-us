@@ -8,7 +8,6 @@ import { useState } from "react";
 const statusOptions = [
   { value: "ALL", label: "Semua" },
   { value: "AVAILABLE", label: "Tersedia" },
-  { value: "OCCUPIED", label: "Terisi" },
   { value: "WAITING_ORDER", label: "Menunggu Pesanan" },
   { value: "DINING", label: "Sedang Makan" },
   { value: "MAINTENANCE", label: "Maintenance" },

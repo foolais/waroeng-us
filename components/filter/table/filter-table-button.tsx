@@ -32,7 +32,7 @@ const FilterTableButton = () => {
   }, []);
 
   return (
-    <Button className="w-[48%] sm:w-[100px]" onClick={handleSearch}>
+    <Button className="w-[48%] max-w-max sm:w-[100px]" onClick={handleSearch}>
       Cari <SearchIcon />
     </Button>
   );

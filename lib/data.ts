@@ -138,3 +138,34 @@ export const roleBadgeOptions = [
     textColor: "text-blue-700 dark:text-blue-300",
   },
 ];
+
+export const tableStatusBadgeOptions = [
+  {
+    value: "AVAILABLE",
+    label: "Tersedia",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    value: "WAITING_ORDER",
+    label: "Menunggu Pesanan",
+    color: "#3B82F6",
+    bgColor: "bg-blue-50 dark:bg-blue-900/20",
+    textColor: "text-blue-700 dark:text-blue-300",
+  },
+  {
+    value: "DINING",
+    label: "Sedang Makan",
+    color: "#8B5CF6",
+    bgColor: "bg-purple-50 dark:bg-purple-900/20",
+    textColor: "text-purple-700 dark:text-purple-300",
+  },
+  {
+    value: "MAINTENANCE",
+    label: "Maintenance",
+    color: "#6B7280",
+    bgColor: "bg-gray-100 dark:bg-gray-800",
+    textColor: "text-gray-800 dark:text-gray-200",
+  },
+];

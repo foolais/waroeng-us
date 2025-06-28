@@ -3,6 +3,7 @@ import { FilterSearchTable } from "../filter-search";
 import { FilterTableStatus } from "./filter-table";
 import FilterTableButton from "./filter-table-button";
 import { FilterStoreCombobox } from "../store/filter-store";
+import DialogCreateTable from "@/components/dialog/super/dialog-create-table";
 
 const ContainerFilterTable = () => {
   return (
@@ -26,6 +27,7 @@ const ContainerFilterTable = () => {
       {/* Create Btn */}
       <div className="container-title">
         <h1 className="header-title sm:hidden">Manajemen Meja</h1>
+        <DialogCreateTable />
       </div>
     </div>
   );

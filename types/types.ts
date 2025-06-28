@@ -1,6 +1,5 @@
 export type TableStatus =
   | "AVAILABLE"
-  | "OCCUPIED"
   | "WAITING_ORDER"
   | "DINING"
   | "MAINTENANCE";
