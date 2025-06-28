@@ -20,7 +20,7 @@ export const FilterUserButton = () => {
   };
 
   return (
-    <Button className="w-[30%] sm:w-[100px]" onClick={handleSearch}>
+    <Button className="w-full md:w-[100px]" onClick={handleSearch}>
       <span>Search </span>
       <SearchIcon />
     </Button>

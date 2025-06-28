@@ -21,7 +21,7 @@ export const FilterUserStatus = () => {
       label="Role"
       isHiddenLabel
       placeholder="Filter Role"
-      widthClassName="w-[150px]"
+      widthClassName="w-full md:w-[150px]"
       data={roleOptions}
       value={roleValue}
       setValue={(val) =>

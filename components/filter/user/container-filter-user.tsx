@@ -1,4 +1,5 @@
 import { FilterSearchUser } from "../filter-search";
+import PopoverFilter from "../popover-filter";
 import { FilterStoreCombobox } from "../store/filter-store";
 import { FilterUserStatus } from "./filter-user";
 import FilterUserButton from "./filter-user-button";
@@ -7,15 +8,6 @@ import DialogCreateUser from "@/components/dialog/user/dialog-create-user";
 const ContainerFilterUser = () => {
   return (
     <div className="container-filter">
-      {/* Mobile */}
-      <div className="container-filter-mobile">
-        <FilterSearchUser placeholder="Search Here" className="w-full" />
-        <div className="flex items-center justify-between gap-2">
-          <FilterStoreCombobox />
-          <FilterUserStatus />
-          <FilterUserButton />
-        </div>
-      </div>
       {/* Desktop */}
       <div className="container-filter-desktop">
         <FilterSearchUser placeholder="Search Here" className="w-[20vw]" />
@@ -23,10 +15,20 @@ const ContainerFilterUser = () => {
         <FilterUserStatus />
         <FilterUserButton />
       </div>
-      {/* Create Btn */}
-      <div className="container-title">
-        <h1 className="header-title sm:hidden">User Management</h1>
-        {/* Dialog Create */}
+      <div className="container-filter-title">
+        {/* Mobile */}
+        <div className="container-filter-mobile">
+          <h1 className="header-title md:hidden">Manajemen Pengguna</h1>
+          <PopoverFilter>
+            <h4>Filter Pengguna</h4>
+            <FilterSearchUser placeholder="Search Here" className="w-full" />
+            <FilterStoreCombobox />
+            <FilterUserStatus />
+            <FilterUserButton />
+          </PopoverFilter>
+        </div>
+
+        {/* Create Btn */}
         <DialogCreateUser />
       </div>
     </div>
