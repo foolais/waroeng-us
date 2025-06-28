@@ -129,16 +129,16 @@
     @apply text-lg font-semibold capitalize;
   }
   .container-filter {
-    @apply my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-0;
+    @apply my-4 flex w-full items-center justify-between;
   }
-  .container-filter-mobile {
-    @apply order-1 flex w-full flex-col items-stretch gap-2 sm:hidden;
+  .container-filter-title {
+    @apply flex w-full items-center justify-between md:order-2 md:w-max;
   }
   .container-filter-desktop {
-    @apply hidden items-center gap-2 sm:order-1 sm:flex;
+    @apply hidden w-full items-center gap-2 md:flex;
   }
-  .container-title {
-    @apply flex w-full items-center justify-between sm:order-2 sm:w-auto;
+  .container-filter-mobile {
+    @apply flex items-center gap-4 md:hidden;
   }
 
   .progress-loader {

@@ -41,7 +41,7 @@ export const FilterStoreStatusCombobox = () => {
           role="combobox"
           aria-label="Select status"
           aria-expanded={open}
-          className="w-[48%] justify-between md:w-[100px]"
+          className="w-full justify-between md:w-[100px]"
         >
           {filter.status
             ? statusOptions.find((data) => data.value === filter.status)?.label
@@ -49,7 +49,7 @@ export const FilterStoreStatusCombobox = () => {
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0 md:w-[200px]">
         <Command>
           <CommandInput placeholder="Cari Status..." className="h-9" />
           <CommandList>

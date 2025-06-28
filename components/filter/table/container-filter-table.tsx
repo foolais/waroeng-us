@@ -7,18 +7,18 @@ import PopoverFilter from "../popover-filter";
 
 const ContainerFilterTable = () => {
   return (
-    <div className="my-4 flex w-full items-center justify-between">
+    <div className="container-filter">
       {/* Desktop */}
-      <div className="hidden w-full items-center gap-2 md:flex">
+      <div className="container-filter-desktop">
         <FilterSearchTable placeholder="Cari disini..." className="w-[20vw]" />
         <FilterTableStatus />
         <FilterStoreCombobox />
         <FilterTableButton />
       </div>
       {/* Create Btn */}
-      <div className="flex w-full items-center justify-between md:order-2 md:w-max">
+      <div className="container-filter-title">
         {/* Mobile */}
-        <div className="flex items-center gap-4 md:hidden">
+        <div className="container-filter-mobile">
           <h1 className="header-title md:hidden">Manajemen Meja</h1>
           <PopoverFilter>
             <h4>Filter Meja</h4>
