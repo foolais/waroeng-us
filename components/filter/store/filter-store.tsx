@@ -41,7 +41,7 @@ export const FilterStoreStatusCombobox = () => {
           role="combobox"
           aria-label="Select status"
           aria-expanded={open}
-          className="w-[48%] justify-between sm:w-[100px]"
+          className="w-[48%] justify-between md:w-[100px]"
         >
           {filter.status
             ? statusOptions.find((data) => data.value === filter.status)?.label
@@ -157,7 +157,7 @@ export const FilterStoreCombobox = () => {
       label="Store"
       isHiddenLabel
       placeholder="Filter Store"
-      widthClassName="w-full sm:w-[175px]"
+      widthClassName="w-full md:w-[175px]"
       isLoadingQuery={isSearching}
       data={storesData}
       value={storeValue}

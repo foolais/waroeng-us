@@ -132,13 +132,13 @@
     @apply my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-0;
   }
   .container-filter-mobile {
-    @apply order-2 flex w-full flex-col items-stretch gap-2 sm:hidden;
+    @apply order-1 flex w-full flex-col items-stretch gap-2 sm:hidden;
   }
   .container-filter-desktop {
     @apply hidden items-center gap-2 sm:order-1 sm:flex;
   }
   .container-title {
-    @apply order-1 flex w-full items-center justify-between sm:order-2 sm:w-auto;
+    @apply flex w-full items-center justify-between sm:order-2 sm:w-auto;
   }
 
   .progress-loader {

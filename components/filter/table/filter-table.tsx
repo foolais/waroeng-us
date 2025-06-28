@@ -23,7 +23,7 @@ export const FilterTableStatus = () => {
       label="Status"
       isHiddenLabel
       placeholder="Filter Status"
-      widthClassName="w-full sm:w-[180px]"
+      widthClassName="w-full md:w-[180px]"
       data={statusOptions}
       value={statusValue}
       setValue={(val) => setStatusValue(val as "ALL" | TableStatus)}
