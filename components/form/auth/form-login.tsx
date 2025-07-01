@@ -35,7 +35,6 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log({ values });
     startTransition(async () => {
       try {
         const res = await loginCredentials(values);

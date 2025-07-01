@@ -25,8 +25,6 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
   const isCollapsed = state === "collapsed";
   const pathname = usePathname();
 
-  console.log({ pathname });
-
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader

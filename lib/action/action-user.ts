@@ -131,7 +131,6 @@ export const getUserById = async (id: string) => {
   if (!session) return { error: true, message: "You must be logged in" };
 
   try {
-    console.log({ id });
     const user = prisma.user.findFirst({
       where: { id },
     });
@@ -161,7 +160,6 @@ export const updateUser = async (id: string, data: IUser) => {
       image: (image as string) ?? "",
     };
 
-    console.log({ id, payload });
     await prisma.user.update({
       where: { id },
       data: {

@@ -19,3 +19,24 @@ export const useSuperMenuFilter = create<SuperMenuStore>((set) => ({
   setFilter: (filter) =>
     set((state) => ({ filter: { ...state.filter, ...filter } })),
 }));
+
+// Category
+
+interface SuperCategoryMenuFilter {
+  search: string;
+}
+
+interface SuperCategoryMenuStore {
+  filter: SuperCategoryMenuFilter;
+  setFilter: (filter: Partial<SuperCategoryMenuFilter>) => void;
+}
+
+export const useSuperCategoryMenuFilter = create<SuperCategoryMenuStore>(
+  (set) => ({
+    filter: {
+      search: "",
+    },
+    setFilter: (filter) =>
+      set((state) => ({ filter: { ...state.filter, ...filter } })),
+  }),
+);
