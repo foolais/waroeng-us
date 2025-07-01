@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import DialogForm from "../dialog-form";
 import { PlusIcon } from "lucide-react";
+import FormTable from "@/components/form/table/form-table";
 
 const DialogCreateTable = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ const DialogCreateTable = () => {
         onClose={() => setIsOpen(false)}
         title="Buat Meja Baru"
       >
-        <div></div>
+        <FormTable type="CREATE" onClose={() => setIsOpen(false)} />
       </DialogForm>
     </>
   );

@@ -16,7 +16,7 @@ export function getButtonText(
   isPending: boolean,
 ) {
   if (isPending) {
-    return type === "CREATE" ? "Creating..." : "Updating...";
+    return type === "CREATE" ? "Membuat..." : "Mengubah...";
   }
-  return type === "CREATE" ? `Create ${name}` : "Save Changes";
+  return type === "CREATE" ? `Buat ${name}` : `Ubah ${name}`;
 }

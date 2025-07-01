@@ -71,6 +71,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
 
   const { setUrl } = useUserImage();
 
+  // Memoized debounced fetch function
   const debouncedFetchStores = useMemo(
     () =>
       debounce(async (query: string) => {
@@ -106,7 +107,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
     [debouncedFetchStores],
   );
 
-  // Initial data load
+  // Initial store data load
   useEffect(() => {
     debouncedFetchStores("");
     return () => debouncedFetchStores.cancel();

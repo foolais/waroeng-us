@@ -1,6 +1,7 @@
 "use client";
 
 import DialogForm from "@/components/dialog/dialog-form";
+import FormTable from "@/components/form/table/form-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -110,7 +111,11 @@ const TableActionTable = ({ id, name }: iProps) => {
         onClose={() => setOpenStatus({ value: false, type: "" })}
         title={openStatus.type === "detail" ? "Detail Meja" : "Perbarui Meja"}
       >
-        <div></div>
+        {openStatus.type === "detail" ? (
+          <FormTable type="DETAIL" tableId={id} onClose={() => {}} />
+        ) : openStatus.type === "update" ? (
+          <FormTable type="UPDATE" tableId={id} onClose={() => {}} />
+        ) : null}
       </DialogForm>
     </>
   );

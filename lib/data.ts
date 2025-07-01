@@ -169,3 +169,10 @@ export const tableStatusBadgeOptions = [
     textColor: "text-gray-800 dark:text-gray-200",
   },
 ];
+
+export const tableStatusOptions = [
+  { value: "AVAILABLE", label: "Tersedia" },
+  { value: "WAITING_ORDER", label: "Menunggu Pesanan" },
+  { value: "DINING", label: "Sedang Makan" },
+  { value: "MAINTENANCE", label: "Maintenance" },
+];

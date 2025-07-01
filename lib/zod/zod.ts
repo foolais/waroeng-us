@@ -68,3 +68,12 @@ export const UserSchema = z
     message: "Password don't match",
     path: ["confirmPassword"],
   });
+
+export const TableSchema = z.object({
+  name: z
+    .string()
+    .min(5, "Table name must be more than 5 characters")
+    .max(20, "Table name must be less than 20 characters"),
+  status: z.enum(["AVAILABLE", "WAITING_ORDER", "DINING", "MAINTENANCE"]),
+  storeId: z.string().nonempty("Store is required"),
+});
