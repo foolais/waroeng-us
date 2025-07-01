@@ -194,3 +194,8 @@ export const tableStatusOptions = [
   { value: "DINING", label: "Sedang Makan" },
   { value: "MAINTENANCE", label: "Maintenance" },
 ];
+
+export const menuStatusOption = [
+  { value: "ACTIVE", label: "Aktif" },
+  { value: "INACTIVE", label: "Tidak Aktif" },
+];

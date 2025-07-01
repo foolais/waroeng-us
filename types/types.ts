@@ -4,6 +4,8 @@ export type TableStatus =
   | "DINING"
   | "MAINTENANCE";
 
+export type MenuStatus = "AVAILABLE" | "UNAVAILABLE";
+
 export interface iFormStore {
   name: string;
   status: "ACTIVE" | "INACTIVE";

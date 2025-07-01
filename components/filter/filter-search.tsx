@@ -5,6 +5,7 @@ import { FormFieldInput } from "../form/form-field";
 import { useSuperStoreFilter } from "@/store/super/useStoreFilter";
 import { useEffect } from "react";
 import { useSuperTableFilter } from "@/store/table/useTableFilter";
+import { useSuperMenuFilter } from "@/store/menu/useMenuFilter";
 
 export const FilterSearchStore = ({
   placeholder,
@@ -58,6 +59,26 @@ export const FilterSearchTable = ({
   className?: string;
 }) => {
   const { filter, setFilter } = useSuperTableFilter();
+
+  return (
+    <FormFieldInput
+      name="search"
+      placeholder={placeholder}
+      value={filter.search}
+      onChange={(e) => setFilter({ search: e.target.value })}
+      className={className}
+    />
+  );
+};
+
+export const FilterSearchMenu = ({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) => {
+  const { filter, setFilter } = useSuperMenuFilter();
 
   return (
     <FormFieldInput
