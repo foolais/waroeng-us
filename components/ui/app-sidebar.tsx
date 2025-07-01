@@ -8,6 +8,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { adminSidenavItems, superSidenavItems } from "@/lib/data";
@@ -22,6 +24,8 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const pathname = usePathname();
+
+  console.log({ pathname });
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -42,15 +46,45 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
               key={item.title}
               className={isCollapsed ? "mx-auto" : "mx-auto w-full px-2"}
             >
-              <SidebarMenuButton
-                asChild
-                variant={item.url === pathname ? "outline" : "default"}
-              >
-                <Link href={item.url}>
-                  <item.icon size={isCollapsed ? 20 : 24} />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
+              {"sub" in item &&
+              Array.isArray(item.sub) &&
+              item.sub.length > 0 ? (
+                <>
+                  <SidebarMenuButton
+                    asChild
+                    variant={
+                      pathname.includes(item.url) ? "outline" : "default"
+                    }
+                  >
+                    <div className="flex">
+                      <item.icon size={isCollapsed ? 20 : 24} />
+                      <span>{item.title}</span>
+                    </div>
+                  </SidebarMenuButton>
+                  <SidebarMenuSub>
+                    {"sub" in item &&
+                      item.sub.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuButton asChild>
+                            <Link href={subItem.url}>
+                              <span>{subItem.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                  </SidebarMenuSub>
+                </>
+              ) : (
+                <SidebarMenuButton
+                  asChild
+                  variant={item.url === pathname ? "outline" : "default"}
+                >
+                  <Link href={item.url}>
+                    <item.icon size={isCollapsed ? 20 : 24} />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              )}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
