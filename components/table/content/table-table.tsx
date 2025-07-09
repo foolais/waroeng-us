@@ -10,8 +10,22 @@ import {
 } from "@/components/ui/table";
 import { tableStatusBadgeOptions } from "@/lib/data";
 import TableActionTable from "../action/table-action-table";
+import { TABLE_STATUS } from "@prisma/client";
 
-const TableTable = () => {
+interface TableTableProps {
+  data: {
+    no: number;
+    id: string;
+    name: string;
+    status: TABLE_STATUS;
+    store: {
+      id: string;
+      name: string;
+    };
+  }[];
+}
+
+const TableTable = ({ data }: TableTableProps) => {
   return (
     <div className="rounded-md border">
       <Table>
@@ -24,27 +38,31 @@ const TableTable = () => {
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>01</TableCell>
-            <TableCell>
-              <Badge
-                option={
-                  tableStatusBadgeOptions.find(
-                    (option) => option.value === "active",
-                  ) ?? tableStatusBadgeOptions[1]
-                }
-              />
-            </TableCell>
-            <TableCell>Waroeng Us</TableCell>
-            {/* Actions */}
-            <TableCell className="mr-4 flex items-center justify-end">
-              <TableActionTable id="01" name="01" />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <TableCaption className="pb-4">Tidak ada data</TableCaption>
+        {data.length ? (
+          data.map((table) => (
+            <TableBody key={table.id}>
+              <TableRow>
+                <TableCell>{table.no}</TableCell>
+                <TableCell>{table.name}</TableCell>
+                <TableCell>
+                  <Badge
+                    option={
+                      tableStatusBadgeOptions.find(
+                        (option) => option.value === table.status,
+                      ) ?? tableStatusBadgeOptions[1]
+                    }
+                  />
+                </TableCell>
+                <TableCell>{table.store.name}</TableCell>
+                <TableCell className="mr-4 flex items-center justify-end">
+                  <TableActionTable id={table.id} name={table.name} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ))
+        ) : (
+          <TableCaption className="pb-4">Tidak ada data</TableCaption>
+        )}
       </Table>
     </div>
   );

@@ -19,6 +19,7 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { getAllStore } from "@/lib/action/action-store";
+import { createTable } from "@/lib/action/action-table";
 import { tableStatusOptions } from "@/lib/data";
 import { getButtonText } from "@/lib/utils";
 import { TableSchema } from "@/lib/zod/zod";
@@ -104,8 +105,16 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
   const handleSubmit = (values: z.infer<typeof TableSchema>) => {
     startTransition(async () => {
       try {
-        console.log({ values, type, tableId });
+        const payload = { ...values, storeId: values.storeId as string };
+
+        if (type === "CREATE") {
+          const res = await createTable(payload);
+          if (res.success) toast.success(res.message, { duration: 1500 });
+        } else if (type === "UPDATE" && tableId) {
+          console.log({ payload, tableId });
+        }
         onClose();
+        form.reset();
       } catch (error) {
         console.log(error);
       }

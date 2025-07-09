@@ -72,7 +72,7 @@ export const UserSchema = z
 export const TableSchema = z.object({
   name: z
     .string()
-    .min(5, "Table name must be more than 5 characters")
+    .min(2, "Table name must be more than 2 characters")
     .max(20, "Table name must be less than 20 characters"),
   status: z.enum(["AVAILABLE", "WAITING_ORDER", "DINING", "MAINTENANCE"]),
   storeId: z.string().nonempty("Store is required"),
