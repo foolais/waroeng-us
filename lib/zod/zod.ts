@@ -77,3 +77,37 @@ export const TableSchema = z.object({
   status: z.enum(["AVAILABLE", "WAITING_ORDER", "DINING", "MAINTENANCE"]),
   storeId: z.string().nonempty("Store is required"),
 });
+
+export const MenuSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Menu name must be more than 2 characters")
+    .max(20, "Menu name must be less than 20 characters"),
+  image: z.union([
+    z
+      .instanceof(File)
+      .refine((file) => file.size === 0 || file.type.startsWith("image/"), {
+        message: "Only image files are allowed",
+      })
+      .refine((file) => file.size <= 5 * 1024 * 1024, {
+        message: "Image must be less than 5MB",
+      })
+      .optional(),
+    z.string().url().optional(),
+  ]),
+  price: z
+    .string()
+    .min(2, "Price must be more than 2 characters")
+    .max(20, "Price must be less than 20 characters"),
+  status: z.enum(["AVAILABLE", "UNAVAILABLE"]),
+  storeId: z.string().nonempty("Store is required"),
+  categoryId: z.string().nonempty("Category is required"),
+});
+
+export const MenuCategorySchema = z.object({
+  name: z
+    .string()
+    .min(2, "Menu name must be more than 2 characters")
+    .max(20, "Menu name must be less than 20 characters"),
+  storeId: z.string().nonempty("Store is required"),
+});

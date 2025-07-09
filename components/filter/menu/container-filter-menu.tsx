@@ -1,3 +1,4 @@
+import DialogCreateMenu from "@/components/dialog/create/dialog-create-menu";
 import { FilterSearchMenu } from "../filter-search";
 import PopoverFilter from "../popover-filter";
 import { FilterStoreCombobox } from "../store/filter-store";
@@ -31,7 +32,7 @@ const ContainerFilterMenu = () => {
             <FilterMenuButton />
           </PopoverFilter>
         </div>
-        {/* Dialog Create Menu */}
+        <DialogCreateMenu />
       </div>
     </div>
   );

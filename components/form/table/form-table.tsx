@@ -219,10 +219,12 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="ml-auto flex" disabled={isPending}>
-            {getButtonText(type, "Meja", isPending)}
-            {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-          </Button>
+          {type !== "DETAIL" && (
+            <Button type="submit" className="ml-auto flex" disabled={isPending}>
+              {getButtonText(type, "Meja", isPending)}
+              {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+            </Button>
+          )}
         </form>
       </Form>
     </>

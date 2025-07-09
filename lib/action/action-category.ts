@@ -1,21 +1,19 @@
 "use server";
 
 import { auth } from "@/auth";
-import { Prisma, TABLE_STATUS } from "@prisma/client";
+import { ITEM_PER_PAGE } from "../data";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
 import { revalidatePath } from "next/cache";
-import { ITEM_PER_PAGE } from "../data";
 
-interface ITable {
+interface ICategory {
   name: string;
   storeId: string;
-  status: TABLE_STATUS;
 }
 
-export const getAllTable = async (
+export const getAllCategory = async (
   currentPage: number,
   search: string,
-  status: "ALL" | TABLE_STATUS,
   store: string,
 ) => {
   const session = await auth();
@@ -24,17 +22,16 @@ export const getAllTable = async (
   try {
     const pageSize = ITEM_PER_PAGE;
 
-    const where: Prisma.TableWhereInput = {
+    const where: Prisma.CategoryWhereInput = {
       name: {
         contains: search,
         mode: "insensitive",
       },
-      ...(status !== "ALL" && { status }),
       ...(store && { storeId: store }),
     };
 
-    const [tables, count] = await prisma.$transaction([
-      prisma.table.findMany({
+    const [categories, count] = await prisma.$transaction([
+      prisma.category.findMany({
         orderBy: { created_at: "desc" },
         take: pageSize,
         skip: pageSize * (currentPage - 1),
@@ -42,21 +39,22 @@ export const getAllTable = async (
         select: {
           id: true,
           name: true,
-          status: true,
           store: {
             select: {
               id: true,
               name: true,
             },
           },
+          created_at: true,
+          updated_at: true,
         },
       }),
-      prisma.table.count({ where }),
+      prisma.category.count({ where }),
     ]);
 
-    const data = tables.map((table, index) => ({
+    const data = categories.map((category, index) => ({
       no: (currentPage - 1) * pageSize + (index + 1),
-      ...table,
+      ...category,
     }));
 
     return { data, count };
@@ -66,124 +64,122 @@ export const getAllTable = async (
   }
 };
 
-export const getTableById = async (id: string) => {
+export const getCategoryById = async (id: string) => {
+  console.log({ id });
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
-    const table = prisma.table.findFirst({
+    const category = prisma.category.findFirst({
       where: { id },
     });
 
-    if (!table) return { error: true, message: "Meja tidak ditemukan" };
+    if (!category) return { error: true, message: "Kategori tidak ditemukan" };
 
-    return table;
+    return category;
   } catch (error) {
     console.log(error);
     return { error: true, message: error };
   }
 };
 
-export const createTable = async (data: ITable) => {
+export const createCategory = async (data: ICategory) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
-    const { name, storeId, status } = data;
-    const table = await prisma.table.create({
+    const { name, storeId } = data;
+    const category = await prisma.category.create({
       data: {
         name,
         storeId,
-        status,
         createdById: session?.user.id,
       },
     });
+    if (!category) return { error: true, message: "Kategori gagal dibuat" };
 
-    if (!table) return { error: true, message: "Meja gagal dibuat" };
     await prisma.history.create({
       data: {
-        record_id: table.id,
-        actions: `Meja ${table.name} telah dibuat`,
-        table_name: "Meja",
-        storeId: table.storeId,
+        record_id: category.id,
+        actions: `Kategori ${category.name} telah dibuat`,
+        table_name: "Category",
+        storeId: category.storeId,
         createdById: session?.user.id,
       },
     });
 
-    revalidatePath(`/super/table`);
-    return { success: true, message: "Meja berhasil dibuat" };
+    revalidatePath(`/super/menu/kategori`);
+    return { success: true, message: "Kategori berhasil dibuat" };
   } catch (error) {
     console.log(error);
     return { error: true, message: error };
   }
 };
 
-export const updateTable = async (id: string, data: ITable) => {
+export const updateCategory = async (id: string, data: ICategory) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
-    const { name, storeId, status } = data;
+    const { name, storeId } = data;
 
-    const oldData = await prisma.table.findUnique({ where: { id } });
-
-    if (!oldData) return { error: true, message: "Meja tidak ditemukan" };
+    const oldData = await prisma.category.findUnique({ where: { id } });
+    if (!oldData) return { error: true, message: "Kategori tidak ditemukan" };
 
     await prisma.$transaction([
-      prisma.table.update({
+      prisma.category.update({
         where: { id },
         data: {
           name,
           storeId,
-          status,
           updatedById: session?.user.id,
         },
       }),
       prisma.history.create({
         data: {
           record_id: id,
-          actions: `Meja ${oldData?.name} telah diubah`,
-          table_name: "Table",
+          actions: `Kategori ${oldData?.name} telah diubah`,
+          table_name: "Category",
           storeId,
           createdById: session?.user.id,
         },
       }),
     ]);
 
-    revalidatePath(`/super/table`);
-    return { success: true, message: "Meja berhasil diubah" };
+    revalidatePath(`/super/menu/kategori`);
+    return { success: true, message: "Kategori berhasil diubah" };
   } catch (error) {
     console.log(error);
     return { error: true, message: error };
   }
 };
 
-export const deleteTable = async (id: string) => {
+export const deleteCategory = async (id: string) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
-    const oldData = await prisma.table.findUnique({ where: { id } });
+    const oldData = await prisma.category.findUnique({ where: { id } });
 
-    if (!oldData) return { error: true, message: "Meja tidak ditemukan" };
+    if (!oldData) return { error: true, message: "Kategori tidak ditemukan" };
 
     await prisma.$transaction([
-      prisma.table.delete({
+      prisma.category.delete({
         where: { id },
       }),
       prisma.history.create({
         data: {
           record_id: id,
-          actions: `Meja ${oldData?.name} telah dihapus`,
-          table_name: "Table",
+          actions: `Kategori ${oldData?.name} telah dihapus`,
+          table_name: "Category",
           storeId: oldData?.storeId,
           createdById: session?.user.id,
         },
       }),
     ]);
 
-    revalidatePath(`/super/table`);
-    return { success: true, message: "Meja berhasil dihapus" };
+    revalidatePath(`/super/menu/kategori`);
+    return { success: true, message: "Kategori berhasil dihapus" };
   } catch (error) {
     console.log(error);
     return { error: true, message: error };

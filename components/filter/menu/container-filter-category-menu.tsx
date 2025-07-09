@@ -3,6 +3,7 @@ import { FilterSearchCategoryMenu } from "../filter-search";
 import { FilterStoreCombobox } from "../store/filter-store";
 import PopoverFilter from "../popover-filter";
 import { FilterCategoryMenuButton } from "./filter-menu-button";
+import DialogCreateMenuCategory from "@/components/dialog/create/dialog-create-menu-category";
 
 const ContainerFilterCategoryMenu = () => {
   return (
@@ -29,6 +30,7 @@ const ContainerFilterCategoryMenu = () => {
           </PopoverFilter>
         </div>
         {/* Dialog Create Menu */}
+        <DialogCreateMenuCategory />
       </div>
     </div>
   );
