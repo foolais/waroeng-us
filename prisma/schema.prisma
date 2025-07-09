@@ -49,10 +49,20 @@ model User {
   accounts Account[]
   sessions Session[]
 
-  storeId      String?
-  store        Store?  @relation("Store-Users", fields: [storeId], references: [id], onDelete: Cascade)
-  storeCreated Store[] @relation("Store-Created")
-  storeUpdated Store[] @relation("Store-Updated")
+  storeId String?
+  store   Store?  @relation("Store-Users", fields: [storeId], references: [id], onDelete: Cascade)
+
+  storeCreated      Store[]    @relation("Store-Created")
+  storeUpdated      Store[]    @relation("Store-Updated")
+  tablesCreated     Table[]    @relation("Table-Created")
+  tablesUpdated     Table[]    @relation("Table-Updated")
+  menusCreated      Menu[]     @relation("Menu-Created")
+  menusUpdated      Menu[]     @relation("Menu-Updated")
+  categoriesCreated Category[] @relation("Category-Created")
+  categoriesUpdated Category[] @relation("Category-Updated")
+  ordersCreated     Order[]    @relation("Order-Created")
+  ordersUpdated     Order[]    @relation("Order-Updated")
+  historiesCreated  History[]  @relation("History-Created")
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -65,7 +75,13 @@ model Store {
   id     String       @id @default(cuid())
   name   String       @unique
   status STORE_STATUS @default(ACTIVE)
-  users  User[]       @relation("Store-Users")
+
+  users      User[]     @relation("Store-Users")
+  tables     Table[]    @relation("Store-Tables")
+  menus      Menu[]     @relation("Store-Menus")
+  categories Category[] @relation("Store-Categories")
+  orders     Order[]    @relation("Store-Orders")
+  history    History[]  @relation("Store-Histories")
 
   createdById String
   createdBy   User    @relation("Store-Created", fields: [createdById], references: [id])
@@ -76,6 +92,147 @@ model Store {
   updated_at DateTime @updatedAt
 
   @@map("stores")
+}
+
+model Table {
+  id     String       @id @default(cuid())
+  name   String
+  status TABLE_STATUS @default(AVAILABLE)
+
+  storeId String
+  store   Store  @relation("Store-Tables", fields: [storeId], references: [id], onDelete: Cascade)
+
+  orders Order[]
+
+  createdById String
+  createdBy   User    @relation("Table-Created", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?   @relation("Table-Updated", fields: [updatedById], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("talbes")
+}
+
+model Menu {
+  id     String      @id @default(cuid())
+  name   String
+  image  String?
+  price  Int
+  status MENU_STATUS @default(AVAILABLE)
+
+  storeId    String
+  store      Store    @relation("Store-Menus", fields: [storeId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  orderItems OrderItem[]
+
+  createdById String
+  createdBy   User    @relation("Menu-Created", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?   @relation("Menu-Updated", fields: [updatedById], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("menus")
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+
+  storeId String
+  store   Store  @relation("Store-Categories", fields: [storeId], references: [id], onDelete: Cascade)
+
+  menus Menu[]
+
+  createdById String
+  createdBy   User    @relation("Category-Created", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?   @relation("Category-Updated", fields: [updatedById], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Order {
+  id     String       @id @default(cuid())
+  status ORDER_STATUS @default(PENDING)
+  total  Int
+
+  tableId String?
+  table   Table?  @relation(fields: [tableId], references: [id])
+
+  storeId String
+  store   Store  @relation("Store-Orders", fields: [storeId], references: [id], onDelete: Cascade)
+
+  orderItems  OrderItem[]
+  transaction Transaction?
+
+  createdById String
+  createdBy   User    @relation("Order-Created", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?   @relation("Order-Updated", fields: [updatedById], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  quantity Int
+  price    Int
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  menuId String
+  menu   Menu   @relation(fields: [menuId], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("order_items")
+}
+
+model Transaction {
+  id     String         @id @default(cuid())
+  amount Int
+  method PAYMENT_METHOD
+  paidAt DateTime       @default(now())
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("transactions")
+}
+
+model History {
+  id         String @id @default(cuid())
+  actions    String
+  table_name String // orders atau menus
+  record_id  String
+
+  storeId String
+  store   Store  @relation("Store-Histories", fields: [storeId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("History-Created", fields: [createdById], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("histories")
 }
 
 enum Gender {
@@ -92,4 +249,27 @@ enum Role {
 enum STORE_STATUS {
   ACTIVE
   INACTIVE
+}
+
+enum TABLE_STATUS {
+  AVAILABLE
+  WAITING_ORDER
+  DINING
+  MAINTENANCE
+}
+
+enum MENU_STATUS {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum ORDER_STATUS {
+  PENDING
+  PAID
+  CANCELED
+}
+
+enum PAYMENT_METHOD {
+  CASH
+  QR
 }
