@@ -19,7 +19,11 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { getAllStore } from "@/lib/action/action-store";
-import { createTable } from "@/lib/action/action-table";
+import {
+  createTable,
+  getTableById,
+  updateTable,
+} from "@/lib/action/action-table";
 import { tableStatusOptions } from "@/lib/data";
 import { getButtonText } from "@/lib/utils";
 import { TableSchema } from "@/lib/zod/zod";
@@ -111,7 +115,8 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
           const res = await createTable(payload);
           if (res.success) toast.success(res.message, { duration: 1500 });
         } else if (type === "UPDATE" && tableId) {
-          console.log({ payload, tableId });
+          const res = await updateTable(tableId, payload);
+          if (res.success) toast.success(res.message, { duration: 1500 });
         }
         onClose();
         form.reset();
@@ -122,14 +127,22 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
   };
 
   useEffect(() => {
+    if (!tableId || type === "CREATE") return;
     startFetching(async () => {
       try {
-        console.log("Fetching..");
+        const data = await getTableById(tableId);
+        if (data && !("error" in data)) {
+          form.reset({
+            name: data.name,
+            status: data.status,
+            storeId: data.storeId,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     });
-  }, []);
+  }, [form, tableId, type]);
 
   const formDisabled = isFetching || isPending || type === "DETAIL";
 

@@ -21,8 +21,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteTable } from "@/lib/action/action-table";
 import { InfoIcon, MoreHorizontal, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
 interface iProps {
   id: string;
@@ -39,7 +41,9 @@ const TableActionTable = ({ id, name }: iProps) => {
   const handleDelete = () => {
     try {
       startTransition(async () => {
-        console.log(id);
+        const res = await deleteTable(id);
+        if ("success" in res && res.success)
+          toast.success(res.message, { duration: 1500 });
       });
     } catch (error) {
       console.log(error);
@@ -112,9 +116,17 @@ const TableActionTable = ({ id, name }: iProps) => {
         title={openStatus.type === "detail" ? "Detail Meja" : "Perbarui Meja"}
       >
         {openStatus.type === "detail" ? (
-          <FormTable type="DETAIL" tableId={id} onClose={() => {}} />
+          <FormTable
+            type="DETAIL"
+            tableId={id}
+            onClose={() => setOpenStatus({ value: false, type: "" })}
+          />
         ) : openStatus.type === "update" ? (
-          <FormTable type="UPDATE" tableId={id} onClose={() => {}} />
+          <FormTable
+            type="UPDATE"
+            tableId={id}
+            onClose={() => setOpenStatus({ value: false, type: "" })}
+          />
         ) : null}
       </DialogForm>
     </>
