@@ -40,3 +40,13 @@ export const useSuperCategoryMenuFilter = create<SuperCategoryMenuStore>(
       set((state) => ({ filter: { ...state.filter, ...filter } })),
   }),
 );
+
+interface menuImageStore {
+  url: string;
+  setUrl: (url: string) => void;
+}
+
+export const useMenuImage = create<menuImageStore>((set) => ({
+  url: "",
+  setUrl: (url) => set(() => ({ url })),
+}));

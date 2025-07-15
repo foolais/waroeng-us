@@ -47,18 +47,18 @@ const ImageUploader = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to upload image");
+        throw new Error(errorData.error || "Gagal mengunggah gambar");
       }
 
       const data: PutBlobResult = await response.json();
       setImage(data.url);
       onImageUpload(data.url);
-      toast.success("Image uploaded successfully", { duration: 1500 });
+      toast.success("Gambar berhasil diunggah", { duration: 1500 });
     } catch (error) {
       setIsUploading(false);
       console.log({ error });
       toast.error(
-        `Failed to upload image: ${error instanceof Error ? error.message : String(error)}`,
+        `Gagal mengunggah gambar");: ${error instanceof Error ? error.message : String(error)}`,
       );
     } finally {
       setIsUploading(false);
@@ -76,17 +76,17 @@ const ImageUploader = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete image");
+        throw new Error(errorData.error || "Gagal menghapus gambar");
       }
 
       setImage("");
       onImageRemove();
-      toast.success("Image deleted successfully", { duration: 1500 });
+      toast.success("Gambar berhasil dihapus", { duration: 1500 });
     } catch (error) {
       setIsUploading(false);
       console.error(error);
       toast.error(
-        `Failed to delete image: ${error instanceof Error ? error.message : String(error)}`,
+        `Gagal menghapus gambar");: ${error instanceof Error ? error.message : String(error)}`,
       );
     } finally {
       setIsUploading(false);
@@ -118,7 +118,7 @@ const ImageUploader = ({
         {showUploadButton && (
           <>
             <ImageUp size={100} strokeWidth={0.5} />
-            <p className="mb-1 text-sm font-semibold">Upload Image</p>
+            <p className="mb-1 text-sm font-semibold">Upload Gambar</p>
             <input
               id="image"
               type="file"

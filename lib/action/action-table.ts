@@ -71,7 +71,7 @@ export const getTableById = async (id: string) => {
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
-    const table = prisma.table.findFirst({
+    const table = await prisma.table.findFirst({
       where: { id },
     });
 

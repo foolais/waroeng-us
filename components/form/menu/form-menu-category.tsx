@@ -108,7 +108,6 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
         if (type === "CREATE") {
           const res = await createCategory(payload);
           if (res.success) toast.success(res.message, { duration: 1500 });
-          console.log("create");
         } else if (type === "UPDATE" && categoryId) {
           const res = await updateCategory(categoryId, payload);
           if (res.success) toast.success(res.message, { duration: 1500 });

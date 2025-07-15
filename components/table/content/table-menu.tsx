@@ -8,8 +8,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { MENU_STATUS } from "@prisma/client";
 
-const TableMenu = () => {
+interface TableMenuProps {
+  data: {
+    no: number;
+    id: string;
+    name: string;
+    image: string | null;
+    price: number;
+    status: MENU_STATUS;
+    store: {
+      id: string;
+      name: string;
+    };
+    category: {
+      id: string;
+      name: string;
+    };
+  }[];
+}
+
+const TableMenu = ({ data }: TableMenuProps) => {
   return (
     <div className="rounded-md border">
       <Table>
@@ -23,28 +43,35 @@ const TableMenu = () => {
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>01</TableCell>
-            <TableCell>
-              <Avatar>
-                <AvatarImage
-                  src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80"
-                  alt="Soto Ayam"
-                  className="object-cover"
-                />
-                <AvatarFallback>SA</AvatarFallback>
-              </Avatar>
-            </TableCell>
-            <TableCell>Soto Ayam</TableCell>
-            <TableCell>Rp 15.000</TableCell>
-            <TableCell>Waroeng Us</TableCell>
-            <TableCell className="mr-4 flex items-center justify-end">
-              {/* Actions */}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <TableCaption className="pb-4">Tidak ada data</TableCaption>
+        {data.length ? (
+          data.map((menu) => (
+            <TableBody key={menu.id}>
+              <TableRow>
+                <TableCell>{menu.no}</TableCell>
+                <TableCell>
+                  <Avatar>
+                    <AvatarImage
+                      src={menu.image ?? ""}
+                      alt={menu.name}
+                      className="object-cover"
+                    />
+                    <AvatarFallback>
+                      {menu.name[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </TableCell>
+                <TableCell>{menu.name}</TableCell>
+                <TableCell>{menu.price}</TableCell>
+                <TableCell>{menu.store.name}</TableCell>
+                <TableCell className="mr-4 flex items-center justify-end">
+                  {/* Actions */}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ))
+        ) : (
+          <TableCaption className="pb-4">Tidak ada data</TableCaption>
+        )}
       </Table>
     </div>
   );

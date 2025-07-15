@@ -196,6 +196,6 @@ export const tableStatusOptions = [
 ];
 
 export const menuStatusOption = [
-  { value: "ACTIVE", label: "Aktif" },
-  { value: "INACTIVE", label: "Tidak Aktif" },
+  { value: "AVAILABLE", label: "Aktif" },
+  { value: "UNAVAILABLE", label: "Tidak Aktif" },
 ];

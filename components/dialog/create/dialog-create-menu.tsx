@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import DialogForm from "../dialog-form";
+import FormMenu from "@/components/form/menu/form-menu";
 
 const DialogCreateMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,7 @@ const DialogCreateMenu = () => {
         title="Buat Menu Baru"
         contentClassName="max-h-[650px] overflow-y-auto"
       >
-        tes
+        <FormMenu type="CREATE" onClose={() => setIsOpen(false)} />
       </DialogForm>
     </>
   );
