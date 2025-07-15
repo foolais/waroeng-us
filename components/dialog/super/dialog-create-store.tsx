@@ -16,7 +16,7 @@ const DialogCreateStore = ({ className }: { className?: string }) => {
         className={cn("flex items-center gap-1", className)}
         onClick={() => setIsOpen(true)}
       >
-        <span className="">Create</span>
+        <span className="">Buat</span>
         <PlusIcon />
       </Button>
       <DialogForm

@@ -29,8 +29,9 @@ const TablePagination = ({
 
   return (
     <div className="mt-4 flex items-center">
-      <div className="flex w-[100px] text-sm font-medium">
-        Page {currentPage} of {totalPage}
+      <div className="flex w-[150px] text-sm">
+        Halaman <span className="mx-1 font-medium">{currentPage}</span> dari{" "}
+        <span className="mx-1 font-medium">{totalPage}</span>
       </div>
       <Pagination className="justify-end">
         <PaginationContent className="gap-2">

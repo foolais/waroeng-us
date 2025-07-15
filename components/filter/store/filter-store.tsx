@@ -24,9 +24,9 @@ import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { debounce } from "lodash";
 
 const statusOptions = [
-  { value: "ALL", label: "All" },
-  { value: "ACTIVE", label: "Active" },
-  { value: "INACTIVE", label: "Inactive" },
+  { value: "ALL", label: "Semua" },
+  { value: "ACTIVE", label: "Aktif" },
+  { value: "INACTIVE", label: "Tidak Aktif" },
 ] as const;
 
 export const FilterStoreStatusCombobox = () => {
@@ -41,7 +41,7 @@ export const FilterStoreStatusCombobox = () => {
           role="combobox"
           aria-label="Select status"
           aria-expanded={open}
-          className="w-full justify-between md:w-[100px]"
+          className="w-full justify-between md:w-[150px]"
         >
           {filter.status
             ? statusOptions.find((data) => data.value === filter.status)?.label
@@ -53,7 +53,7 @@ export const FilterStoreStatusCombobox = () => {
         <Command>
           <CommandInput placeholder="Cari Status..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No status found.</CommandEmpty>
+            <CommandEmpty>Status tidak ditemukan.</CommandEmpty>
             {statusOptions.map((option) => (
               <CommandItem
                 key={option.value}

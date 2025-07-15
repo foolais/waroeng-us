@@ -32,7 +32,7 @@ const TableStore = ({ data }: StoreTableProps) => {
         <TableHeader className="bg-muted font-medium">
           <TableRow>
             <TableHead className="w-[5%]">No</TableHead>
-            <TableHead className="min-w-1/4">Name</TableHead>
+            <TableHead className="min-w-1/4">Nama</TableHead>
             <TableHead className="w-[10%] min-w-[150px]">Status</TableHead>
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>

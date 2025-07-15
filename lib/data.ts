@@ -15,8 +15,8 @@ export const superSidenavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Store",
-    url: "/super/store",
+    title: "Toko",
+    url: "/super/toko",
     icon: Store,
   },
   {
@@ -59,11 +59,11 @@ export const adminSidenavItems = [
 export const storeStatusOptions = [
   {
     value: "ACTIVE",
-    label: "Active",
+    label: "Aktif",
   },
   {
     value: "INACTIVE",
-    label: "Inactive",
+    label: "Tidak Aktif",
   },
 ];
 
@@ -81,21 +81,21 @@ export const genderOptions = [
 export const storeStatusBadgeOptions = [
   {
     value: "ALL",
-    label: "All",
+    label: "Semua",
     color: "#6B7280",
     bgColor: "bg-gray-100 dark:bg-gray-800",
     textColor: "text-gray-800 dark:text-gray-200",
   },
   {
     value: "ACTIVE",
-    label: "Active",
+    label: "Aktif",
     color: "#10B981",
     bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
     textColor: "text-emerald-700 dark:text-emerald-300",
   },
   {
     value: "INACTIVE",
-    label: "Inactive",
+    label: "Tidak Aktif",
     color: "#EF4444",
     bgColor: "bg-red-50 dark:bg-red-900/20",
     textColor: "text-red-700 dark:text-red-300",

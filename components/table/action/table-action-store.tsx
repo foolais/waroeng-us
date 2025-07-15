@@ -59,20 +59,20 @@ const TableActionStore = ({ id, name }: iProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions for {name}</DropdownMenuLabel>
+          <DropdownMenuLabel>Aksi untuk {name}</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => setOpenStatus({ value: true, type: "detail" })}
             className="cursor-pointer"
           >
             <InfoIcon />
-            Details
+            Detail
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setOpenStatus({ value: true, type: "update" })}
             className="cursor-pointer"
           >
             <PencilIcon />
-            Update
+            Perbarui
           </DropdownMenuItem>
 
           <AlertDialog>
@@ -82,28 +82,27 @@ const TableActionStore = ({ id, name }: iProps) => {
                 onSelect={(e) => e.preventDefault()}
               >
                 <Trash2Icon color="red" />
-                Delete
+                Hapus
               </DropdownMenuItem>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-red-500">
-                  {`Are you sure to delete ${name}?`}
+                  {`Apakah kamu yakin ingin menghapus ${name}?`}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  store
+                  Tindakan ini tidak dapat dibatalkan
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel disabled={isPending}>
-                  Cancel
+                  Batal
                 </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive hover:bg-destructive/70"
                   onClick={handleDelete}
                 >
-                  {isPending ? "Deleting..." : "Delete"}
+                  {isPending ? "Menghapus..." : "Hapus"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -113,7 +112,7 @@ const TableActionStore = ({ id, name }: iProps) => {
       <DialogForm
         isOpen={openStatus.value}
         onClose={() => setOpenStatus({ value: false, type: "" })}
-        title={openStatus.type === "detail" ? `Detail Store` : `Update Store`}
+        title={openStatus.type === "detail" ? `Detail Toko` : `Update Toko`}
       >
         {openStatus.type === "detail" ? (
           <FormStore

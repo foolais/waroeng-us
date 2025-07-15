@@ -101,7 +101,7 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Store Name</FormLabel>
+                  <FormLabel>Nama</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter Store Name"
@@ -150,7 +150,7 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
                 className="ml-auto flex"
                 disabled={isPending}
               >
-                {getButtonText(type, "Store", isPending)}
+                {getButtonText(type, "Toko", isPending)}
                 {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
               </Button>
             )}

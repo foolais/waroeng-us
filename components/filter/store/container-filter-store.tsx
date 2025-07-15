@@ -10,7 +10,7 @@ const ContainerFilterStore = () => {
       {/* Desktop */}
       <div className="container-filter-desktop">
         <FilterSearchStore
-          placeholder="Search Store Here"
+          placeholder="Cari Toko disini..."
           className="w-[40vw]"
         />
         <FilterStoreStatusCombobox />
@@ -23,7 +23,7 @@ const ContainerFilterStore = () => {
           <PopoverFilter>
             <h4>Filter Toko</h4>
             <FilterSearchStore
-              placeholder="Search Store Here"
+              placeholder="Cari Toko disini..."
               className="w-full"
             />
             <FilterStoreStatusCombobox />
