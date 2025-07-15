@@ -22,11 +22,19 @@ interface IUser {
 
 export const createUser = async (data: IUser) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi gagal" };
 
-  if (!data.password) return { error: true, message: "Password is required" };
+  if (!data.password)
+    return { error: true, message: "Password tidak boleh kosong" };
   if (data.password !== data.confirmPassword)
-    return { error: true, message: "Passwords do not match" };
+    return { error: true, message: "Passwords tidak sama" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
 
   const {
     name,
@@ -61,7 +69,7 @@ export const createUser = async (data: IUser) => {
     });
 
     revalidatePath(`/super/user`);
-    return { success: true, message: "User created successfully" };
+    return { success: true, message: "Pengguna berhasil dibuat" };
   } catch (error) {
     console.error(error);
     return { error: { error: [error] } };
@@ -75,7 +83,11 @@ export const getAllUser = async (
   store: string,
 ) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  const storeId = isAdmin ? session.user.storeId : store;
 
   const pageSize = ITEM_PER_PAGE;
 
@@ -85,7 +97,7 @@ export const getAllUser = async (
       mode: "insensitive",
     },
     ...(role !== "ALL" && role && { role: role as "ADMIN" | "CASHIER" }),
-    ...(store && { storeId: store }),
+    ...(store && { storeId }),
   };
 
   try {
@@ -128,14 +140,14 @@ export const getAllUser = async (
 
 export const getUserById = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
     const user = prisma.user.findFirst({
       where: { id },
     });
 
-    if (!user) return { error: true, message: "User not found" };
+    if (!user) return { error: true, message: "Pengguna tidak ditemukan" };
 
     return user;
   } catch (error) {
@@ -145,7 +157,15 @@ export const getUserById = async (id: string) => {
 
 export const updateUser = async (id: string, data: IUser) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
+
   try {
     const { name, email, gender, address, phone, role, storeId, image } = data;
 
@@ -167,7 +187,7 @@ export const updateUser = async (id: string, data: IUser) => {
       },
     });
     revalidatePath(`/super/user`);
-    return { success: true, message: "User updated successfully" };
+    return { success: true, message: "Pengguna berhasil diubah" };
   } catch (error) {
     console.error(error);
     return { error: true, message: error };
@@ -176,14 +196,14 @@ export const updateUser = async (id: string, data: IUser) => {
 
 export const deleteUser = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi gagal" };
 
   try {
     await prisma.user.delete({
       where: { id },
     });
     revalidatePath(`/super/user`);
-    return { success: true, message: "User deleted successfully" };
+    return { success: true, message: "Pengguna berhasil dihapus" };
   } catch (error) {
     console.log(error);
     return { error: true, message: error };

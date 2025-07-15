@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { FilterSearchUser } from "../filter-search";
 import PopoverFilter from "../popover-filter";
 import { FilterStoreCombobox } from "../store/filter-store";
@@ -5,7 +6,12 @@ import { FilterUserStatus } from "./filter-user";
 import FilterUserButton from "./filter-user-button";
 import DialogCreateUser from "@/components/dialog/create/dialog-create-user";
 
-const ContainerFilterUser = () => {
+const ContainerFilterUser = async () => {
+  const session = await auth();
+  if (!session) return null;
+
+  const role = session.user.role;
+
   return (
     <div className="container-filter">
       {/* Desktop */}
@@ -14,7 +20,7 @@ const ContainerFilterUser = () => {
           placeholder="Cari pengguna disini..."
           className="w-[20vw]"
         />
-        <FilterStoreCombobox />
+        {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
         <FilterUserStatus />
         <FilterUserButton />
       </div>
@@ -27,7 +33,7 @@ const ContainerFilterUser = () => {
               placeholder="Cari pengguna disini..."
               className="w-full"
             />
-            <FilterStoreCombobox />
+            {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
             <FilterUserStatus />
             <FilterUserButton />
           </PopoverFilter>

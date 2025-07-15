@@ -30,7 +30,7 @@ import {
   useTransition,
 } from "react";
 import { debounce } from "lodash";
-import { getAllStore } from "@/lib/action/action-store";
+import { getAllStore, getStoreById } from "@/lib/action/action-store";
 import { toast } from "sonner";
 import Combobox from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { createUser, getUserById, updateUser } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
+import { useSession } from "next-auth/react";
 
 interface FormUserProps {
   userId?: string;
@@ -68,6 +69,9 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
   >([]);
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
+
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   const { setUrl } = useUserImage();
 
@@ -111,7 +115,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
   useEffect(() => {
     debouncedFetchStores("");
     return () => debouncedFetchStores.cancel();
-  }, [debouncedFetchStores]);
+  }, [debouncedFetchStores, isAdmin]);
 
   // GET detail user
   useEffect(() => {
@@ -136,6 +140,21 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
       }
     });
   }, [userId, type, form]);
+
+  useEffect(() => {
+    if (!session || !isAdmin) return;
+    startFetching(async () => {
+      try {
+        const stores = await getStoreById(session.user.storeId as string);
+        if (stores && !("error" in stores)) {
+          setStoresData([{ value: stores.id, label: stores.name }]);
+          form.setValue("storeId", stores.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [form, session, isAdmin]);
 
   const handleSubmit = (values: z.infer<typeof UserSchema>) => {
     startTransition(async () => {
@@ -418,7 +437,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                         onSearch={handleSearch}
                         isLoading={isSearching}
                         placeholder="Pilih Toko"
-                        disabled={formDisabled}
+                        disabled={formDisabled || isAdmin}
                       />
                     </FormControl>
                     <FormMessage />
