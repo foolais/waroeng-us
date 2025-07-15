@@ -39,7 +39,7 @@ import Combobox from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { createMenu } from "@/lib/action/action-menu";
+import { createMenu, getMenuById, updateMenu } from "@/lib/action/action-menu";
 
 interface iProps {
   menuId?: string;
@@ -161,11 +161,22 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
     if (!menuId || type === "CREATE") return;
     startFetching(async () => {
       try {
+        const data = await getMenuById(menuId);
+        if (data && !("error" in data)) {
+          form.reset({
+            name: data.name,
+            image: data.image as string,
+            price: data.price.toString(),
+            status: data.status,
+            storeId: data.storeId,
+            categoryId: data.categoryId,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     });
-  }, [menuId, type]);
+  }, [form, menuId, type]);
 
   const handleSubmit = (values: z.infer<typeof MenuSchema>) => {
     startTransition(async () => {
@@ -178,6 +189,9 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
         };
         if (type === "CREATE") {
           const res = await createMenu(payload);
+          if (res.success) toast.success(res.message, { duration: 1500 });
+        } else if (type === "UPDATE" && menuId) {
+          const res = await updateMenu(menuId, payload);
           if (res.success) toast.success(res.message, { duration: 1500 });
         }
         onClose();

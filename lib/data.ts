@@ -199,3 +199,20 @@ export const menuStatusOption = [
   { value: "AVAILABLE", label: "Aktif" },
   { value: "UNAVAILABLE", label: "Tidak Aktif" },
 ];
+
+export const menuStatusBadgeOptions = [
+  {
+    value: "AVAILABLE",
+    label: "Aktif",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    value: "UNAVAILABLE",
+    label: "Tidak Aktif",
+    color: "#EF4444",
+    bgColor: "bg-red-50 dark:bg-red-900/20",
+    textColor: "text-red-700 dark:text-red-300",
+  },
+];

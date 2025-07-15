@@ -20,7 +20,7 @@ const DialogCreateMenu = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         title="Buat Menu Baru"
-        contentClassName="max-h-[650px] overflow-y-auto"
+        contentClassName="max-h-[650px] md:min-w-[500px] overflow-y-auto"
       >
         <FormMenu type="CREATE" onClose={() => setIsOpen(false)} />
       </DialogForm>

@@ -5,6 +5,7 @@ import { prisma } from "../prisma";
 import { revalidatePath } from "next/cache";
 import { MENU_STATUS, Prisma } from "@prisma/client";
 import { ITEM_PER_PAGE } from "../data";
+import { del } from "@vercel/blob";
 
 interface IMenu {
   image?: string;
@@ -126,6 +127,83 @@ export const createMenu = async (data: IMenu) => {
 
     revalidatePath(`/super/menu`);
     return { success: true, message: "Menu berhasil dibuat" };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};
+
+export const updateMenu = async (id: string, data: IMenu) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  try {
+    const payload = {
+      image: data.image,
+      name: data.name,
+      price: +data.price,
+      status: data.status,
+      storeId: data.storeId,
+      categoryId: data.categoryId,
+      updatedById: session?.user.id,
+    };
+
+    const oldData = await prisma.menu.findUnique({ where: { id } });
+    if (!oldData) return { error: true, message: "Menu tidak ditemukan" };
+
+    await prisma.$transaction([
+      prisma.menu.update({
+        where: { id },
+        data: payload,
+      }),
+      prisma.history.create({
+        data: {
+          record_id: id,
+          actions: `Menu ${oldData?.name} telah diubah`,
+          table_name: "Menu",
+          storeId: oldData?.storeId,
+          createdById: session?.user.id,
+        },
+      }),
+    ]);
+
+    revalidatePath(`/super/menu`);
+    return { success: true, message: "Menu berhasil diubah" };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};
+
+export const deleteMenu = async (id: string) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  try {
+    const oldData = await prisma.menu.findUnique({ where: { id } });
+    if (!oldData) return { error: true, message: "Menu tidak ditemukan" };
+
+    await prisma.$transaction([
+      prisma.menu.delete({
+        where: { id },
+      }),
+      prisma.history.create({
+        data: {
+          record_id: id,
+          actions: `Menu ${oldData?.name} telah dihapus`,
+          table_name: "Menu",
+          storeId: oldData?.storeId,
+          createdById: session?.user.id,
+        },
+      }),
+    ]);
+
+    if (oldData.image) {
+      await del(oldData.image);
+    }
+
+    revalidatePath(`/super/menu`);
+    return { success: true, message: "Menu berhasil dihapus" };
   } catch (error) {
     console.log(error);
     return { error: true, message: error };
