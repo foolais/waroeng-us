@@ -65,7 +65,7 @@ const Combobox = ({
         <Command shouldFilter={!onSearch} className="w-full">
           {onSearch && (
             <CommandInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={searchQuery}
               onValueChange={(query) => {
                 setSearchQuery(query);

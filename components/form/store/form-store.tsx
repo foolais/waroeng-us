@@ -130,7 +130,7 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
                         className="w-full cursor-pointer"
                         disabled={isPending || type === "DETAIL"}
                       >
-                        <SelectValue placeholder="Select Store Status" />
+                        <SelectValue placeholder="Pilih Status" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

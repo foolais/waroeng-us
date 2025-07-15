@@ -181,7 +181,7 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
                     onChange={field.onChange}
                     onSearch={handleSearch}
                     isLoading={isSearching}
-                    placeholder="Select Store"
+                    placeholder="Pilih Toko"
                     disabled={formDisabled}
                   />
                 </FormControl>
