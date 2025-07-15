@@ -50,9 +50,26 @@ export const adminSidenavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "User",
-    url: "/admin/users",
+    title: "Pengguna",
+    url: "/admin/pengguna",
     icon: Users,
+  },
+  {
+    title: "Meja",
+    url: "/admin/meja",
+    icon: Armchair,
+  },
+  {
+    title: "Menu",
+    icon: Utensils,
+    url: "/admin/menu",
+    sub: [
+      {
+        title: "Daftar",
+        url: "/admin/menu",
+      },
+      { title: "Kategori", url: "/admin/menu/kategori" },
+    ],
   },
 ];
 

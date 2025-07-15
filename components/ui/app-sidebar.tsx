@@ -18,12 +18,15 @@ import Link from "next/link";
 import Title from "./title";
 import LogoutButton from "../button/logout-btn";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
   const items = type === "SUPER" ? superSidenavItems : adminSidenavItems;
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const storeId = session?.user.storeId;
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -51,7 +54,9 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
                   <SidebarMenuButton
                     asChild
                     variant={
-                      pathname.includes(item.url) ? "outline" : "default"
+                      pathname.trim().includes(item.url.trim())
+                        ? "outline"
+                        : "default"
                     }
                   >
                     <div className="flex">
@@ -64,7 +69,13 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
                       item.sub.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuButton asChild>
-                            <Link href={subItem.url}>
+                            <Link
+                              href={
+                                type === "SUPER"
+                                  ? subItem.url
+                                  : `/${storeId}/${subItem.url}`
+                              }
+                            >
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuButton>
@@ -75,9 +86,17 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
               ) : (
                 <SidebarMenuButton
                   asChild
-                  variant={item.url === pathname ? "outline" : "default"}
+                  variant={
+                    pathname.trim().includes(item.url.trim())
+                      ? "outline"
+                      : "default"
+                  }
                 >
-                  <Link href={item.url}>
+                  <Link
+                    href={
+                      type === "SUPER" ? item.url : `/${storeId}/${item.url}`
+                    }
+                  >
                     <item.icon size={isCollapsed ? 20 : 24} />
                     <span>{item.title}</span>
                   </Link>

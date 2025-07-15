@@ -1,11 +1,9 @@
-import UserAvatar from "@/components/ui/user-avatar";
-
-const AdminDashboard = () => {
+const AdminDashboardPage = () => {
   return (
     <div>
-      <UserAvatar />
+      <h1>Hello World</h1>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default AdminDashboardPage;
