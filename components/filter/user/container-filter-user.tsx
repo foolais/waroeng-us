@@ -3,7 +3,7 @@ import PopoverFilter from "../popover-filter";
 import { FilterStoreCombobox } from "../store/filter-store";
 import { FilterUserStatus } from "./filter-user";
 import FilterUserButton from "./filter-user-button";
-import DialogCreateUser from "@/components/dialog/user/dialog-create-user";
+import DialogCreateUser from "@/components/dialog/create/dialog-create-user";
 
 const ContainerFilterUser = () => {
   return (

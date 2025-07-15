@@ -2,7 +2,7 @@ import { FilterSearchTable } from "../filter-search";
 import { FilterTableStatus } from "./filter-table";
 import FilterTableButton from "./filter-table-button";
 import { FilterStoreCombobox } from "../store/filter-store";
-import DialogCreateTable from "@/components/dialog/super/dialog-create-table";
+import DialogCreateTable from "@/components/dialog/create/dialog-create-table";
 import PopoverFilter from "../popover-filter";
 
 const ContainerFilterTable = () => {

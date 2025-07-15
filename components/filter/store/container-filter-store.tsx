@@ -1,4 +1,4 @@
-import DialogCreateStore from "@/components/dialog/super/dialog-create-store";
+import DialogCreateStore from "@/components/dialog/create/dialog-create-store";
 import { FilterStoreStatusCombobox } from "./filter-store";
 import FilterStoreButton from "./filter-store-button";
 import { FilterSearchStore } from "../filter-search";
