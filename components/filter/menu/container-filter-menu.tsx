@@ -20,7 +20,6 @@ const ContainerFilterMenu = () => {
       </div>
       <div className="container-filter-title">
         <div className="container-filter-mobile">
-          <h1 className="header-title md:hidden">Manajemen Menu</h1>
           <PopoverFilter>
             <h4>Filter Meja</h4>
             <FilterSearchMenu

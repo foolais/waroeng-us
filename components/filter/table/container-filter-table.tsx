@@ -19,7 +19,6 @@ const ContainerFilterTable = () => {
       <div className="container-filter-title">
         {/* Mobile */}
         <div className="container-filter-mobile">
-          <h1 className="header-title md:hidden">Manajemen Meja</h1>
           <PopoverFilter>
             <h4>Filter Meja</h4>
             <FilterSearchTable

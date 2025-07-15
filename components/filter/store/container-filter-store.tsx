@@ -20,7 +20,6 @@ const ContainerFilterStore = () => {
       <div className="container-filter-title">
         {/* Mobile */}
         <div className="container-filter-mobile">
-          <h1 className="header-title md:hidden">Manajemen Toko</h1>
           <PopoverFilter>
             <h4>Filter Toko</h4>
             <FilterSearchStore

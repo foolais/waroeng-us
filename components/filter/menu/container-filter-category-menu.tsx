@@ -18,7 +18,6 @@ const ContainerFilterCategoryMenu = () => {
       </div>
       <div className="container-filter-title">
         <div className="container-filter-mobile">
-          <h1 className="header-title md:hidden">Manajemen Kategori</h1>
           <PopoverFilter>
             <h4>Filter Kategori</h4>
             <FilterSearchCategoryMenu

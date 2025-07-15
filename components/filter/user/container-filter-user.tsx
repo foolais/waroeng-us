@@ -18,7 +18,6 @@ const ContainerFilterUser = () => {
       <div className="container-filter-title">
         {/* Mobile */}
         <div className="container-filter-mobile">
-          <h1 className="header-title md:hidden">Manajemen Pengguna</h1>
           <PopoverFilter>
             <h4>Filter Pengguna</h4>
             <FilterSearchUser placeholder="Search Here" className="w-full" />
