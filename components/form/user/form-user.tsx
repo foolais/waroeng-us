@@ -203,7 +203,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                     name="role"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Role</FormLabel>
+                        <FormLabel>Peran</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue="CASHIER"
@@ -214,7 +214,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                               className="w-full cursor-pointer"
                               disabled={formDisabled}
                             >
-                              <SelectValue placeholder="Select User Role" />
+                              <SelectValue placeholder="Pilih Peran" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -235,11 +235,11 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>Nomor Telepon</FormLabel>
                       <FormControl>
                         <Input
                           type="phone"
-                          placeholder="Enter Phone Number"
+                          placeholder="Masukkan Nomor Telepon"
                           disabled={formDisabled}
                           {...field}
                         />
@@ -253,10 +253,10 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Alamat</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter Address"
+                          placeholder="Masukkan Alamat"
                           {...field}
                           disabled={formDisabled}
                         />
@@ -273,10 +273,10 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nama</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter name"
+                        placeholder="Masukkan Nama"
                         {...field}
                         disabled={formDisabled}
                       />
@@ -294,7 +294,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter email"
+                        placeholder="Masukkan Email"
                         disabled={formDisabled}
                         {...field}
                       />
@@ -308,7 +308,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                 name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel>Jenis Kelamin</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue="MALE"
@@ -319,7 +319,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                           className="w-full cursor-pointer"
                           disabled={formDisabled}
                         >
-                          <SelectValue placeholder="Select gender" />
+                          <SelectValue placeholder="Pilih Jenis Kelamin" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -341,11 +341,11 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>Nomor Telepon</FormLabel>
                       <FormControl>
                         <Input
                           type="phone"
-                          placeholder="Enter Phone Number"
+                          placeholder="Masukkan Nomor Telepon"
                           disabled={formDisabled}
                           {...field}
                         />
@@ -359,10 +359,10 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Alamat</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter Address"
+                          placeholder="Masukkan Alamat"
                           {...field}
                           disabled={formDisabled}
                         />
@@ -376,7 +376,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Peran</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue="CASHIER"
@@ -387,7 +387,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                             className="w-full cursor-pointer"
                             disabled={formDisabled}
                           >
-                            <SelectValue placeholder="Select User Role" />
+                            <SelectValue placeholder="Pilih Peran" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -409,7 +409,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                 name="storeId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Store</FormLabel>
+                    <FormLabel>Toko</FormLabel>
                     <FormControl>
                       <Combobox
                         options={storesData}
@@ -417,7 +417,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                         onChange={field.onChange}
                         onSearch={handleSearch}
                         isLoading={isSearching}
-                        placeholder="Select Store"
+                        placeholder="Pilih Toko"
                         disabled={formDisabled}
                       />
                     </FormControl>
@@ -431,7 +431,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Peran</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue="CASHIER"
@@ -442,7 +442,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                             className="w-full cursor-pointer"
                             disabled={formDisabled}
                           >
-                            <SelectValue placeholder="Select User Role" />
+                            <SelectValue placeholder="Pilih Peran" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -469,7 +469,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                         <FormControl>
                           <Input
                             type="password"
-                            placeholder="Enter Password"
+                            placeholder="Masukkan Password"
                             {...field}
                           />
                         </FormControl>
@@ -482,11 +482,11 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
+                        <FormLabel>Konfirmasi Password</FormLabel>
                         <FormControl>
                           <Input
                             type="password"
-                            placeholder="Enter Confirm Password"
+                            placeholder="Masukkan Konfirmasi Password"
                             {...field}
                           />
                         </FormControl>
@@ -500,7 +500,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
           </div>
           {type !== "DETAIL" && (
             <Button type="submit" className="ml-auto flex" disabled={isPending}>
-              {getButtonText(type, "User", isPending)}
+              {getButtonText(type, "Pengguna", isPending)}
               {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
             </Button>
           )}

@@ -31,7 +31,7 @@ export const FilterUserButton = () => {
 
   return (
     <Button className="w-full md:w-[100px]" onClick={handleSearch}>
-      <span>Search </span>
+      <span>Cari </span>
       <SearchIcon />
     </Button>
   );

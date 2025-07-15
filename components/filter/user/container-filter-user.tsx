@@ -10,7 +10,10 @@ const ContainerFilterUser = () => {
     <div className="container-filter">
       {/* Desktop */}
       <div className="container-filter-desktop">
-        <FilterSearchUser placeholder="Search Here" className="w-[20vw]" />
+        <FilterSearchUser
+          placeholder="Cari pengguna disini..."
+          className="w-[20vw]"
+        />
         <FilterStoreCombobox />
         <FilterUserStatus />
         <FilterUserButton />
@@ -20,7 +23,10 @@ const ContainerFilterUser = () => {
         <div className="container-filter-mobile">
           <PopoverFilter>
             <h4>Filter Pengguna</h4>
-            <FilterSearchUser placeholder="Search Here" className="w-full" />
+            <FilterSearchUser
+              placeholder="Cari pengguna disini..."
+              className="w-full"
+            />
             <FilterStoreCombobox />
             <FilterUserStatus />
             <FilterUserButton />

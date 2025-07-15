@@ -38,14 +38,14 @@ const TableUser = ({ data }: UserTableProps) => {
         <TableHeader className="bg-muted font-medium">
           <TableRow>
             <TableHead className="w-[5%]">No</TableHead>
-            <TableHead className="w-[10%]">Image</TableHead>
-            <TableHead className="hidden w-1/5 md:table-cell">Name</TableHead>
+            <TableHead className="w-[10%]">Gambar</TableHead>
+            <TableHead className="hidden w-1/5 md:table-cell">Nama</TableHead>
             <TableHead className="w-1/5">Email</TableHead>
             <TableHead className="hidden w-[7.5%] md:table-cell">
-              Gender
+              Jenis Kelamin
             </TableHead>
-            <TableHead className="w-1/5">Store</TableHead>
-            <TableHead className="w-[7.5%]">Role</TableHead>
+            <TableHead className="w-1/5">Toko</TableHead>
+            <TableHead className="w-[7.5%]">Peran</TableHead>
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>

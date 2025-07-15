@@ -39,13 +39,13 @@ export const FilterStoreStatusCombobox = () => {
         <Button
           variant="outline"
           role="combobox"
-          aria-label="Select status"
+          aria-label="Pilih Status"
           aria-expanded={open}
           className="w-full justify-between md:w-[150px]"
         >
           {filter.status
             ? statusOptions.find((data) => data.value === filter.status)?.label
-            : "Select Status"}
+            : "Pilih Status"}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -154,7 +154,7 @@ export const FilterStoreCombobox = () => {
   return (
     <FormFieldCombobox
       name="store"
-      label="Store"
+      label="Toko"
       isHiddenLabel
       placeholder="Filter Store"
       widthClassName="w-full md:w-[175px]"

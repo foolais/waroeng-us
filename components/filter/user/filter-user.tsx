@@ -18,9 +18,9 @@ export const FilterUserStatus = () => {
   return (
     <FormFieldCombobox
       name="role"
-      label="Role"
+      label="Peran"
       isHiddenLabel
-      placeholder="Filter Role"
+      placeholder="Filter Peran"
       widthClassName="w-full md:w-[150px]"
       data={roleOptions}
       value={roleValue}

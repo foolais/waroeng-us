@@ -37,7 +37,7 @@ const DialogCreateUser = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="flex items-center gap-1">
-          <span className="sm:hidden md:block">Create</span>
+          <span className="sm:hidden md:block">Buat</span>
           <PlusIcon />
         </Button>
       </DialogTrigger>
@@ -49,7 +49,7 @@ const DialogCreateUser = () => {
         }}
       >
         <DialogHeader className="mb-2">
-          <DialogTitle>Create a New User</DialogTitle>
+          <DialogTitle>Buat Pengguna Baru</DialogTitle>
           <DialogClose asChild className="absolute top-4 right-4 z-10">
             <Button onClick={onClose} size="icon" variant="destructive">
               <X />

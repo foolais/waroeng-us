@@ -20,8 +20,8 @@ export const superSidenavItems = [
     icon: Store,
   },
   {
-    title: "User",
-    url: "/super/user",
+    title: "Pengguna",
+    url: "/super/pengguna",
     icon: Users,
   },
   {
@@ -74,8 +74,8 @@ export const roleOptions = [
 ];
 
 export const genderOptions = [
-  { value: "MALE", label: "Male" },
-  { value: "FEMALE", label: "Female" },
+  { value: "MALE", label: "Laki-Laki" },
+  { value: "FEMALE", label: "Perempuan" },
 ];
 
 export const storeStatusBadgeOptions = [
@@ -105,21 +105,21 @@ export const storeStatusBadgeOptions = [
 export const genderBadgeOptions = [
   {
     value: "ALL",
-    label: "All",
+    label: "Semua",
     color: "#6B7280",
     bgColor: "bg-gray-100 dark:bg-gray-800",
     textColor: "text-gray-800 dark:text-gray-200",
   },
   {
     value: "MALE",
-    label: "Male",
+    label: "Laki-Laki",
     color: "#3B82F6",
     bgColor: "bg-blue-50",
     textColor: "text-blue-700",
   },
   {
     value: "FEMALE",
-    label: "Female",
+    label: "Perempuan",
     color: "#EC4899",
     bgColor: "bg-pink-50",
     textColor: "text-pink-700",

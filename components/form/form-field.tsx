@@ -141,14 +141,14 @@ export const FormFieldCombobox = ({
           <Command shouldFilter={!isQuerySearch}>
             {isQuerySearch ? (
               <CommandInput
-                placeholder={`Search ${label.toLowerCase()}...`}
+                placeholder={`Cari ${label.toLowerCase()}...`}
                 className="h-9"
                 value={inputValue}
                 onValueChange={handleInputChange}
               />
             ) : (
               <CommandInput
-                placeholder={`Search ${label.toLowerCase()}...`}
+                placeholder={`Cari ${label.toLowerCase()}...`}
                 className="h-9"
               />
             )}
@@ -159,7 +159,10 @@ export const FormFieldCombobox = ({
                 </CommandLoading>
               ) : (
                 <>
-                  <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
+                  <CommandEmpty>
+                    {label.charAt(0).toUpperCase() + label.slice(1)} tidak
+                    ditemukan.
+                  </CommandEmpty>
                   {data.find((item) => item.value === value) && (
                     <CommandItem
                       id={name as string}

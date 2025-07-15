@@ -4,15 +4,15 @@ export const LoginSchema = z.object({
   email: z.string().email("Invalid email"),
   password: z
     .string()
-    .min(3, "Password must be more than 3 characters")
-    .max(20, "Password must be less than 20 characters"),
+    .min(3, "Password harus lebih dari 3 karakter")
+    .max(20, "Password harus kurang dari 20 karakter"),
 });
 
 export const StoreSchema = z.object({
   name: z
     .string()
-    .min(5, "Store name must be more than 5 characters")
-    .max(20, "Store name must be less than 20 characters"),
+    .min(5, "Nama toko harus lebih dari 5 karakter")
+    .max(20, "Nama toko harus kurang dari 20 karakter"),
   status: z.enum(["ACTIVE", "INACTIVE"]),
 });
 
@@ -22,60 +22,60 @@ export const UserSchema = z
       z
         .instanceof(File)
         .refine((file) => file.size === 0 || file.type.startsWith("image/"), {
-          message: "Only image files are allowed",
+          message: "Hanya file gambar yang diizinkan",
         })
         .refine((file) => file.size <= 5 * 1024 * 1024, {
-          message: "Image must be less than 5MB",
+          message: "Gambar harus kurang dari 5MB",
         })
         .optional(),
       z.string().url().optional(),
     ]),
     name: z
       .string()
-      .min(5, "Name must be more than 5 characters")
-      .max(20, "Name must be less than 20 characters"),
+      .min(5, "Nama harus lebih dari 5 karakter")
+      .max(20, "Nama harus kurang dari 20 karakter"),
     email: z
       .string()
-      .min(2, "Email must be more than 1 character")
-      .email("Invalid email"),
-    gender: z.string().nonempty("Gender is required"),
+      .min(2, "Email harus lebih dari 2 karakter")
+      .email("Email tidak valid"),
+    gender: z.string().nonempty("Jenis kelamin tidak boleh kosong"),
     address: z
       .string()
-      .min(2, "Address must be more than 1 character")
-      .max(50, "Address must be less than 50 character")
+      .min(2, "Alamat harus lebih dari 2 karakter")
+      .max(50, "Alamat harus kurang dari 50 karakter")
       .optional()
       .or(z.literal("")),
     phone: z
       .string()
-      .min(11, "Phone must be more than 11 character")
-      .max(13, "Phone must be less than 13 character")
+      .min(11, "Telepon harus lebih dari 11 karakter")
+      .max(13, "Telepon harus kurang dari 13 karakter")
       .optional()
       .or(z.literal("")),
     role: z.enum(["ADMIN", "CASHIER"]),
-    storeId: z.string().nonempty("Store is required"),
+    storeId: z.string().nonempty("Toko tidak boleh kosong"),
     password: z
       .string()
-      .min(3, "Password must be more than 3 character")
-      .max(32, "Password must be less than 32 character")
+      .min(3, "Password harus lebih dari 3 karakter")
+      .max(32, "Password harus kurang dari 32 karakter")
       .optional(),
     confirmPassword: z
       .string()
-      .min(3, "Password must be more than 3 character")
-      .max(32, "Password must be less than 32 character")
+      .min(3, "Password harus lebih dari 3 karakter")
+      .max(32, "Password harus kurang dari 32 karakter")
       .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Password don't match",
+    message: "Password tidak sama",
     path: ["confirmPassword"],
   });
 
 export const TableSchema = z.object({
   name: z
     .string()
-    .min(2, "Table name must be more than 2 characters")
-    .max(20, "Table name must be less than 20 characters"),
+    .min(2, "Meja harus lebih dari 2 karakter")
+    .max(20, "Meja harus kurang dari 20 karakter"),
   status: z.enum(["AVAILABLE", "WAITING_ORDER", "DINING", "MAINTENANCE"]),
-  storeId: z.string().nonempty("Store is required"),
+  storeId: z.string().nonempty("Toko tidak boleh kosong"),
 });
 
 export const MenuSchema = z.object({
@@ -104,7 +104,7 @@ export const MenuSchema = z.object({
 export const MenuCategorySchema = z.object({
   name: z
     .string()
-    .min(2, "Menu name must be more than 2 characters")
-    .max(20, "Menu name must be less than 20 characters"),
-  storeId: z.string().nonempty("Store is required"),
+    .min(2, "Nama menu harus lebih dari 2 karakter")
+    .max(20, "Nama menu harus kurang dari 30 karakter"),
+  storeId: z.string().nonempty("Toko tidak boleh kosong"),
 });
