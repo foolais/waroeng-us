@@ -4,8 +4,14 @@ import { FilterStoreCombobox } from "../store/filter-store";
 import PopoverFilter from "../popover-filter";
 import { FilterCategoryMenuButton } from "./filter-menu-button";
 import DialogCreateMenuCategory from "@/components/dialog/create/dialog-create-menu-category";
+import { auth } from "@/auth";
 
-const ContainerFilterCategoryMenu = () => {
+const ContainerFilterCategoryMenu = async () => {
+  const session = await auth();
+  if (!session) return null;
+
+  const role = session.user.role;
+
   return (
     <div className="container-filter">
       <div className="container-filter-desktop">
@@ -13,7 +19,7 @@ const ContainerFilterCategoryMenu = () => {
           placeholder="Cari kategori disini..."
           className="w-[20vw]"
         />
-        <FilterStoreCombobox />
+        {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
         <FilterCategoryMenuButton />
       </div>
       <div className="container-filter-title">
@@ -24,7 +30,7 @@ const ContainerFilterCategoryMenu = () => {
               placeholder="Cari kategori disini..."
               className="w-full"
             />
-            <FilterStoreCombobox />
+            {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
             <FilterCategoryMenuButton />
           </PopoverFilter>
         </div>

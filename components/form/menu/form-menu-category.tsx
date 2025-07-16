@@ -16,12 +16,13 @@ import {
   getCategoryById,
   updateCategory,
 } from "@/lib/action/action-category";
-import { getAllStore } from "@/lib/action/action-store";
+import { getAllStore, getStoreById } from "@/lib/action/action-store";
 import { getButtonText } from "@/lib/utils";
 import { MenuCategorySchema } from "@/lib/zod/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import {
   useCallback,
   useEffect,
@@ -54,6 +55,9 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
   >([]);
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
+
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Memoized debounced fetch function
   const debouncedFetchStores = useMemo(
@@ -95,7 +99,7 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
   useEffect(() => {
     debouncedFetchStores("");
     return () => debouncedFetchStores.cancel();
-  }, [debouncedFetchStores]);
+  }, [debouncedFetchStores, isAdmin]);
 
   const handleSubmit = (values: z.infer<typeof MenuCategorySchema>) => {
     startTransition(async () => {
@@ -138,6 +142,21 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
     });
   }, [form, categoryId, type]);
 
+  useEffect(() => {
+    if (!session || !isAdmin) return;
+    startFetching(async () => {
+      try {
+        const stores = await getStoreById(session.user.storeId as string);
+        if (stores && !("error" in stores)) {
+          setStoresData([{ value: stores.id, label: stores.name }]);
+          form.setValue("storeId", stores.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [form, session, isAdmin]);
+
   const formDisabled = isFetching || isPending || type === "DETAIL";
 
   return (
@@ -176,7 +195,7 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
                   onSearch={handleSearch}
                   isLoading={isSearching}
                   placeholder="Pilih Toko"
-                  disabled={formDisabled}
+                  disabled={formDisabled || isAdmin}
                 />
               </FormControl>
               <FormMessage />

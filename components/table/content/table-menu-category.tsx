@@ -29,7 +29,7 @@ const TableCategoryMenu = ({ data }: TableCategoryMenuProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[5%]">No</TableHead>
+            <TableHead className="w-[2%]">No</TableHead>
             <TableHead className="w-1/3">Nama Kategori</TableHead>
             <TableHead className="w-1/3">Toko</TableHead>
             <TableHead className="w-[10%]"></TableHead>

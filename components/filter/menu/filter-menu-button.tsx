@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import {
 } from "@/store/menu/useMenuFilter";
 import { useSuperUserFilter } from "@/store/user/useUserFilter";
 import { SearchIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -14,14 +16,17 @@ export const FilterMenuButton = () => {
   const { filter: filterMenu } = useSuperMenuFilter();
   const { filter: filterStore } = useSuperUserFilter();
   const router = useRouter();
+  const { data: session } = useSession();
+  const isSuper = session?.user?.role === "SUPER_ADMIN";
 
   const handleSearch = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("search", filterMenu.search);
     params.set("status", filterMenu.status);
-    params.set("store", filterStore.store);
+    if (isSuper) params.set("store", filterStore.store);
+
     if (filterMenu.search === "") params.delete("search");
-    if (filterStore.store === "") params.delete("store");
+    if (filterStore.store === "" && isSuper) params.delete("store");
     router.push(`${window.location.pathname}?${params}`);
   };
 
@@ -30,7 +35,7 @@ export const FilterMenuButton = () => {
       const params = new URLSearchParams(window.location.search);
       params.delete("search");
       params.delete("status");
-      params.delete("store");
+      if (isSuper) params.delete("store");
     };
   }, []);
 
@@ -45,13 +50,16 @@ export const FilterCategoryMenuButton = () => {
   const { filter: filterMenu } = useSuperCategoryMenuFilter();
   const { filter: filterStore } = useSuperUserFilter();
   const router = useRouter();
+  const { data: session } = useSession();
+  const isSuper = session?.user?.role === "SUPER_ADMIN";
 
   const handleSearch = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("search", filterMenu.search);
-    params.set("store", filterStore.store);
+    if (isSuper) params.set("store", filterStore.store);
+
     if (filterMenu.search === "") params.delete("search");
-    if (filterStore.store === "") params.delete("store");
+    if (filterStore.store === "" && isSuper) params.delete("store");
     router.push(`${window.location.pathname}?${params}`);
   };
 
@@ -59,7 +67,7 @@ export const FilterCategoryMenuButton = () => {
     return () => {
       const params = new URLSearchParams(window.location.search);
       params.delete("search");
-      params.delete("store");
+      if (isSuper) params.delete("store");
     };
   }, []);
 
