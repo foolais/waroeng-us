@@ -73,6 +73,19 @@ export const adminSidenavItems = [
   },
 ];
 
+export const cashierSidenavItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Menu",
+    url: "/menu",
+    icon: Utensils,
+  },
+];
+
 export const storeStatusOptions = [
   {
     value: "ACTIVE",
