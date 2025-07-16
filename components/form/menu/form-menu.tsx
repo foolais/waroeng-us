@@ -224,8 +224,6 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
   const formDisabled = isFetching || isPending || type === "DETAIL";
   const categoriesDisabled = !storeValue;
 
-  console.log({ form });
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">

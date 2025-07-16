@@ -21,6 +21,10 @@ export const getAllTable = async (
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  const storeId = isAdmin ? session.user.storeId : store;
+
   try {
     const pageSize = ITEM_PER_PAGE;
 
@@ -30,7 +34,7 @@ export const getAllTable = async (
         mode: "insensitive",
       },
       ...(status !== "ALL" && { status }),
-      ...(store && { storeId: store }),
+      ...(store && { storeId }),
     };
 
     const [tables, count] = await prisma.$transaction([
@@ -88,6 +92,13 @@ export const createTable = async (data: ITable) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
+
   try {
     const { name, storeId, status } = data;
     const table = await prisma.table.create({
@@ -121,6 +132,13 @@ export const createTable = async (data: ITable) => {
 export const updateTable = async (id: string, data: ITable) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
 
   try {
     const { name, storeId, status } = data;

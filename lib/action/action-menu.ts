@@ -20,10 +20,14 @@ export const getAllMenu = async (
   currentPage: number,
   search: string,
   status: "ALL" | MENU_STATUS,
-  storeId: string,
+  store: string,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  const storeId = isAdmin ? session.user.storeId : store;
 
   try {
     const pageSize = ITEM_PER_PAGE;
@@ -101,6 +105,13 @@ export const createMenu = async (data: IMenu) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
+
   try {
     const payload = {
       image: data.image,
@@ -111,8 +122,6 @@ export const createMenu = async (data: IMenu) => {
       categoryId: data.categoryId,
       createdById: session?.user.id,
     };
-
-    console.log(payload);
 
     const menu = await prisma.menu.create({ data: payload });
     if (!menu) return { error: true, message: "Menu gagal dibuat" };
@@ -138,6 +147,13 @@ export const createMenu = async (data: IMenu) => {
 export const updateMenu = async (id: string, data: IMenu) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  // Validate same session n store payload
+  const isAdmin = session.user.role === "ADMIN";
+  if (isAdmin) {
+    const isSameStore = session.user.storeId === data.storeId;
+    if (!isSameStore) return { error: true, message: "Store ID tidak sama" };
+  }
 
   try {
     const payload = {
