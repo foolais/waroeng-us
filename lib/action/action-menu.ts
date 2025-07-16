@@ -112,6 +112,8 @@ export const createMenu = async (data: IMenu) => {
       createdById: session?.user.id,
     };
 
+    console.log(payload);
+
     const menu = await prisma.menu.create({ data: payload });
     if (!menu) return { error: true, message: "Menu gagal dibuat" };
 

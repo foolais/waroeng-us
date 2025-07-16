@@ -83,18 +83,20 @@ export const MenuSchema = z.object({
     .string()
     .min(2, "Nama menu harus lebih dari 2 karakter")
     .max(20, "Nama menu harus kurang dari 30 karakter"),
-  image: z.union([
-    z
-      .instanceof(File)
-      .refine((file) => file.size === 0 || file.type.startsWith("image/"), {
-        message: "Hanya file gambar yang diizinkan",
-      })
-      .refine((file) => file.size <= 5 * 1024 * 1024, {
-        message: "Gambar harus kurang dari 5MB",
-      })
-      .optional(),
-    z.string().url().optional(),
-  ]),
+  image: z
+    .union([
+      z
+        .instanceof(File)
+        .refine((file) => file.size === 0 || file.type.startsWith("image/"), {
+          message: "Hanya file gambar yang diizinkan",
+        })
+        .refine((file) => file.size <= 5 * 1024 * 1024, {
+          message: "Gambar harus kurang dari 5MB",
+        }),
+      z.string().url(),
+      z.literal(""),
+    ])
+    .optional(),
   price: z.string().min(1, "Harga tidak bole negatif"),
   status: z.enum(["AVAILABLE", "UNAVAILABLE"]),
   storeId: z.string().nonempty("Toko tidak boleh kosong"),
