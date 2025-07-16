@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { getAllCategory } from "@/lib/action/action-category";
-import { getAllStore } from "@/lib/action/action-store";
+import { getAllStore, getStoreById } from "@/lib/action/action-store";
 import { MenuSchema } from "@/lib/zod/zod";
 import { useMenuImage } from "@/store/menu/useMenuFilter";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,10 +60,9 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
     },
   });
 
-  const { data: session } = useSession();
-
   const [isSearchingStore, setIsSearchingStore] = useState(false);
   const [isSearchingCategory, setIsSearchingCategory] = useState(false);
+  const [storeValue, setStoreValue] = useState("");
   const [storesData, setStoresData] = useState<
     { value: string; label: string }[]
   >([]);
@@ -72,6 +71,9 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
   >([]);
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
+
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   const { setUrl } = useMenuImage();
 
@@ -111,7 +113,7 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
           const { data } = await getAllCategory(
             1,
             encodeURIComponent(query),
-            session?.user.storeId ?? "",
+            session?.user.storeId ?? storeValue,
           );
           const mappedData = Array.isArray(data)
             ? data.map((store) => ({ value: store.id, label: store.name }))
@@ -127,7 +129,7 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
           setIsSearchingCategory(false);
         }
       }, 300),
-    [session?.user.storeId],
+    [session?.user.storeId, storeValue],
   );
 
   // Handle search query changes
@@ -149,12 +151,12 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
   useEffect(() => {
     debouncedFetchStores("");
     return () => debouncedFetchStores.cancel();
-  }, [debouncedFetchStores]);
+  }, [debouncedFetchStores, isAdmin]);
 
   useEffect(() => {
     debouncedFetchCategories("");
     return () => debouncedFetchCategories.cancel();
-  }, [debouncedFetchCategories]);
+  }, [debouncedFetchCategories, storeValue]);
 
   // fetching detail menu
   useEffect(() => {
@@ -177,6 +179,23 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
       }
     });
   }, [form, menuId, type]);
+
+  // Fetch store when user role admin
+  useEffect(() => {
+    if (!session || !isAdmin) return;
+    startFetching(async () => {
+      try {
+        const stores = await getStoreById(session.user.storeId as string);
+        if (stores && !("error" in stores)) {
+          setStoresData([{ value: stores.id, label: stores.name }]);
+          form.setValue("storeId", stores.id);
+          setStoreValue(stores.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [form, session, isAdmin]);
 
   const handleSubmit = (values: z.infer<typeof MenuSchema>) => {
     startTransition(async () => {
@@ -203,6 +222,7 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
   };
 
   const formDisabled = isFetching || isPending || type === "DETAIL";
+  const categoriesDisabled = !storeValue;
 
   return (
     <Form {...form}>
@@ -246,10 +266,11 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
                         options={storesData}
                         value={field.value}
                         onChange={field.onChange}
+                        onSetStore={setStoreValue}
                         onSearch={handleSearchStore}
                         isLoading={isSearchingStore}
                         placeholder="Pilih Toko"
-                        disabled={formDisabled}
+                        disabled={formDisabled || isAdmin}
                       />
                     </FormControl>
                     <FormMessage />
@@ -339,7 +360,7 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
                       onSearch={handleSearchCategory}
                       isLoading={isSearchingCategory}
                       placeholder="Pilih Kategori"
-                      disabled={formDisabled}
+                      disabled={formDisabled || categoriesDisabled}
                     />
                   </FormControl>
                   <FormMessage />
@@ -358,10 +379,11 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
                         options={storesData}
                         value={field.value}
                         onChange={field.onChange}
+                        onSetStore={setStoreValue}
                         onSearch={handleSearchStore}
                         isLoading={isSearchingStore}
                         placeholder="Pilih Toko"
-                        disabled={formDisabled}
+                        disabled={formDisabled || isAdmin}
                       />
                     </FormControl>
                     <FormMessage />

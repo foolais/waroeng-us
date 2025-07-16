@@ -4,8 +4,14 @@ import PopoverFilter from "../popover-filter";
 import { FilterStoreCombobox } from "../store/filter-store";
 import { FilterMenuStatus } from "./filter-menu";
 import { FilterMenuButton } from "./filter-menu-button";
+import { auth } from "@/auth";
 
-const ContainerFilterMenu = () => {
+const ContainerFilterMenu = async () => {
+  const session = await auth();
+  if (!session) return null;
+
+  const role = session.user.role;
+
   return (
     <div className="container-filter">
       {/* Desktop */}
@@ -15,7 +21,7 @@ const ContainerFilterMenu = () => {
           className="w-[20vw]"
         />
         <FilterMenuStatus />
-        <FilterStoreCombobox />
+        {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
         <FilterMenuButton />
       </div>
       <div className="container-filter-title">
@@ -27,7 +33,7 @@ const ContainerFilterMenu = () => {
               className="w-full"
             />
             <FilterMenuStatus />
-            <FilterStoreCombobox />
+            {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
             <FilterMenuButton />
           </PopoverFilter>
         </div>

@@ -21,6 +21,7 @@ interface ComboboxProps {
   options: { value: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
+  onSetStore?: (value: string) => void;
   onSearch?: (query: string) => void;
   isLoading?: boolean;
   placeholder?: string;
@@ -32,6 +33,7 @@ const Combobox = ({
   options,
   value,
   onChange,
+  onSetStore,
   onSearch,
   isLoading = false,
   placeholder = "Select...",
@@ -87,6 +89,7 @@ const Combobox = ({
                   value={option.value}
                   onSelect={(currentValue) => {
                     onChange(currentValue === value ? "" : currentValue);
+                    onSetStore?.(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
