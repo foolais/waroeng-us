@@ -4,15 +4,21 @@ import FilterTableButton from "./filter-table-button";
 import { FilterStoreCombobox } from "../store/filter-store";
 import DialogCreateTable from "@/components/dialog/create/dialog-create-table";
 import PopoverFilter from "../popover-filter";
+import { auth } from "@/auth";
 
-const ContainerFilterTable = () => {
+const ContainerFilterTable = async () => {
+  const session = await auth();
+  if (!session) return null;
+
+  const role = session.user.role;
+
   return (
     <div className="container-filter">
       {/* Desktop */}
       <div className="container-filter-desktop">
         <FilterSearchTable placeholder="Cari disini..." className="w-[20vw]" />
         <FilterTableStatus />
-        <FilterStoreCombobox />
+        {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
         <FilterTableButton />
       </div>
       {/* Create Btn */}
@@ -26,7 +32,7 @@ const ContainerFilterTable = () => {
               className="w-full"
             />
             <FilterTableStatus />
-            <FilterStoreCombobox />
+            {role === "SUPER_ADMIN" && <FilterStoreCombobox />}
             <FilterTableButton />
           </PopoverFilter>
         </div>

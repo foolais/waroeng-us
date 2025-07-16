@@ -31,7 +31,7 @@ const TableTable = ({ data }: TableTableProps) => {
       <Table>
         <TableHeader className="bg-muted font-medium">
           <TableRow>
-            <TableHead className="w-[5%]">No</TableHead>
+            <TableHead className="w-[2%]">No</TableHead>
             <TableHead className="w-1/8">Nama</TableHead>
             <TableHead className="w-[3%] min-w-[80px]">Status</TableHead>
             <TableHead className="w-[20%] min-w-[150px]">Toko</TableHead>

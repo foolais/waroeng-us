@@ -18,7 +18,7 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
-import { getAllStore } from "@/lib/action/action-store";
+import { getAllStore, getStoreById } from "@/lib/action/action-store";
 import {
   createTable,
   getTableById,
@@ -30,6 +30,7 @@ import { TableSchema } from "@/lib/zod/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import {
   useCallback,
   useEffect,
@@ -63,6 +64,9 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
   >([]);
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
+
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Memoized debounced fetch function
   const debouncedFetchStores = useMemo(
@@ -104,7 +108,7 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
   useEffect(() => {
     debouncedFetchStores("");
     return () => debouncedFetchStores.cancel();
-  }, [debouncedFetchStores]);
+  }, [debouncedFetchStores, isAdmin]);
 
   const handleSubmit = (values: z.infer<typeof TableSchema>) => {
     startTransition(async () => {
@@ -144,6 +148,21 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
     });
   }, [form, tableId, type]);
 
+  useEffect(() => {
+    if (!session || !isAdmin) return;
+    startFetching(async () => {
+      try {
+        const stores = await getStoreById(session.user.storeId as string);
+        if (stores && !("error" in stores)) {
+          setStoresData([{ value: stores.id, label: stores.name }]);
+          form.setValue("storeId", stores.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [form, session, isAdmin]);
+
   const formDisabled = isFetching || isPending || type === "DETAIL";
 
   return (
@@ -173,7 +192,7 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
             name="storeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Store</FormLabel>
+                <FormLabel>Toko</FormLabel>
                 <FormControl>
                   <Combobox
                     options={storesData}
@@ -182,7 +201,7 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
                     onSearch={handleSearch}
                     isLoading={isSearching}
                     placeholder="Pilih Toko"
-                    disabled={formDisabled}
+                    disabled={formDisabled || isAdmin}
                   />
                 </FormControl>
                 <FormMessage />
