@@ -6,15 +6,15 @@ import UserAvatar from "@/components/ui/user-avatar";
 const CashierLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
-      <div className="flex h-dvh w-screen flex-col bg-gray-200 p-4">
-        <div className="bg-background flex items-center justify-between rounded-md p-4">
+      <div className="flex h-dvh w-screen flex-col">
+        <div className="flex items-center justify-between rounded-md p-4">
           <div className="flex gap-4">
             <SidebarButton />
             <Title />
           </div>
           <UserAvatar />
         </div>
-        <div className="py-4">{children}</div>
+        <div className="py-2">{children}</div>
       </div>
     </SidebarProvider>
   );

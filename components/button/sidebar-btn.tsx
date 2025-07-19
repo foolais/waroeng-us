@@ -26,7 +26,7 @@ const SidebarButton = async () => {
           <Menu />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="ml-8 w-40" sideOffset={6}>
+      <DropdownMenuContent className="ml-4 w-40" sideOffset={6}>
         <DropdownMenuLabel>Menu</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

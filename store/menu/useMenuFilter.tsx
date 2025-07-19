@@ -50,3 +50,23 @@ export const useMenuImage = create<menuImageStore>((set) => ({
   url: "",
   setUrl: (url) => set(() => ({ url })),
 }));
+
+// search menu on cashier page
+interface CashierFilterMenu {
+  search: string;
+  type: string;
+}
+
+interface CashierMenuStore {
+  filter: CashierFilterMenu;
+  setFilter: (filter: Partial<CashierFilterMenu>) => void;
+}
+
+export const useCashierFilterMenu = create<CashierMenuStore>((set) => ({
+  filter: {
+    search: "",
+    type: "",
+  },
+  setFilter: (filter) =>
+    set((state) => ({ filter: { ...state.filter, ...filter } })),
+}));
