@@ -7,7 +7,7 @@ import { MENU_STATUS, Prisma } from "@prisma/client";
 import { ITEM_PER_PAGE } from "../data";
 import { del } from "@vercel/blob";
 
-interface IMenu {
+export interface IMenu {
   image?: string;
   name: string;
   price: string;

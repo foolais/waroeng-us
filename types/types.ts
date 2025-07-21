@@ -23,3 +23,11 @@ export interface iFromUser {
   password: string;
   confirmPassword: string;
 }
+
+export interface ICardMenu {
+  id: string;
+  name: string;
+  price: string;
+  image: string;
+  status: "AVAILABLE" | "UNAVAILABLE";
+}
