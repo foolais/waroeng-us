@@ -1,11 +1,12 @@
 import { ICardMenu } from "@/types/types";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import LogoImage from "@/public/logo.png";
 
 const MenuCard = ({ data }: { data: ICardMenu }) => {
   const [quantity, setQuantity] = useState(0);
@@ -61,11 +62,12 @@ const MenuCard = ({ data }: { data: ICardMenu }) => {
     <Card className="gap-0 p-0">
       <CardHeader className="relative p-0">
         <Image
-          src={data.image}
+          src={data.image || LogoImage}
           alt={data.name}
           width={280}
           height={280}
           className="h-50 rounded-t-md object-cover"
+          priority
         />
         <div
           className={`absolute right-5 bottom-5 z-10 flex items-center gap-2 transition-all duration-200 ease-in-out ${
@@ -105,13 +107,12 @@ const MenuCard = ({ data }: { data: ICardMenu }) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="relative px-4">
-        <h2 className="text-lg font-semibold">{data.name}</h2>
+      <CardContent className="flex-center relative flex-col gap-2 px-4 pb-4">
+        <h2 className="text-lg">{data.name}</h2>
         <span className="text-primary text-lg font-semibold">
           {formatPrice(+data.price)}
         </span>
       </CardContent>
-      <CardFooter className="grid justify-end pt-2 pb-4"></CardFooter>
     </Card>
   );
 };
