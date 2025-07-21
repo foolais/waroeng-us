@@ -34,6 +34,7 @@ const ContainerCardMenu = () => {
               image: item.image ?? "",
               status: item.status,
               type: item.category.name,
+              quantity: 0,
             }))
           : [];
 
@@ -56,7 +57,7 @@ const ContainerCardMenu = () => {
   }, [filteredData]);
 
   return (
-    <div className="grid w-full grid-cols-4 gap-4">
+    <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-4">
       {!isFetching && renderMenuCards()}
     </div>
   );

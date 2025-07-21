@@ -1,4 +1,6 @@
-import { ShoppingBasket } from "lucide-react";
+"use client";
+
+import { ShoppingBasket, TriangleAlert } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -8,8 +10,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { ICardMenu } from "@/types/types";
+import CartMenuCard from "../card/cart-menu-card";
+import { useCartStore } from "@/store/menu/useMenuFilter";
 
 const CartButton = () => {
+  const { items } = useCartStore();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -18,13 +25,24 @@ const CartButton = () => {
           <ShoppingBasket className="size-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent aria-describedby="cart">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             Keranjang Pesanan <ShoppingBasket />
           </SheetTitle>
         </SheetHeader>
-        <div className="py-2"></div>
+        <div>
+          {items && items.length > 0 ? (
+            items.map((item: ICardMenu) => (
+              <CartMenuCard key={item.id} data={item} />
+            ))
+          ) : (
+            <div className="flex items-center justify-center gap-2">
+              <TriangleAlert />
+              <p className="">Masukkan Pesanan Terlebih Dahulu</p>
+            </div>
+          )}
+        </div>
         <SheetFooter>
           <Button type="submit">Buat Pesanan</Button>
         </SheetFooter>

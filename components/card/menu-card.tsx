@@ -4,57 +4,31 @@ import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 import LogoImage from "@/public/logo.png";
+import { useCartStore } from "@/store/menu/useMenuFilter";
 
 const MenuCard = ({ data }: { data: ICardMenu }) => {
-  const [quantity, setQuantity] = useState(0);
+  const { items, updateQuantity, addItem } = useCartStore();
+  const cartItem = items.find((item) => item.id === data.id);
+  const quantity = cartItem?.quantity || 0;
 
   const handleAddToCart = (type: "ADD" | "MINUS") => {
-    if (quantity === 0 && type === "MINUS") return;
+    if (type === "ADD" && !cartItem) {
+      addItem(data);
+    } else {
+      updateQuantity(data.id, type);
+    }
 
-    const newQuantity = quantity + (type === "ADD" ? 1 : -1);
-    setQuantity(newQuantity);
-
-    const updatedItem = { ...data, quantity: newQuantity };
-
-    try {
-      const currentCartStr = localStorage.getItem("cart");
-      let currentCart: ICardMenu[] = [];
-
-      if (currentCartStr) {
-        const parsed = JSON.parse(currentCartStr);
-        currentCart = Array.isArray(parsed) ? parsed : [];
-      }
-
-      const existingItemIndex = currentCart.findIndex(
-        (item) => item.id === data.id,
+    if (type === "MINUS" && quantity === 1) {
+      toast.success(`${data.name} dihapus dari keranjang`, { duration: 1500 });
+    } else {
+      toast.success(
+        type === "ADD"
+          ? `Menambahkan ${data.name} ke keranjang`
+          : `Mengurangi ${data.name} dari keranjang`,
+        { duration: 1500 },
       );
-
-      if (newQuantity === 0) {
-        currentCart = currentCart.filter((item) => item.id !== data.id);
-      } else {
-        if (existingItemIndex !== -1) {
-          currentCart[existingItemIndex] = updatedItem;
-        } else {
-          currentCart.push(updatedItem);
-        }
-      }
-
-      if (type === "ADD")
-        toast.success(`Menambahkan ${data.name} ke keranjang`, {
-          duration: 1500,
-        });
-      else
-        toast.success(`Mengurangi ${data.name} dari keranjang`, {
-          duration: 1500,
-        });
-
-      localStorage.setItem("cart", JSON.stringify(currentCart));
-    } catch (error) {
-      toast.error(`Error menambah ke keranjang ${error}`, { duration: 1500 });
-      localStorage.setItem("cart", JSON.stringify([updatedItem]));
     }
   };
 

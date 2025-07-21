@@ -1,4 +1,5 @@
-import { MenuStatus } from "@/types/types";
+import { ICardMenu, MenuStatus } from "@/types/types";
+import { persist } from "zustand/middleware";
 import { create } from "zustand";
 
 interface SuperMenuFilter {
@@ -70,3 +71,58 @@ export const useCashierFilterMenu = create<CashierMenuStore>((set) => ({
   setFilter: (filter) =>
     set((state) => ({ filter: { ...state.filter, ...filter } })),
 }));
+
+interface CartState {
+  items: ICardMenu[];
+  addItem: (item: ICardMenu) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, type: "ADD" | "MINUS") => void;
+  clearCart: () => void;
+}
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      addItem: (item) => {
+        const existingItem = get().items.find((i) => i.id === item.id);
+        if (existingItem) {
+          set({
+            items: get().items.map((i) =>
+              i.id === item.id ? { ...i, quantity: (i.quantity || 0) + 1 } : i,
+            ),
+          });
+        } else {
+          set({ items: [...get().items, { ...item, quantity: 1 }] });
+        }
+      },
+      removeItem: (id) => {
+        set({ items: get().items.filter((i) => i.id !== id) });
+      },
+      updateQuantity: (id, type) => {
+        const currentItems = [...get().items]; // Clone array
+        const itemIndex = currentItems.findIndex((item) => item.id === id);
+
+        if (itemIndex >= 0) {
+          const newQuantity =
+            (currentItems[itemIndex].quantity || 0) + (type === "ADD" ? 1 : -1);
+
+          if (newQuantity <= 0) {
+            currentItems.splice(itemIndex, 1);
+          } else {
+            currentItems[itemIndex] = {
+              ...currentItems[itemIndex],
+              quantity: newQuantity,
+            };
+          }
+
+          set({ items: currentItems });
+        }
+      },
+      clearCart: () => set({ items: [] }),
+    }),
+    {
+      name: "cart-storage",
+    },
+  ),
+);

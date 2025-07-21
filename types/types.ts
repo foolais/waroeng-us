@@ -31,4 +31,5 @@ export interface ICardMenu {
   image: string;
   type: string;
   status: "AVAILABLE" | "UNAVAILABLE";
+  quantity: number;
 }
