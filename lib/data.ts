@@ -246,3 +246,8 @@ export const menuStatusBadgeOptions = [
     textColor: "text-red-700 dark:text-red-300",
   },
 ];
+
+export const orderTypeOptions = [
+  { value: "DINE_IN", label: "Makan Di Tempat" },
+  { value: "TAKE_AWAY", label: "Dibawa Pulang" },
+];

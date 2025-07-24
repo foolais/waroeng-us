@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import LogoImage from "@/public/logo.png";
-import { useCartStore } from "@/store/menu/useMenuFilter";
+import { useCartStore } from "@/store/cart/useCartFilter";
 
 const MenuCard = ({ data }: { data: ICardMenu }) => {
   const { items, updateQuantity, addItem } = useCartStore();

@@ -33,3 +33,5 @@ export interface ICardMenu {
   status: "AVAILABLE" | "UNAVAILABLE";
   quantity: number;
 }
+
+export type orderType = "DINE_IN" | "TAKE_AWAY";

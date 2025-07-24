@@ -12,9 +12,10 @@ import {
   useTransition,
 } from "react";
 import MenuCard from "./menu-card";
+import { TriangleAlert } from "lucide-react";
 
 const ContainerCardMenu = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const store = session?.user?.storeId;
 
   const { filter } = useCashierFilterMenu();
@@ -22,7 +23,7 @@ const ContainerCardMenu = () => {
   const [isFetching, startFetching] = useTransition();
 
   useEffect(() => {
-    if (!store) return;
+    if (!store || status !== "authenticated") return;
     startFetching(async () => {
       const { data } = await getAllMenu(1, "", "ALL", store);
       const mappedData =
@@ -40,7 +41,7 @@ const ContainerCardMenu = () => {
 
       setMenuData(mappedData);
     });
-  }, [store]);
+  }, [store, status]);
 
   const filteredData = useMemo(() => {
     return menuData.filter((item) => {
@@ -59,6 +60,12 @@ const ContainerCardMenu = () => {
   return (
     <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-4">
       {!isFetching && renderMenuCards()}
+      {filteredData.length === 0 && !isFetching && (
+        <div className="flex-center col-span-2 gap-2 pt-10 md:col-span-4">
+          <TriangleAlert />
+          <p className="">Menu Tidak Ditemukan</p>
+        </div>
+      )}
     </div>
   );
 };

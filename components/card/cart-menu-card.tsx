@@ -5,8 +5,8 @@ import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon, Trash2, X } from "lucide-react";
-import { useCartStore } from "@/store/menu/useMenuFilter";
 import { useState } from "react";
+import { useCartStore } from "@/store/cart/useCartFilter";
 
 const CartMenuCard = ({ data }: { data: ICardMenu }) => {
   const { items, updateQuantity, addItem, removeItem } = useCartStore();
