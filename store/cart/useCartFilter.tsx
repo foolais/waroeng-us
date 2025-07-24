@@ -1,4 +1,4 @@
-import { ICardMenu, orderType } from "@/types/types";
+import { ICardMenu, orderType, paymentType } from "@/types/types";
 import { persist } from "zustand/middleware";
 import { create } from "zustand";
 
@@ -6,8 +6,10 @@ interface CartState {
   items: ICardMenu[];
   orderType: orderType;
   tableId: string | null;
+  paymentType: paymentType;
   setOrderType: (type: orderType) => void;
   setTableId: (id: string | null) => void;
+  setPaymentType: (type: paymentType) => void;
   addItem: (item: ICardMenu) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, type: "ADD" | "MINUS") => void;
@@ -20,11 +22,13 @@ export const useCartStore = create<CartState>()(
       items: [],
       orderType: "DINE_IN",
       tableId: null,
+      paymentType: "CASH",
       setOrderType: (type: orderType) => {
         set({ orderType: type });
 
         if (type === "TAKE_AWAY") set({ tableId: null });
       },
+      setPaymentType: (type: paymentType) => set({ paymentType: type }),
       setTableId: (id: string | null) => set({ tableId: id }),
       addItem: (item) => {
         const existingItem = get().items.find((i) => i.id === item.id);
@@ -61,7 +65,13 @@ export const useCartStore = create<CartState>()(
           set({ items: currentItems });
         }
       },
-      clearCart: () => set({ items: [], orderType: "DINE_IN", tableId: null }),
+      clearCart: () =>
+        set({
+          items: [],
+          orderType: "DINE_IN",
+          tableId: null,
+          paymentType: "CASH",
+        }),
     }),
     {
       name: "cart-storage",

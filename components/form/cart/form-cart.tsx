@@ -2,6 +2,7 @@
 "use client";
 
 import Combobox from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -11,16 +12,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAllTable } from "@/lib/action/action-table";
-import { orderTypeOptions } from "@/lib/data";
+import { orderTypeOptions, paymentTypeOptions } from "@/lib/data";
+import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cart/useCartFilter";
-import { orderType } from "@/types/types";
+import { orderType, paymentType } from "@/types/types";
 import { debounce } from "lodash";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-const FormCart = () => {
-  const { orderType, tableId, setOrderType, setTableId } = useCartStore();
+const FormCart = ({ totalPrice }: { totalPrice: number }) => {
+  const {
+    orderType,
+    tableId,
+    paymentType,
+    setOrderType,
+    setTableId,
+    setPaymentType,
+  } = useCartStore();
   const { data: session, status } = useSession();
 
   const [tableData, setTableData] = useState<
@@ -117,6 +126,38 @@ const FormCart = () => {
           />
         </div>
       )}
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="orderType">Tipe Pembayaran</Label>
+        <Select
+          value={paymentType}
+          onValueChange={(value) => setPaymentType(value as paymentType)}
+        >
+          <SelectTrigger className="w-full cursor-pointer">
+            <SelectValue placeholder="Pilih Tipe Pembayaran" />
+          </SelectTrigger>
+          <SelectContent>
+            {paymentTypeOptions.map((item) => (
+              <SelectItem
+                key={item.value}
+                value={item.value}
+                className="cursor-pointer"
+              >
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Total Harga</Label>
+        <Input
+          placeholder="Total Harga"
+          value={formatPrice(totalPrice)}
+          disabled
+          readOnly
+          style={{ opacity: 100 }}
+        />
+      </div>
     </div>
   );
 };

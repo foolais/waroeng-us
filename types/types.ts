@@ -35,3 +35,5 @@ export interface ICardMenu {
 }
 
 export type orderType = "DINE_IN" | "TAKE_AWAY";
+
+export type paymentType = "CASH" | "QR";

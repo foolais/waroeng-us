@@ -251,3 +251,8 @@ export const orderTypeOptions = [
   { value: "DINE_IN", label: "Makan Di Tempat" },
   { value: "TAKE_AWAY", label: "Dibawa Pulang" },
 ];
+
+export const paymentTypeOptions = [
+  { value: "CASH", label: "Tunai" },
+  { value: "QR", label: "Qris" },
+];
