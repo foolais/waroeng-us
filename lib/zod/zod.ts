@@ -110,3 +110,20 @@ export const MenuCategorySchema = z.object({
     .max(20, "Nama menu harus kurang dari 30 karakter"),
   storeId: z.string().nonempty("Toko tidak boleh kosong"),
 });
+
+export const orderSchema = z.object({
+  status: z.enum(["PENDING", "PAID", "CANCELED"]),
+  type: z.enum(["TAKE_AWAY", "DINE_IN"]),
+  total: z.number(),
+  tableId: z.string().optional().or(z.literal("")),
+  orderItem: z.array(
+    z.object({
+      menuId: z.string(),
+      quantity: z.number(),
+      price: z.number(),
+    }),
+  ),
+  transaction: z.object({
+    method: z.enum(["CASH", "QR"]),
+  }),
+});

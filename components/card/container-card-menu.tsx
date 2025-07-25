@@ -58,7 +58,7 @@ const ContainerCardMenu = () => {
   }, [filteredData]);
 
   return (
-    <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-4">
+    <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {!isFetching && renderMenuCards()}
       {filteredData.length === 0 && !isFetching && (
         <div className="flex-center col-span-2 gap-2 pt-10 md:col-span-4">

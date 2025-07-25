@@ -1,6 +1,7 @@
 import {
   Armchair,
   LayoutDashboard,
+  NotebookText,
   Store,
   Users,
   Utensils,
@@ -83,6 +84,11 @@ export const cashierSidenavItems = [
     title: "Menu",
     url: "/menu",
     icon: Utensils,
+  },
+  {
+    title: "Pesanan",
+    url: "/pesanan",
+    icon: NotebookText,
   },
 ];
 
@@ -255,4 +261,10 @@ export const orderTypeOptions = [
 export const paymentTypeOptions = [
   { value: "CASH", label: "Tunai" },
   { value: "QR", label: "Qris" },
+];
+
+export const orderStatusOptions = [
+  { value: "PENDING", label: "Menunggu Pembayaran" },
+  { value: "PAID", label: "Sudah Bayar" },
+  { value: "CANCELED", label: "Dibatalkan" },
 ];
