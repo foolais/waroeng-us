@@ -45,6 +45,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import LogoImage from "@/public/logo.png";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FormOrderProps {
   orderId?: string;
@@ -68,6 +69,11 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
       type: "TAKE_AWAY",
       total: 0,
       tableId: "",
+      notes: "",
+      orderNumber:
+        "WUST-" +
+        `${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}` +
+        "-1",
       orderItem: [
         {
           menuId: "",
@@ -271,10 +277,29 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
             <div className="w-full space-y-4 py-3.5 md:w-2/5">
               <FormField
                 control={form.control}
+                name="orderNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No Pesanan</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="No Pesanan"
+                        {...field}
+                        disabled
+                        readOnly
+                        style={{ opacity: 100 }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <FormLabel className="required">Status</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue="PENDING"
@@ -309,7 +334,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipe Order</FormLabel>
+                    <FormLabel className="required">Tipe Pesanan</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue="DINE_IN"
@@ -364,7 +389,9 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                 name="transaction.method"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Metode Pembayaran</FormLabel>
+                    <FormLabel className="required">
+                      Metode Pembayaran
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue="CASH"
@@ -410,6 +437,22 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Catatan</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Masukkan catatan disini..."
+                        {...field}
+                        disabled={formDisabled}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

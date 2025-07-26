@@ -123,6 +123,8 @@ export const orderSchema = z.object({
       price: z.number(),
     }),
   ),
+  orderNumber: z.string().optional().or(z.literal("")),
+  notes: z.string().optional().or(z.literal("")),
   transaction: z.object({
     method: z.enum(["CASH", "QR"]),
   }),
