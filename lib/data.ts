@@ -268,3 +268,44 @@ export const orderStatusOptions = [
   { value: "PAID", label: "Sudah Bayar" },
   { value: "CANCELED", label: "Dibatalkan" },
 ];
+
+export const orderTypeBadgeOptions = [
+  {
+    value: "DINE_IN",
+    label: "Makan Di Tempat",
+    color: "#3B82F6",
+    bgColor: "bg-blue-50 dark:bg-blue-900/20",
+    textColor: "text-blue-700 dark:text-blue-300",
+  },
+  {
+    value: "TAKE_AWAY",
+    label: "Dibawa Pulang",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+];
+
+export const orderStatusBadgeOptions = [
+  {
+    value: "PENDING",
+    label: "Menunggu Pembayaran",
+    color: "#F59E0B",
+    bgColor: "bg-amber-50 dark:bg-amber-900/20",
+    textColor: "text-amber-700 dark:text-amber-300",
+  },
+  {
+    value: "PAID",
+    label: "Sudah Bayar",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    value: "CANCELED",
+    label: "Dibatalkan",
+    color: "#EF4444",
+    bgColor: "bg-red-50 dark:bg-red-900/20",
+    textColor: "text-red-700 dark:text-red-300",
+  },
+];

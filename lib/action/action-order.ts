@@ -5,6 +5,8 @@ import { orderType, paymentType } from "@/types/types";
 import { prisma } from "../prisma";
 import moment from "moment";
 import { revalidatePath } from "next/cache";
+import { ORDER_STATUS, ORDER_TYPE, Prisma } from "@prisma/client";
+import { ITEM_PER_PAGE } from "../data";
 
 interface IOrder {
   orderType: orderType;
@@ -14,6 +16,66 @@ interface IOrder {
   totalPrice: number;
   items: { id: string; quantity: number; price: number }[];
 }
+
+export const getAllOrder = async (
+  currentPage: number,
+  search: string,
+  status: "ALL" | ORDER_STATUS,
+  type: "ALL" | ORDER_TYPE,
+) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const storeId = session.user.storeId;
+  if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
+
+  try {
+    const pageSize = ITEM_PER_PAGE;
+
+    const where: Prisma.OrderWhereInput = {
+      orderNumber: {
+        contains: search,
+        mode: "insensitive",
+      },
+      ...(status !== "ALL" && { status }),
+      ...(type !== "ALL" && { type }),
+    };
+
+    const [orders, count] = await prisma.$transaction([
+      prisma.order.findMany({
+        orderBy: { created_at: "desc" },
+        take: pageSize,
+        skip: pageSize * (currentPage - 1),
+        where,
+        select: {
+          id: true,
+          orderNumber: true,
+          status: true,
+          type: true,
+          table: {
+            select: {
+              name: true,
+            },
+          },
+          total: true,
+          created_at: true,
+          updated_at: true,
+        },
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    const data = orders.map((order, index) => ({
+      no: (currentPage - 1) * pageSize + index + 1,
+      ...order,
+    }));
+
+    return { data, count };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};
 
 export const createOrder = async (data: IOrder) => {
   const session = await auth();

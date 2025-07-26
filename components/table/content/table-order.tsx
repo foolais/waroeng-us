@@ -1,6 +1,7 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -8,44 +9,76 @@ import {
 } from "@/components/ui/table";
 import { formatPrice } from "@/lib/utils";
 import TableActionOrder from "../action/table-action-order";
-// import { ORDER_STATUS } from "@prisma/client";
+import { ORDER_STATUS, ORDER_TYPE } from "@prisma/client";
+import Badge from "@/components/ui/badge";
+import { orderStatusBadgeOptions, orderTypeBadgeOptions } from "@/lib/data";
 
-// interface TableOrderProps {
-//   data: {
-//     no: number;
-//     id: string;
-//     status: ORDER_STATUS;
-//     tableId: string;
-//     total: number;
-//   };
-// }
+interface TableOrderProps {
+  data: {
+    no: number;
+    id: string;
+    orderNumber: string;
+    status: ORDER_STATUS;
+    type: ORDER_TYPE;
+    table: {
+      name: string;
+    } | null;
+    total: number;
+  }[];
+}
 
-const TableOrder = () => {
+const TableOrder = ({ data }: TableOrderProps) => {
+  console.log({ data });
+
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader className="bg-muted font-medium">
           <TableRow>
             <TableHead className="w-[5%]">No</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Tipe</TableHead>
+            <TableHead>No Pesanan</TableHead>
+            <TableHead className="w-[175px]">Status</TableHead>
+            <TableHead className="w-[175px]">Tipe</TableHead>
             <TableHead>Meja</TableHead>
             <TableHead>Total</TableHead>
             <TableHead className="w-[5%]"></TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>Pending</TableCell>
-            <TableCell>Makan Ditempat</TableCell>
-            <TableCell>Meja 1</TableCell>
-            <TableCell>{formatPrice(10000)}</TableCell>
-            <TableCell>
-              <TableActionOrder id="1" no="1" />
-            </TableCell>
-          </TableRow>
-        </TableBody>
+        {data.length ? (
+          data.map((order) => (
+            <TableBody key={order.id}>
+              <TableRow>
+                <TableCell>{order.no}</TableCell>
+                <TableCell>{order.orderNumber}</TableCell>
+                <TableCell>
+                  <Badge
+                    option={
+                      orderStatusBadgeOptions.find(
+                        (option) => option.value === order.status,
+                      ) ?? orderStatusBadgeOptions[0]
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    option={
+                      orderTypeBadgeOptions.find(
+                        (option) => option.value === order.type,
+                      ) ?? orderTypeBadgeOptions[0]
+                    }
+                  />
+                </TableCell>
+                <TableCell>{order.table?.name ?? "-"}</TableCell>
+                <TableCell>{formatPrice(order.total)}</TableCell>
+                <TableCell>
+                  <TableActionOrder id={order.id} no={order.orderNumber} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ))
+        ) : (
+          <TableCaption className="pb-4">Tidak ada data</TableCaption>
+        )}
       </Table>
     </div>
   );

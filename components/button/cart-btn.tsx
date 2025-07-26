@@ -43,6 +43,15 @@ const CartButton = () => {
   }, [items]);
 
   const handleFinishOrder = () => {
+    if (items.length === 0)
+      return toast.error("Keranjang masih kosong", { duration: 1500 });
+    else if (totalPrice === 0)
+      return toast.error("Total harga masih kosong", { duration: 1500 });
+    else if (orderType === null)
+      return toast.error("Tipe pesanan masih kosong", { duration: 1500 });
+    else if (paymentType === null)
+      return toast.error("Tipe pembayaran masih kosong", { duration: 1500 });
+
     startTransition(async () => {
       try {
         const payload = {
