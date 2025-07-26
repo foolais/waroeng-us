@@ -161,9 +161,12 @@ model Category {
 }
 
 model Order {
-  id     String       @id @default(cuid())
-  status ORDER_STATUS @default(PENDING)
-  total  Int
+  id          String       @id @default(cuid())
+  status      ORDER_STATUS @default(PENDING)
+  type        ORDER_TYPE   @default(DINE_IN)
+  orderNumber String       @unique @map("order_number")
+  notes       String?      @default("")
+  total       Int // total quantity * price
 
   tableId String?
   table   Table?  @relation(fields: [tableId], references: [id])
@@ -204,7 +207,7 @@ model OrderItem {
 
 model Transaction {
   id     String         @id @default(cuid())
-  amount Int
+  amount Int // total payment by buyer
   method PAYMENT_METHOD
   paidAt DateTime       @default(now())
 
@@ -267,6 +270,11 @@ enum ORDER_STATUS {
   PENDING
   PAID
   CANCELED
+}
+
+enum ORDER_TYPE {
+  DINE_IN
+  TAKE_AWAY
 }
 
 enum PAYMENT_METHOD {
