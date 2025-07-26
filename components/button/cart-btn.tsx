@@ -2,6 +2,7 @@
 
 import {
   ChevronRight,
+  Loader2,
   NotebookText,
   ShoppingBasket,
   Trash,
@@ -19,16 +20,20 @@ import {
 } from "../ui/sheet";
 import { ICardMenu } from "@/types/types";
 import CartMenuCard from "../card/cart-menu-card";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cart/useCartFilter";
 import FormCart from "../form/cart/form-cart";
 import { Separator } from "../ui/separator";
+import { createOrder } from "@/lib/action/action-order";
+import { toast } from "sonner";
 
 const CartButton = () => {
-  const { items, orderType, tableId, paymentType, clearCart } = useCartStore();
+  const { items, orderType, tableId, paymentType, notes, clearCart } =
+    useCartStore();
 
   const [onFinishOrder, setOnFinishOrder] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const totalPrice = useMemo(() => {
     return items.reduce(
@@ -37,18 +42,30 @@ const CartButton = () => {
     );
   }, [items]);
 
-  const createOrder = () => {
-    const payload = {
-      orderType: orderType,
-      tableId: tableId || null,
-      paymentType: paymentType,
-      items: items.map((item) => ({
-        id: item.id,
-        quantity: item.quantity,
-        price: +item.price,
-      })),
-    };
-    console.log({ payload });
+  const handleFinishOrder = () => {
+    startTransition(async () => {
+      try {
+        const payload = {
+          orderType: orderType,
+          tableId: tableId || null,
+          paymentType: paymentType,
+          notes: notes || null,
+          totalPrice: totalPrice,
+          items: items.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: +item.price,
+          })),
+        };
+        const res = await createOrder(payload);
+        if ("success" in res) {
+          toast.success(res.message, { duration: 1500 });
+          clearCart();
+        } else toast.error(res.message as string, { duration: 1500 });
+      } catch (error) {
+        console.log(error);
+      }
+    });
   };
 
   const emptyOrder = () => {
@@ -120,8 +137,13 @@ const CartButton = () => {
             </>
           ) : (
             <>
-              <Button type="submit" onClick={createOrder}>
-                Buat Pesanan
+              <Button
+                type="submit"
+                onClick={handleFinishOrder}
+                disabled={isPending}
+              >
+                {isPending ? "Membuat Pesanan..." : "Buat Pesanan"}
+                {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
                 <NotebookText />
               </Button>
               <Separator className="bg-primary my-1" />
@@ -129,6 +151,7 @@ const CartButton = () => {
                 type="submit"
                 variant="outline"
                 className="border-primary"
+                disabled={isPending}
                 onClick={() => {
                   setOnFinishOrder(false);
                 }}

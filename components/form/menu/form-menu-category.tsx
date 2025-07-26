@@ -129,7 +129,6 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
     startFetching(async () => {
       try {
         const data = await getCategoryById(categoryId);
-        console.log({ data });
         if (data && !("error" in data)) {
           form.reset({
             name: data.name,

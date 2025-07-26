@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { getAllTable } from "@/lib/action/action-table";
 import { orderTypeOptions, paymentTypeOptions } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
@@ -26,9 +27,11 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
     orderType,
     tableId,
     paymentType,
+    notes,
     setOrderType,
     setTableId,
     setPaymentType,
+    setNotes,
   } = useCartStore();
   const { data: session, status } = useSession();
 
@@ -91,7 +94,9 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
   return (
     <div className="w-full space-y-4 px-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="orderType">Tipe Order</Label>
+        <Label htmlFor="orderType" className="required">
+          Tipe Pesanan
+        </Label>
         <Select
           value={orderType}
           onValueChange={(value) => setOrderType(value as orderType)}
@@ -127,7 +132,9 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
         </div>
       )}
       <div className="flex flex-col gap-2">
-        <Label htmlFor="orderType">Tipe Pembayaran</Label>
+        <Label htmlFor="orderType" className="required">
+          Tipe Pembayaran
+        </Label>
         <Select
           value={paymentType}
           onValueChange={(value) => setPaymentType(value as paymentType)}
@@ -156,6 +163,14 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
           disabled
           readOnly
           style={{ opacity: 100 }}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Catatan</Label>
+        <Textarea
+          placeholder="Masukkan catatan disini..."
+          value={notes || ""}
+          onChange={(e) => setNotes(e.target.value)}
         />
       </div>
     </div>

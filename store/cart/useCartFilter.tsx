@@ -7,9 +7,11 @@ interface CartState {
   orderType: orderType;
   tableId: string | null;
   paymentType: paymentType;
+  notes: string | null;
   setOrderType: (type: orderType) => void;
   setTableId: (id: string | null) => void;
   setPaymentType: (type: paymentType) => void;
+  setNotes: (notes: string | null) => void;
   addItem: (item: ICardMenu) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, type: "ADD" | "MINUS") => void;
@@ -23,6 +25,7 @@ export const useCartStore = create<CartState>()(
       orderType: "DINE_IN",
       tableId: null,
       paymentType: "CASH",
+      notes: null,
       setOrderType: (type: orderType) => {
         set({ orderType: type });
 
@@ -30,6 +33,7 @@ export const useCartStore = create<CartState>()(
       },
       setPaymentType: (type: paymentType) => set({ paymentType: type }),
       setTableId: (id: string | null) => set({ tableId: id }),
+      setNotes: (notes: string | null) => set({ notes }),
       addItem: (item) => {
         const existingItem = get().items.find((i) => i.id === item.id);
         if (existingItem) {
