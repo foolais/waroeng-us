@@ -309,3 +309,20 @@ export const orderStatusBadgeOptions = [
     textColor: "text-red-700 dark:text-red-300",
   },
 ];
+
+export const paymentTypeBadgeOptions = [
+  {
+    value: "CASH",
+    label: "Tunai",
+    color: "#10B981",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    textColor: "text-emerald-700 dark:text-emerald-300",
+  },
+  {
+    value: "QR",
+    label: "Qris",
+    color: "#3B82F6",
+    bgColor: "bg-blue-50 dark:bg-blue-900/20",
+    textColor: "text-blue-700 dark:text-blue-300",
+  },
+];

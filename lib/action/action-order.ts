@@ -5,7 +5,7 @@ import { orderType, paymentType } from "@/types/types";
 import { prisma } from "../prisma";
 import moment from "moment";
 import { revalidatePath } from "next/cache";
-import { ORDER_STATUS, ORDER_TYPE, Prisma } from "@prisma/client";
+import { ORDER_STATUS, Prisma } from "@prisma/client";
 import { ITEM_PER_PAGE } from "../data";
 
 interface IOrder {
@@ -21,7 +21,6 @@ export const getAllOrder = async (
   currentPage: number,
   search: string,
   status: "ALL" | ORDER_STATUS,
-  type: "ALL" | ORDER_TYPE,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
@@ -38,7 +37,6 @@ export const getAllOrder = async (
         mode: "insensitive",
       },
       ...(status !== "ALL" && { status }),
-      ...(type !== "ALL" && { type }),
     };
 
     const [orders, count] = await prisma.$transaction([
@@ -55,6 +53,11 @@ export const getAllOrder = async (
           table: {
             select: {
               name: true,
+            },
+          },
+          transaction: {
+            select: {
+              method: true,
             },
           },
           total: true,

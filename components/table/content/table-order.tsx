@@ -11,7 +11,11 @@ import { formatPrice } from "@/lib/utils";
 import TableActionOrder from "../action/table-action-order";
 import { ORDER_STATUS, ORDER_TYPE } from "@prisma/client";
 import Badge from "@/components/ui/badge";
-import { orderStatusBadgeOptions, orderTypeBadgeOptions } from "@/lib/data";
+import {
+  orderStatusBadgeOptions,
+  orderTypeBadgeOptions,
+  paymentTypeBadgeOptions,
+} from "@/lib/data";
 
 interface TableOrderProps {
   data: {
@@ -24,6 +28,9 @@ interface TableOrderProps {
       name: string;
     } | null;
     total: number;
+    transaction: {
+      method: "CASH" | "QR";
+    } | null;
   }[];
 }
 
@@ -36,11 +43,12 @@ const TableOrder = ({ data }: TableOrderProps) => {
         <TableHeader className="bg-muted font-medium">
           <TableRow>
             <TableHead className="w-[5%]">No</TableHead>
-            <TableHead>No Pesanan</TableHead>
-            <TableHead className="w-[175px]">Status</TableHead>
-            <TableHead className="w-[175px]">Tipe</TableHead>
-            <TableHead>Meja</TableHead>
+            <TableHead className="w-[20%]">No Pesanan</TableHead>
+            <TableHead className="w-[20%]">Status</TableHead>
+            <TableHead className="w-[20%]">Tipe</TableHead>
+            <TableHead className="w-[15%]">Meja</TableHead>
             <TableHead>Total</TableHead>
+            <TableHead className="w-[15%]">Metode</TableHead>
             <TableHead className="w-[5%]"></TableHead>
           </TableRow>
         </TableHeader>
@@ -70,6 +78,15 @@ const TableOrder = ({ data }: TableOrderProps) => {
                 </TableCell>
                 <TableCell>{order.table?.name ?? "-"}</TableCell>
                 <TableCell>{formatPrice(order.total)}</TableCell>
+                <TableCell>
+                  <Badge
+                    option={
+                      paymentTypeBadgeOptions.find(
+                        (option) => option.value === order.transaction?.method,
+                      ) ?? paymentTypeBadgeOptions[0]
+                    }
+                  />
+                </TableCell>
                 <TableCell>
                   <TableActionOrder id={order.id} no={order.orderNumber} />
                 </TableCell>
