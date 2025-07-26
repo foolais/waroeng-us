@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: Date) {
-  return moment(date).format("LL");
+  return moment(date).format("DD-MM-YYYY");
 }
 
 export function getButtonText(

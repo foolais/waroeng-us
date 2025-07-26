@@ -9,6 +9,7 @@ import {
   useSuperCategoryMenuFilter,
   useSuperMenuFilter,
 } from "@/store/menu/useMenuFilter";
+import { useOrderFilter } from "@/store/order/useOrderFilter";
 
 export const FilterSearchStore = ({
   placeholder,
@@ -102,6 +103,26 @@ export const FilterSearchCategoryMenu = ({
   className?: string;
 }) => {
   const { filter, setFilter } = useSuperCategoryMenuFilter();
+
+  return (
+    <FormFieldInput
+      name="search"
+      placeholder={placeholder}
+      value={filter.search}
+      onChange={(e) => setFilter({ search: e.target.value })}
+      className={className}
+    />
+  );
+};
+
+export const FilterSearchOrder = ({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) => {
+  const { filter, setFilter } = useOrderFilter();
 
   return (
     <FormFieldInput

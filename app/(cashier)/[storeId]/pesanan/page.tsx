@@ -1,4 +1,5 @@
 import CartButton from "@/components/button/cart-btn";
+import ContainerFilterOrder from "@/components/filter/order/container-filter-order";
 import TableOrder from "@/components/table/content/table-order";
 import TablePagination from "@/components/table/table-pagination";
 import { TableSkeleton } from "@/components/table/table-skeleton";
@@ -21,9 +22,11 @@ const CashierOrderPage = async ({ searchParams }: iProps) => {
 
   return (
     <div className="px-4">
-      <div className="mb-4 flex justify-end">
+      <div className="flex items-center justify-between">
+        <h1 className="header-title">List Pesanan</h1>
         <CartButton />
       </div>
+      <ContainerFilterOrder />
       <Suspense fallback={<TableSkeleton />}>
         <DataTableWrapper orderPromise={orderPromise} page={p} />
       </Suspense>
