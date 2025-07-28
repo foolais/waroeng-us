@@ -46,7 +46,7 @@ import { z } from "zod";
 import LogoImage from "@/public/logo.png";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { getOrderById } from "@/lib/action/action-order";
+import { getOrderById, updateOrder } from "@/lib/action/action-order";
 import { useOrderSelectedTable } from "@/store/order/useOrderFilter";
 
 interface FormOrderProps {
@@ -91,9 +91,6 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
     },
   });
 
-  const formDisabled = type === "DETAIL";
-  const storeId = session?.user.storeId;
-
   const { selectedTableData, setSelectedTable } = useOrderSelectedTable();
 
   const [tableId, setTableId] = useState<string | null>(null);
@@ -110,6 +107,9 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
 
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
+
+  const formDisabled = type === "DETAIL" || isFetching;
+  const storeId = session?.user.storeId;
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -134,9 +134,12 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
             ? data.map((table) => ({ value: table.id, label: table.name }))
             : [];
 
-          console.log({ selectedTableData });
-          if (selectedTableData?.value !== "") {
-            setTableData([selectedTableData, ...tableData]);
+          const isSelectedTableIncluded = mappedData.some(
+            (table) => table.value === selectedTableData?.value,
+          );
+
+          if (selectedTableData?.value && !isSelectedTableIncluded) {
+            setTableData([selectedTableData, ...mappedData]);
           } else {
             setTableData(mappedData);
           }
@@ -271,8 +274,33 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   };
 
   const handleSubmit = (values: z.infer<typeof orderSchema>) => {
-    console.log({ values });
-    console.log({ orderId });
+    startTransition(async () => {
+      try {
+        const payload = {
+          orderType: values.type,
+          orderNumber: values.orderNumber ?? "",
+          paymentType: values.transaction.method,
+          tableId: values.tableId ?? null,
+          notes: values.notes ?? null,
+          totalPrice: values.total,
+          items: values.orderItem.map((item) => ({
+            id: item.menuId,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          status: values.status,
+        };
+        if (type === "UPDATE" && orderId) {
+          const res = await updateOrder(orderId, payload);
+          if ("success" in res && res.success) {
+            toast.success(res.message, { duration: 1500 });
+            onClose();
+          } else if ("error" in res) toast.error(res.error, { duration: 1500 });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
   };
 
   // HANDLE GET DETAIL ORDER
@@ -446,7 +474,10 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                         options={tableData}
                         placeholder="Pilih Meja"
                         value={tableId || ""}
-                        onChange={setTableId}
+                        onChange={(value) => {
+                          setTableId(value || null);
+                          form.setValue("tableId", value || "");
+                        }}
                         onSearch={handleSearchTable}
                         isLoading={isFetchingTable}
                       />

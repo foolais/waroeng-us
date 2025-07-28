@@ -244,3 +244,170 @@ export const createOrder = async (data: IOrder) => {
     return { error: true, message: error };
   }
 };
+
+interface IUpdateOrder extends IOrder {
+  status: ORDER_STATUS;
+  orderNumber: string;
+}
+
+export const updateOrder = async (orderId: string, data: IUpdateOrder) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const storeId = session.user.storeId;
+  if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
+
+  try {
+    return await prisma.$transaction(async (prisma) => {
+      const oldData = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: { table: true },
+      });
+
+      if (!oldData) {
+        return { error: true, message: "Order tidak ditemukan" };
+      }
+
+      if (oldData.storeId !== storeId) {
+        return { error: true, message: "Order tidak termasuk dalam toko ini" };
+      }
+
+      const { tableId, status, items } = data;
+      const { tableId: oldTableId } = oldData;
+
+      // * Validate menu items if they're being updated
+      if (items && items.length > 0) {
+        const menusId = items.map((item) => item.id);
+        const menus = await prisma.menu.findMany({
+          where: { id: { in: menusId }, storeId },
+        });
+
+        if (menus.length !== items.length) {
+          const missingMenus = items.filter(
+            (item) => !menus.some((menu) => menu.id === item.id),
+          );
+          return {
+            error: true,
+            message: `Menu dengan id ${missingMenus.map((item) => item.id)} tidak ditemukan`,
+          };
+        }
+
+        const unavailableMenus = menus.filter(
+          (menu) => menu.status !== "AVAILABLE",
+        );
+        if (unavailableMenus.length > 0) {
+          return {
+            error: true,
+            message: `Menu dengan id ${unavailableMenus.map((menu) => menu.id)} tidak tersedia`,
+          };
+        }
+      }
+
+      // * Handle table status changes
+      if (tableId) {
+        const table = await prisma.table.findFirst({
+          where: { id: tableId, storeId },
+        });
+
+        if (!table) {
+          return { error: true, message: "Meja tidak ditemukan" };
+        }
+
+        if (tableId !== oldTableId && oldTableId) {
+          // ? Free the old table
+          await prisma.table.update({
+            where: { id: oldTableId },
+            data: { status: "AVAILABLE" },
+          });
+        }
+        if (status !== "PENDING") {
+          // ? Free the table if order is no longer pending
+          await prisma.table.update({
+            where: { id: tableId },
+            data: { status: "AVAILABLE" },
+          });
+        } else if (status === "PENDING") {
+          // ? Occupy the table if order is still pending
+          await prisma.table.update({
+            where: { id: tableId },
+            data: { status: "WAITING_ORDER" },
+          });
+        }
+      } else if (!tableId && oldTableId) {
+        // ? Free the old table if order is being moved to no table
+        await prisma.table.update({
+          where: { id: oldTableId },
+          data: { status: "AVAILABLE" },
+        });
+      }
+
+      const payload = {
+        status: data.status,
+        type: data.orderType,
+        notes: data.notes,
+        total: data.totalPrice,
+        tableId: data.tableId || null,
+        updatedById: session.user.id,
+      };
+
+      // Update the order
+      await prisma.order.update({
+        where: { id: orderId },
+        data: payload,
+      });
+
+      // Update order items if provided
+      if (items && items.length > 0) {
+        await prisma.orderItem.deleteMany({
+          where: { orderId },
+        });
+
+        // Create new items
+        await prisma.orderItem.createMany({
+          data: items.map((item) => ({
+            orderId,
+            menuId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        });
+      }
+
+      // Update transaction if payment type changed
+      if (data.paymentType) {
+        await prisma.transaction.update({
+          where: { orderId },
+          data: {
+            method: data.paymentType,
+            amount: data.totalPrice,
+          },
+        });
+      }
+
+      await prisma.history.create({
+        data: {
+          record_id: orderId,
+          actions: `Pesanan ${oldData.orderNumber} telah diubah`,
+          table_name: "Order",
+          storeId,
+          createdById: session.user.id,
+        },
+      });
+
+      revalidatePath(`/${storeId}/pesanan`);
+      return {
+        success: true,
+        message: "Order berhasil diubah",
+      };
+    });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    return {
+      error: true,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Terjadi kesalahan saat mengupdate order",
+    };
+  }
+};
