@@ -24,3 +24,23 @@ export const useOrderFilter = create<OrderStore>((set) => ({
   clearDateRange: () =>
     set((state) => ({ filter: { ...state.filter, dateRange: undefined } })),
 }));
+
+interface OrderSelectedTable {
+  value: string;
+  label: string;
+}
+
+interface OrderSelectedTableStore {
+  selectedTableData: OrderSelectedTable;
+  setSelectedTable: (update: Partial<OrderSelectedTable>) => void;
+}
+
+export const useOrderSelectedTable = create<OrderSelectedTableStore>()(
+  (set) => ({
+    selectedTableData: { value: "", label: "" },
+    setSelectedTable: (update) =>
+      set((state) => ({
+        selectedTableData: { ...state.selectedTableData, ...update },
+      })),
+  }),
+);

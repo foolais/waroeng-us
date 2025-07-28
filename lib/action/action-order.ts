@@ -93,6 +93,61 @@ export const getAllOrder = async (
   }
 };
 
+export const getOrderById = async (orderId: string) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const storeId = session.user.storeId;
+  if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
+
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId },
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        type: true,
+        table: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        transaction: {
+          select: {
+            method: true,
+          },
+        },
+        orderItems: {
+          select: {
+            menu: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            quantity: true,
+            price: true,
+          },
+        },
+        notes: true,
+        total: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
+
+    if (!order) return { error: true, message: "Order tidak ditemukan" };
+
+    return order;
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};
+
 export const createOrder = async (data: IOrder) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };

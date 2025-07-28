@@ -46,6 +46,8 @@ import { z } from "zod";
 import LogoImage from "@/public/logo.png";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { getOrderById } from "@/lib/action/action-order";
+import { useOrderSelectedTable } from "@/store/order/useOrderFilter";
 
 interface FormOrderProps {
   orderId?: string;
@@ -60,6 +62,11 @@ interface MenuItem {
   image?: string;
 }
 
+interface TableOption {
+  value: string;
+  label: string;
+}
+
 const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   const { data: session, status } = useSession();
   const form = useForm<z.infer<typeof orderSchema>>({
@@ -70,10 +77,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
       total: 0,
       tableId: "",
       notes: "",
-      orderNumber:
-        "WUST-" +
-        `${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}` +
-        "-1",
+      orderNumber: "",
       orderItem: [
         {
           menuId: "",
@@ -90,10 +94,10 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   const formDisabled = type === "DETAIL";
   const storeId = session?.user.storeId;
 
+  const { selectedTableData, setSelectedTable } = useOrderSelectedTable();
+
   const [tableId, setTableId] = useState<string | null>(null);
-  const [tableData, setTableData] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [tableData, setTableData] = useState<TableOption[]>([]);
   const [menuSearchData, setMenuSearchData] = useState<{
     [key: string]: MenuItem[];
   }>({});
@@ -115,16 +119,27 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   // [START] HANDLE COMBOBOX TABLES
   const fetchTables = useMemo(
     () =>
-      debounce(async (query: string = "") => {
+      debounce(async (query: string = "", status?: "ALL" | "AVAILABLE") => {
         if (!storeId) return;
 
         try {
           setIsFetchingTable(true);
-          const { data } = await getAllTable(1, query, "AVAILABLE", storeId);
-          const mappedData = Array.isArray(data)
+          const { data } = await getAllTable(
+            1,
+            query,
+            status ?? "AVAILABLE",
+            storeId,
+          );
+          const mappedData: TableOption[] = Array.isArray(data)
             ? data.map((table) => ({ value: table.id, label: table.name }))
             : [];
-          setTableData(mappedData);
+
+          console.log({ selectedTableData });
+          if (selectedTableData?.value !== "") {
+            setTableData([selectedTableData, ...tableData]);
+          } else {
+            setTableData(mappedData);
+          }
         } catch (error) {
           console.log(error);
           toast.error(
@@ -257,8 +272,63 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
 
   const handleSubmit = (values: z.infer<typeof orderSchema>) => {
     console.log({ values });
+    console.log({ orderId });
   };
 
+  // HANDLE GET DETAIL ORDER
+  useEffect(() => {
+    if (!orderId || type === "CREATE") return;
+    startFetching(async () => {
+      try {
+        const data = await getOrderById(orderId);
+        if (data && !("error" in data)) {
+          const table = data.table;
+          if (table) {
+            setTableId(table.id);
+            fetchTables(table.name, "ALL");
+            setSelectedTable({ value: table.id, label: table.name });
+          }
+
+          form.reset({
+            status: data.status,
+            type: data.type,
+            total: data.total,
+            tableId: data.table?.id ?? undefined,
+            notes: data.notes ?? undefined,
+            orderNumber: data.orderNumber,
+            orderItem: data.orderItems.map((item) => ({
+              menuId: item.menu.id,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+            transaction: {
+              method: data.transaction?.method as "CASH" | "QR",
+            },
+          });
+
+          data.orderItems.forEach((item, index) => {
+            setMenuSearchData((prev) => ({
+              ...prev,
+              [index]: [
+                {
+                  value: item.menu.id,
+                  label: item.menu.name,
+                  price: item.price,
+                  image: item.menu.image ?? "",
+                },
+              ],
+            }));
+          });
+
+          setSelectedQuantity(data.orderItems.length);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, [form, orderId, type]);
+
+  // HANDLE TOTOAL PRICE
   useEffect(() => {
     const orderItem = form.getValues("orderItem");
     const sumItems = orderItem.reduce(
