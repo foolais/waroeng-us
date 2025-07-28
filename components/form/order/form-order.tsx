@@ -370,8 +370,11 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div className="flex h-full flex-1 flex-col md:flex-row">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="pb-8 md:pb-0"
+        >
+          <div className="flex h-full flex-1 flex-col gap-4 md:flex-row">
             <div className="w-full space-y-4 py-3.5 md:w-2/5">
               <FormField
                 control={form.control}
@@ -558,16 +561,18 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                 )}
               />
             </div>
-            <div className="w-full px-4 md:w-3/5">
+            <div className="w-full md:w-3/5">
               <h3 className="text-xl font-medium">Detail Pesanan</h3>
-              <Button
-                variant="outline"
-                className="border-primary mt-2 w-full"
-                onClick={handleAddItem}
-                disabled={formDisabled}
-              >
-                Tambah Pesanan Baru <Plus />
-              </Button>
+              {type === "UPDATE" && (
+                <Button
+                  variant="outline"
+                  className="border-primary mt-2 w-full"
+                  onClick={handleAddItem}
+                  disabled={formDisabled}
+                >
+                  Tambah Pesanan Baru <Plus />
+                </Button>
+              )}
               <Separator className="bg-primary my-4" />
               <div className="no-scrollbar grid h-full max-h-[50vh] flex-1 auto-rows-min gap-4 overflow-y-auto md:min-h-[50vh]">
                 {fields.map((field, index) => {

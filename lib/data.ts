@@ -86,6 +86,11 @@ export const cashierSidenavItems = [
     icon: Utensils,
   },
   {
+    title: "Meja",
+    url: "/meja",
+    icon: Armchair,
+  },
+  {
     title: "Pesanan",
     url: "/pesanan",
     icon: NotebookText,

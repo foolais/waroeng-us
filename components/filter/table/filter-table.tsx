@@ -13,7 +13,11 @@ const statusOptions = [
   { value: "MAINTENANCE", label: "Maintenance" },
 ];
 
-export const FilterTableStatus = () => {
+export const FilterTableStatus = ({
+  isCashierPage = false,
+}: {
+  isCashierPage?: boolean;
+}) => {
   const { setFilter } = useSuperTableFilter();
   const [statusValue, setStatusValue] = useState("ALL");
 
@@ -24,7 +28,7 @@ export const FilterTableStatus = () => {
       isHiddenLabel
       placeholder="Filter Status"
       widthClassName="w-full md:w-[180px]"
-      data={statusOptions}
+      data={isCashierPage ? statusOptions.slice(0, 4) : statusOptions}
       value={statusValue}
       setValue={(val) => setStatusValue(val as "ALL" | TableStatus)}
       onChangeForm={(val) => {

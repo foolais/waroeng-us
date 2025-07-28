@@ -73,7 +73,7 @@ export const TableSchema = z.object({
   name: z
     .string()
     .min(2, "Meja harus lebih dari 2 karakter")
-    .max(20, "Meja harus kurang dari 20 karakter"),
+    .max(5, "Meja harus kurang dari 5 karakter"),
   status: z.enum(["AVAILABLE", "WAITING_ORDER", "DINING", "MAINTENANCE"]),
   storeId: z.string().nonempty("Toko tidak boleh kosong"),
 });

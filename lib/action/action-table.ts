@@ -17,6 +17,7 @@ export const getAllTable = async (
   search: string,
   status: "ALL" | TABLE_STATUS,
   store: string,
+  isGetAll?: boolean,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
@@ -26,7 +27,7 @@ export const getAllTable = async (
   const storeId = isAdmin ? session.user.storeId : store;
 
   try {
-    const pageSize = ITEM_PER_PAGE;
+    const pageSize = isGetAll ? 100 : ITEM_PER_PAGE;
 
     const where: Prisma.TableWhereInput = {
       name: {
@@ -47,6 +48,7 @@ export const getAllTable = async (
           id: true,
           name: true,
           status: true,
+          orders: { select: { id: true } },
           store: {
             select: {
               id: true,
