@@ -404,10 +404,67 @@ export const updateOrder = async (orderId: string, data: IUpdateOrder) => {
     console.error("Error updating order:", error);
     return {
       error: true,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Terjadi kesalahan saat mengupdate order",
+      message: error,
+    };
+  }
+};
+
+export const deleteOrder = async (orderId: string) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const storeId = session.user.storeId;
+  if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
+
+  try {
+    return await prisma.$transaction(async (prisma) => {
+      const oldData = await prisma.order.findFirst({
+        where: { id: orderId },
+      });
+
+      if (!oldData) return { error: true, message: "Order tidak ditemukan" };
+
+      await prisma.orderItem.deleteMany({
+        where: { orderId },
+      });
+
+      await prisma.transaction.delete({
+        where: { orderId },
+      });
+
+      await prisma.order.delete({
+        where: { id: orderId },
+      });
+
+      // Free table if there was table
+      if (oldData.tableId) {
+        await prisma.table.update({
+          where: { id: oldData.tableId },
+          data: { status: "AVAILABLE" },
+        });
+      }
+
+      await prisma.history.create({
+        data: {
+          record_id: orderId,
+          actions: `Pesanan ${oldData.orderNumber} telah dihapus`,
+          table_name: "Order",
+          storeId,
+          createdById: session.user.id,
+        },
+      });
+
+      revalidatePath(`/${storeId}/pesanan`);
+      return {
+        success: true,
+        message: "Order berhasil dihapus",
+      };
+    });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    return {
+      error: true,
+      message: error,
     };
   }
 };
