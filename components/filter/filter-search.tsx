@@ -10,6 +10,7 @@ import {
   useSuperMenuFilter,
 } from "@/store/menu/useMenuFilter";
 import { useOrderFilter } from "@/store/order/useOrderFilter";
+import { useSearchParams } from "next/navigation";
 
 export const FilterSearchStore = ({
   placeholder,
@@ -123,6 +124,16 @@ export const FilterSearchOrder = ({
   className?: string;
 }) => {
   const { filter, setFilter } = useOrderFilter();
+  const params = useSearchParams();
+
+  useEffect(() => {
+    const search = params.get("search");
+    if (search) setFilter({ search });
+  }, [params, setFilter]);
+
+  useEffect(() => {
+    return () => setFilter({ search: "" });
+  }, [setFilter]);
 
   return (
     <FormFieldInput

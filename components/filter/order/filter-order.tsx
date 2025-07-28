@@ -9,16 +9,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { orderStatusOptions } from "@/lib/data";
+import { formatDate } from "@/lib/utils";
 import { useOrderFilter } from "@/store/order/useOrderFilter";
 import { ORDER_STATUS } from "@prisma/client";
 import { CalendarIcon } from "lucide-react";
 import moment from "moment";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 export const FilterOrderStatus = () => {
   const { setFilter } = useOrderFilter();
   const [statusValue, setStatusValue] = useState("ALL");
+  const params = useSearchParams();
+
+  useEffect(() => {
+    const status = params.get("status");
+    if (status) {
+      setStatusValue(status || "ALL");
+      setFilter({ status: status as "ALL" | ORDER_STATUS });
+    }
+  }, [params, setFilter]);
 
   return (
     <FormFieldCombobox
@@ -52,6 +63,8 @@ export const FilterOrderDate = ({
   className = "",
 }: FilterOrderDateProps) => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(value);
+  const { setFilter } = useOrderFilter();
+  const params = useSearchParams();
 
   const handleDateChange = (range: DateRange | undefined) => {
     setDateRange(range);
@@ -62,13 +75,24 @@ export const FilterOrderDate = ({
 
   const displayText = () => {
     if (!dateRange?.from) return placeholder;
-    if (dateRange.from && !dateRange.to)
-      return moment(dateRange.from).format("L");
+    if (dateRange.from && !dateRange.to) return formatDate(dateRange.from);
     if (dateRange.from && dateRange.to) {
-      return `${moment(dateRange.from).format("L")} - ${moment(dateRange.to).format("L")}`;
+      return `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`;
     }
     return placeholder;
   };
+
+  useEffect(() => {
+    const dateFrom = params.get("dateFrom");
+    const dateTo = params.get("dateTo");
+
+    if (dateFrom && dateTo) {
+      const from = moment(dateFrom, "DD-MM-YYYY").startOf("day").toDate();
+      const to = moment(dateTo, "DD-MM-YYYY").endOf("day").toDate();
+      setDateRange({ from, to });
+      setFilter({ dateRange: { from, to } });
+    }
+  }, [params, setFilter]);
 
   return (
     <Popover>
