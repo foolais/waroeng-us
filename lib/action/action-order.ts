@@ -21,6 +21,8 @@ export const getAllOrder = async (
   currentPage: number,
   search: string,
   status: "ALL" | ORDER_STATUS,
+  dateFrom?: Date | string | null,
+  dateTo?: Date | string | null,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
@@ -31,12 +33,23 @@ export const getAllOrder = async (
   try {
     const pageSize = ITEM_PER_PAGE;
 
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const toDate = dateTo ? new Date(dateTo) : null;
+
+    const createdAtFilter: Record<string, string> = {};
+    if (fromDate) createdAtFilter.gte = fromDate.toISOString();
+    if (toDate) createdAtFilter.lte = toDate.toISOString();
+
     const where: Prisma.OrderWhereInput = {
+      storeId,
       orderNumber: {
         contains: search,
         mode: "insensitive",
       },
       ...(status !== "ALL" && { status }),
+      ...(Object.keys(createdAtFilter).length > 0 && {
+        created_at: createdAtFilter,
+      }),
     };
 
     const [orders, count] = await prisma.$transaction([

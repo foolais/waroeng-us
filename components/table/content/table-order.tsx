@@ -35,8 +35,6 @@ interface TableOrderProps {
 }
 
 const TableOrder = ({ data }: TableOrderProps) => {
-  console.log({ data });
-
   return (
     <div className="rounded-md border">
       <Table>

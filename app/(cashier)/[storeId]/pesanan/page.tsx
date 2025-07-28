@@ -5,6 +5,7 @@ import TablePagination from "@/components/table/table-pagination";
 import { TableSkeleton } from "@/components/table/table-skeleton";
 import { getAllOrder } from "@/lib/action/action-order";
 import { ORDER_STATUS } from "@prisma/client";
+import moment from "moment";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -13,12 +14,26 @@ interface iProps {
 }
 
 const CashierOrderPage = async ({ searchParams }: iProps) => {
-  const { page, search = "", status = "ALL" } = await searchParams;
+  const {
+    page,
+    search = "",
+    status = "ALL",
+    dateFrom = "",
+    dateTo = "",
+  } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
   if (p === 0) return notFound();
 
-  const orderPromise = getAllOrder(p, search, status as "ALL" | ORDER_STATUS);
+  const orderPromise = getAllOrder(
+    p,
+    search,
+    status as "ALL" | ORDER_STATUS,
+    dateFrom
+      ? moment(dateFrom, "DD-MM-YYYY").startOf("day").toISOString()
+      : null,
+    dateTo ? moment(dateTo, "DD-MM-YYYY").endOf("day").toISOString() : null,
+  );
 
   return (
     <div className="px-4">
