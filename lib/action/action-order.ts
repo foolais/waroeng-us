@@ -358,10 +358,6 @@ export const updateOrder = async (orderId: string, data: IUpdateOrder) => {
 
       // Update order items if provided
       if (items && items.length > 0) {
-        await prisma.orderItem.deleteMany({
-          where: { orderId },
-        });
-
         // Create new items
         await prisma.orderItem.createMany({
           data: items.map((item) => ({

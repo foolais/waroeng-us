@@ -11,7 +11,7 @@ interface iProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 
-const CashierOrderTable = async ({ searchParams }: iProps) => {
+const CashierOrderPage = async ({ searchParams }: iProps) => {
   const { search = "", status = "ALL" } = await searchParams;
   const session = await auth();
 
@@ -52,4 +52,4 @@ const DataTableWrapper = async ({
   );
 };
 
-export default CashierOrderTable;
+export default CashierOrderPage;
