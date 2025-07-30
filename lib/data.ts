@@ -72,6 +72,11 @@ export const adminSidenavItems = [
       { title: "Kategori", url: "/admin/menu/kategori" },
     ],
   },
+  {
+    title: "Pesanan",
+    url: "/admin/pesanan",
+    icon: NotebookText,
+  },
 ];
 
 export const cashierSidenavItems = [
