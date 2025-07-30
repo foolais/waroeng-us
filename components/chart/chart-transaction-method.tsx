@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { Pie, PieChart, Label } from "recharts";
+import { Pie, PieChart } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -26,7 +26,6 @@ const ChartTransactionMethod = () => {
   const [chartData, setChartData] = useState<
     { method: string; count: number; fill: string }[]
   >([]);
-  const [totalTransactions, setTotalTransactions] = useState(0);
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
 
@@ -52,10 +51,8 @@ const ChartTransactionMethod = () => {
         count: item._count.id,
         fill: COLORS[item.method as keyof typeof COLORS],
       }));
-      const totalData = data.reduce((acc, item) => acc + item.count, 0);
 
       setChartData(data);
-      setTotalTransactions(totalData);
       setOnRefresh(false);
     }
   };
@@ -78,9 +75,9 @@ const ChartTransactionMethod = () => {
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="aspect-square max-h-[25rem] min-h-[25rem]" />
+        <Skeleton className="aspect-square h-[40vh]" />
       ) : (
-        <Card className="flex aspect-square max-h-[25rem] w-full flex-col gap-0">
+        <Card className="flex aspect-square h-[40vh] w-full flex-col gap-0">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-1">
               <HandCoins color="var(--color-primary)" />
@@ -116,40 +113,8 @@ const ChartTransactionMethod = () => {
                       data={chartData}
                       dataKey="count"
                       nameKey="method"
-                      innerRadius={60}
-                      strokeWidth={2}
                       label
-                    >
-                      <Label
-                        content={({ viewBox }) => {
-                          if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                            return (
-                              <text
-                                x={viewBox.cx}
-                                y={viewBox.cy}
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                              >
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={viewBox.cy}
-                                  className="fill-foreground text-3xl font-bold"
-                                >
-                                  {totalTransactions.toLocaleString()}
-                                </tspan>
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={(viewBox.cy || 0) + 24}
-                                  className="fill-muted-foreground"
-                                >
-                                  Transaksi
-                                </tspan>
-                              </text>
-                            );
-                          }
-                        }}
-                      />
-                    </Pie>
+                    />
                   </PieChart>
                 </ChartContainer>
               </div>

@@ -1,3 +1,5 @@
+import { ORDER_STATUS, ORDER_TYPE } from "@prisma/client";
+
 export type TableStatus =
   | "AVAILABLE"
   | "WAITING_ORDER"
@@ -37,3 +39,20 @@ export interface ICardMenu {
 export type orderType = "DINE_IN" | "TAKE_AWAY";
 
 export type paymentType = "CASH" | "QR";
+
+export interface TableOrderProps {
+  no: number;
+  id: string;
+  orderNumber: string;
+  status: ORDER_STATUS;
+  type: ORDER_TYPE;
+  table: {
+    name: string;
+  } | null;
+  total: number;
+  transaction: {
+    method: "CASH" | "QR";
+  } | null;
+}
+
+export type TimeRange = "today" | "3days" | "7days" | "15days" | "1month";

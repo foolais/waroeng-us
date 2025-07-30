@@ -23,6 +23,7 @@ export const getAllOrder = async (
   status: "ALL" | ORDER_STATUS,
   dateFrom?: Date | string | null,
   dateTo?: Date | string | null,
+  itemPerPage?: number,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
@@ -31,7 +32,7 @@ export const getAllOrder = async (
   if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
 
   try {
-    const pageSize = ITEM_PER_PAGE;
+    const pageSize = itemPerPage ? itemPerPage : ITEM_PER_PAGE;
 
     const fromDate = dateFrom ? new Date(dateFrom) : null;
     const toDate = dateTo ? new Date(dateTo) : null;
