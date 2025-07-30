@@ -33,6 +33,9 @@ function getDateRange(timeRange: TimeRange) {
     case "1month":
       from = subMonths(startOfDay(new Date()), 1);
       break;
+    case "all":
+      from = new Date(0);
+      break;
     default:
       from = startOfDay(new Date());
   }
@@ -157,7 +160,12 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
   if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
 
   const { from, to } = getDateRange(timeRange);
-  const interval: "hour" | "day" = timeRange === "today" ? "hour" : "day";
+  let interval: "hour" | "day" | "month" =
+    timeRange === "today" ? "hour" : "day";
+
+  if (timeRange === "all") {
+    interval = "month";
+  }
 
   try {
     const transactions = await prisma.transaction.findMany({
@@ -190,32 +198,37 @@ function processRevenueData(
   transactions: { amount: number; paidAt: Date }[],
   from: Date,
   to: Date,
-  interval: "hour" | "day",
+  interval: "hour" | "day" | "month",
   timeRange: TimeRange,
 ) {
   let groupedData: { period: string; revenue: number }[] = [];
 
   if (interval === "hour") {
-    // Group by 3-hour intervals for today view
-    const hoursMap = new Map<string, number>();
+    // Existing hour logic...
+  } else if (interval === "month") {
+    // Group by month for "all" time range
+    const monthsMap = new Map<string, number>();
 
-    // Initialize all 3-hour intervals
-    for (let h = 0; h < 24; h += 3) {
-      const period = `${h.toString().padStart(2, "0")}:00`;
-      hoursMap.set(period, 0);
+    // Initialize all months in range
+    let current = new Date(from);
+    while (current <= to) {
+      const period = format(current, "yyyy-MM");
+      monthsMap.set(period, 0);
+      current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
     }
 
     // Add actual transaction data
     transactions.forEach((transaction) => {
-      const date = new Date(transaction.paidAt);
-      const hour = Math.floor(date.getHours() / 3) * 3;
-      const period = `${hour.toString().padStart(2, "0")}:00`;
-      hoursMap.set(period, (hoursMap.get(period) || 0) + transaction.amount);
+      const period = format(new Date(transaction.paidAt), "yyyy-MM");
+      monthsMap.set(period, (monthsMap.get(period) || 0) + transaction.amount);
     });
 
-    groupedData = Array.from(hoursMap.entries())
+    groupedData = Array.from(monthsMap.entries())
       .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([period, revenue]) => ({ period, revenue }));
+      .map(([period, revenue]) => ({
+        period: format(new Date(`${period}-01`), "MMM yyyy"),
+        revenue,
+      }));
   } else {
     // Group by day for multi-day views
     const daysMap = new Map<string, number>();
@@ -247,3 +260,64 @@ function processRevenueData(
 
   return groupedData;
 }
+
+export const getOverviewStore = async (
+  timeRange: TimeRange,
+  storeId?: string,
+) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const userStoreId = session.user.storeId;
+  if (!userStoreId && session.user.role !== "SUPER_ADMIN" && !storeId)
+    return { error: true, message: "Toko tidak ditemukan" };
+
+  const { from, to } = getDateRange(timeRange);
+
+  try {
+    const [totalUser, totalTable, totalMenu, totalCategory] =
+      await prisma.$transaction([
+        prisma.user.count({
+          where: {
+            storeId: userStoreId || storeId,
+            created_at: {
+              gte: from.toISOString(),
+              lte: to.toISOString(),
+            },
+          },
+        }),
+        prisma.table.count({
+          where: {
+            storeId: userStoreId || storeId,
+            created_at: {
+              gte: from.toISOString(),
+              lte: to.toISOString(),
+            },
+          },
+        }),
+        prisma.menu.count({
+          where: {
+            storeId: userStoreId || storeId,
+            created_at: {
+              gte: from.toISOString(),
+              lte: to.toISOString(),
+            },
+          },
+        }),
+        prisma.category.count({
+          where: {
+            storeId: userStoreId || storeId,
+            created_at: {
+              gte: from.toISOString(),
+              lte: to.toISOString(),
+            },
+          },
+        }),
+      ]);
+
+    return { totalUser, totalTable, totalMenu, totalCategory };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};

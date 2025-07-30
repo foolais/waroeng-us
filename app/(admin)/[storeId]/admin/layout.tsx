@@ -5,7 +5,7 @@ import UserAvatar from "@/components/ui/user-avatar";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="h-dvh w-screen">
+    <div className="h-dvh">
       <SidebarProvider>
         <AppSidebar type="ADMIN" />
         <main className="w-full py-4 pr-4 pl-4 lg:pl-0">

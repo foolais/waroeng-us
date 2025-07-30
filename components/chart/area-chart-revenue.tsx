@@ -12,17 +12,10 @@ import {
 import { useEffect, useState, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import { getRevenueData } from "@/lib/action/action-report";
-import { RefreshCcw, Wallet } from "lucide-react";
-import { Button } from "../ui/button";
+import { Wallet } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { TimeRange } from "@/types/types";
+import SelectorRefreshButton from "./selector-refresh-button";
 
 const chartConfig = {
   revenue: {
@@ -97,39 +90,15 @@ const AreaChartRevenue = ({
               <Wallet color="var(--color-primary)" />
               Laporan Pendapatan
             </CardTitle>
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={handleRefresh}
-                variant="outline"
-                size="sm"
-                className="w-max"
-              >
-                <RefreshCcw
-                  className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
-                />
-              </Button>
-              {isWithSelector && (
-                <Select
-                  value={timeRange}
-                  onValueChange={(value) =>
-                    handleTimeRangeChange(value as TimeRange)
-                  }
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="today">Hari Ini</SelectItem>
-                    <SelectItem value="3days">3 Hari</SelectItem>
-                    <SelectItem value="7days">7 Hari</SelectItem>
-                    <SelectItem value="15days">15 Hari</SelectItem>
-                    <SelectItem value="1month">1 Bulan</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            <SelectorRefreshButton
+              timeRange={timeRange}
+              handleTimeRangeChange={handleTimeRangeChange}
+              onRefresh={onRefresh}
+              handleRefresh={handleRefresh}
+              isWithSelector={isWithSelector}
+            />
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-0">
             <ChartContainer
               config={chartConfig}
               className="h-[38vh] w-full px-4"

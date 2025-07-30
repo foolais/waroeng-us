@@ -9,24 +9,16 @@ import {
 } from "@/lib/action/action-report";
 import {
   NotebookText,
-  RefreshCcw,
   Clock,
   CheckCircle2,
   XCircle,
   TrendingUp,
   Wallet,
 } from "lucide-react";
-import { Button } from "../ui/button";
 import { formatPrice } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 import { TimeRange } from "@/types/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import SelectorRefreshButton from "./selector-refresh-button";
 
 const ChartOverviewOrder = ({
   isWithSelector = false,
@@ -82,10 +74,10 @@ const ChartOverviewOrder = ({
     loadData();
   }, []);
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setOnRefresh(true);
-    fetchOrder(timeRange);
-    fetchTransaction(timeRange);
+    await fetchOrder(timeRange);
+    await fetchTransaction(timeRange);
   };
 
   const handleTimeRangeChange = (value: TimeRange) => {
@@ -106,39 +98,16 @@ const ChartOverviewOrder = ({
               <TrendingUp color="var(--color-primary)" />
               Rincian
             </CardTitle>
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={handleRefresh}
-                variant="outline"
-                size="sm"
-                className="w-max"
-              >
-                <RefreshCcw
-                  className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
-                />
-              </Button>
-              {isWithSelector && (
-                <Select
-                  value={timeRange}
-                  onValueChange={(value) =>
-                    handleTimeRangeChange(value as TimeRange)
-                  }
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="today">Hari Ini</SelectItem>
-                    <SelectItem value="3days">3 Hari</SelectItem>
-                    <SelectItem value="7days">7 Hari</SelectItem>
-                    <SelectItem value="15days">15 Hari</SelectItem>
-                    <SelectItem value="1month">1 Bulan</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            <SelectorRefreshButton
+              timeRange={timeRange}
+              handleTimeRangeChange={handleTimeRangeChange}
+              onRefresh={onRefresh}
+              handleRefresh={handleRefresh}
+              isWithSelector={isWithSelector}
+              isWithAll={isWithSelector}
+            />
           </CardHeader>
-          <CardContent className="h-[38vh]">
+          <CardContent className="h-max lg:h-[38vh]">
             <div className="grid gap-4">
               <div className="grid gap-4">
                 {chartOrder &&

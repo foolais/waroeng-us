@@ -14,16 +14,9 @@ import {
 import { getTransactionMethodReport } from "@/lib/action/action-report";
 import { useEffect, useState, useTransition } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { Button } from "../ui/button";
-import { HandCoins, RefreshCcw } from "lucide-react";
+import { HandCoins } from "lucide-react";
 import { TimeRange } from "@/types/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import SelectorRefreshButton from "./selector-refresh-button";
 
 const COLORS = {
   CASH: "#10B981",
@@ -104,37 +97,14 @@ const ChartTransactionMethod = ({
               <HandCoins color="var(--color-primary)" />
               Metode Pembayaran
             </CardTitle>
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={handleRefresh}
-                variant="outline"
-                size="sm"
-                className="w-max"
-              >
-                <RefreshCcw
-                  className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
-                />
-              </Button>
-              {isWithSelector && (
-                <Select
-                  value={timeRange}
-                  onValueChange={(value) =>
-                    handleTimeRangeChange(value as TimeRange)
-                  }
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="today">Hari Ini</SelectItem>
-                    <SelectItem value="3days">3 Hari</SelectItem>
-                    <SelectItem value="7days">7 Hari</SelectItem>
-                    <SelectItem value="15days">15 Hari</SelectItem>
-                    <SelectItem value="1month">1 Bulan</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            <SelectorRefreshButton
+              timeRange={timeRange}
+              handleTimeRangeChange={handleTimeRangeChange}
+              onRefresh={onRefresh}
+              handleRefresh={handleRefresh}
+              isWithSelector={isWithSelector}
+              isWithAll={isWithSelector}
+            />
           </CardHeader>
           <CardContent className="mb-4 flex-1">
             <div className="flex items-center justify-center">

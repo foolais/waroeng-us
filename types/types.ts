@@ -55,4 +55,10 @@ export interface TableOrderProps {
   } | null;
 }
 
-export type TimeRange = "today" | "3days" | "7days" | "15days" | "1month";
+export type TimeRange =
+  | "today"
+  | "3days"
+  | "7days"
+  | "15days"
+  | "1month"
+  | "all";
