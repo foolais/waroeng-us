@@ -16,18 +16,32 @@ import { useEffect, useState, useTransition } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { HandCoins, RefreshCcw } from "lucide-react";
+import { TimeRange } from "@/types/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const COLORS = {
   CASH: "#10B981",
   QR: "#3B82F6",
 } as const;
 
-const ChartTransactionMethod = () => {
+const ChartTransactionMethod = ({
+  isWithSelector = false,
+}: {
+  isWithSelector?: boolean;
+}) => {
   const [chartData, setChartData] = useState<
     { method: string; count: number; fill: string }[]
   >([]);
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
+  const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const [hasData, setHasData] = useState(false);
 
   const chartConfig = {
     count: {
@@ -43,8 +57,8 @@ const ChartTransactionMethod = () => {
     },
   } satisfies ChartConfig;
 
-  const fetchData = async () => {
-    const result = await getTransactionMethodReport(null, null);
+  const fetchData = async (range: TimeRange) => {
+    const result = await getTransactionMethodReport(range);
     if (Array.isArray(result)) {
       const data = result.map((item) => ({
         method: item.method,
@@ -53,24 +67,31 @@ const ChartTransactionMethod = () => {
       }));
 
       setChartData(data);
+      setHasData(data.length > 0 && data.some((item) => item.count > 0));
       setOnRefresh(false);
     }
   };
 
   const loadData = () => {
     startFetching(async () => {
-      await fetchData();
+      await fetchData(timeRange);
     });
+  };
+
+  const handleRefresh = () => {
+    setOnRefresh(true);
+    fetchData(timeRange);
+  };
+
+  const handleTimeRangeChange = (value: TimeRange) => {
+    setTimeRange(value);
+    setOnRefresh(true);
+    fetchData(value);
   };
 
   useEffect(() => {
     loadData();
   }, []);
-
-  const handleRefresh = () => {
-    setOnRefresh(true);
-    fetchData();
-  };
 
   return (
     <>
@@ -83,41 +104,69 @@ const ChartTransactionMethod = () => {
               <HandCoins color="var(--color-primary)" />
               Metode Pembayaran
             </CardTitle>
-            <Button
-              onClick={handleRefresh}
-              variant="outline"
-              size="sm"
-              className="w-max"
-            >
-              <RefreshCcw
-                className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
-              />
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleRefresh}
+                variant="outline"
+                size="sm"
+                className="w-max"
+              >
+                <RefreshCcw
+                  className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
+                />
+              </Button>
+              {isWithSelector && (
+                <Select
+                  value={timeRange}
+                  onValueChange={(value) =>
+                    handleTimeRangeChange(value as TimeRange)
+                  }
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="today">Hari Ini</SelectItem>
+                    <SelectItem value="3days">3 Hari</SelectItem>
+                    <SelectItem value="7days">7 Hari</SelectItem>
+                    <SelectItem value="15days">15 Hari</SelectItem>
+                    <SelectItem value="1month">1 Bulan</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="mb-4 flex-1">
             <div className="flex items-center justify-center">
-              <div className="w-full">
-                <ChartContainer
-                  config={chartConfig}
-                  className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
-                >
-                  <PieChart>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <ChartLegend
-                      content={<ChartLegendContent className="pt-0" />}
-                    />
-                    <Pie
-                      data={chartData}
-                      dataKey="count"
-                      nameKey="method"
-                      label
-                    />
-                  </PieChart>
-                </ChartContainer>
-              </div>
+              {hasData ? (
+                <div className="w-full">
+                  <ChartContainer
+                    config={chartConfig}
+                    className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
+                  >
+                    <PieChart>
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <ChartLegend
+                        content={<ChartLegendContent className="pt-0" />}
+                      />
+                      <Pie
+                        data={chartData}
+                        dataKey="count"
+                        nameKey="method"
+                        label
+                      />
+                    </PieChart>
+                  </ChartContainer>
+                </div>
+              ) : (
+                <div className="text-muted-foreground flex h-[300px] w-full flex-col items-center justify-center gap-2">
+                  <HandCoins className="h-8 w-8" />
+                  <p className="text-sm">Tidak ada data transaksi</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

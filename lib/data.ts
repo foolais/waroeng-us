@@ -1,6 +1,5 @@
 import {
   Armchair,
-  ChartColumn,
   LayoutDashboard,
   NotebookText,
   Store,
@@ -95,11 +94,6 @@ export const cashierSidenavItems = [
     title: "Pesanan",
     url: "/pesanan",
     icon: NotebookText,
-  },
-  {
-    title: "Laporan",
-    url: "/laporan",
-    icon: ChartColumn,
   },
 ];
 

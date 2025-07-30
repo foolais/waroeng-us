@@ -19,13 +19,26 @@ import {
 import { Button } from "../ui/button";
 import { formatPrice } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import { TimeRange } from "@/types/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-const ChartOverviewOrder = () => {
+const ChartOverviewOrder = ({
+  isWithSelector = false,
+}: {
+  isWithSelector?: boolean;
+}) => {
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [chartOrder, setChartOrder] =
     useState<[number, number, number, number]>();
+  const [timeRange, setTimeRange] = useState<TimeRange>("today");
 
   const dataLabel = [
     "Total Pesanan",
@@ -36,8 +49,8 @@ const ChartOverviewOrder = () => {
   const colors = ["#3B82F6", "#F59E0B", "#10B981", "#EF4444"];
   const icons = [NotebookText, Clock, CheckCircle2, XCircle];
 
-  const fetchOrder = async () => {
-    const result = await getOrderProcessReport(null, null);
+  const fetchOrder = async (range: TimeRange) => {
+    const result = await getOrderProcessReport(range);
     if (!result) return;
 
     setChartOrder([
@@ -50,8 +63,8 @@ const ChartOverviewOrder = () => {
     setOnRefresh(false);
   };
 
-  const fetchTransaction = async () => {
-    const result = await getTotalTransactionReport(null, null);
+  const fetchTransaction = async (range: TimeRange) => {
+    const result = await getTotalTransactionReport(range);
     if (!result || "error" in result) return;
 
     setTotalRevenue(result._sum.amount || 0);
@@ -60,8 +73,8 @@ const ChartOverviewOrder = () => {
 
   const loadData = () => {
     startFetching(async () => {
-      await fetchOrder();
-      await fetchTransaction();
+      await fetchOrder(timeRange);
+      await fetchTransaction(timeRange);
     });
   };
 
@@ -71,8 +84,15 @@ const ChartOverviewOrder = () => {
 
   const handleRefresh = () => {
     setOnRefresh(true);
-    fetchOrder();
-    fetchTransaction();
+    fetchOrder(timeRange);
+    fetchTransaction(timeRange);
+  };
+
+  const handleTimeRangeChange = (value: TimeRange) => {
+    setTimeRange(value);
+    setOnRefresh(true);
+    fetchOrder(value);
+    fetchTransaction(value);
   };
 
   return (
@@ -86,16 +106,37 @@ const ChartOverviewOrder = () => {
               <TrendingUp color="var(--color-primary)" />
               Rincian
             </CardTitle>
-            <Button
-              onClick={handleRefresh}
-              variant="outline"
-              size="sm"
-              className="w-max"
-            >
-              <RefreshCcw
-                className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
-              />
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleRefresh}
+                variant="outline"
+                size="sm"
+                className="w-max"
+              >
+                <RefreshCcw
+                  className={`h-4 w-4 ${onRefresh && "animate-spin"}`}
+                />
+              </Button>
+              {isWithSelector && (
+                <Select
+                  value={timeRange}
+                  onValueChange={(value) =>
+                    handleTimeRangeChange(value as TimeRange)
+                  }
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="today">Hari Ini</SelectItem>
+                    <SelectItem value="3days">3 Hari</SelectItem>
+                    <SelectItem value="7days">7 Hari</SelectItem>
+                    <SelectItem value="15days">15 Hari</SelectItem>
+                    <SelectItem value="1month">1 Bulan</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="h-[38vh]">
             <div className="grid gap-4">

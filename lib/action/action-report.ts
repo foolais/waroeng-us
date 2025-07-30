@@ -13,29 +13,52 @@ import {
 } from "date-fns";
 import { TimeRange } from "@/types/types";
 
+function getDateRange(timeRange: TimeRange) {
+  let from: Date;
+  const to: Date = endOfDay(new Date());
+
+  switch (timeRange) {
+    case "today":
+      from = startOfDay(new Date());
+      break;
+    case "3days":
+      from = subDays(startOfDay(new Date()), 2);
+      break;
+    case "7days":
+      from = subDays(startOfDay(new Date()), 6);
+      break;
+    case "15days":
+      from = subDays(startOfDay(new Date()), 14);
+      break;
+    case "1month":
+      from = subMonths(startOfDay(new Date()), 1);
+      break;
+    default:
+      from = startOfDay(new Date());
+  }
+
+  return { from, to };
+}
+
 export const getOrderProcessReport = async (
-  startDate: Date | string | null,
-  endDate: Date | string | null,
+  timeRange: TimeRange = "today",
+  storeId?: string,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
-  const storeId = session.user.storeId;
-  if (!storeId && session.user.role !== "SUPER_ADMIN")
+  const userStoreId = session.user.storeId;
+  if (!userStoreId && session.user.role !== "SUPER_ADMIN" && !storeId)
     return { error: true, message: "Toko tidak ditemukan" };
 
   try {
-    const fromDate = startDate ? new Date(startDate) : null;
-    const toDate = endDate ? new Date(endDate) : null;
-    const createdAtFilter: Record<string, string> = {};
-    if (fromDate) createdAtFilter.gte = fromDate.toISOString();
-    if (toDate) createdAtFilter.lte = toDate.toISOString();
-
+    const { from, to } = getDateRange(timeRange);
     const where: Prisma.OrderWhereInput = {
-      storeId,
-      ...(Object.keys(createdAtFilter).length > 0 && {
-        created_at: createdAtFilter,
-      }),
+      storeId: userStoreId || storeId,
+      created_at: {
+        gte: from.toISOString(),
+        lte: to.toISOString(),
+      },
     };
 
     const [total, pending, paid, cancel] = await prisma.$transaction([
@@ -59,26 +82,25 @@ export const getOrderProcessReport = async (
 };
 
 export const getTotalTransactionReport = async (
-  startDate: Date | string | null,
-  endDate: Date | string | null,
+  timeRange: TimeRange = "today",
+  storeId?: string,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
-  const storeId = session.user.storeId;
-  if (!storeId && session.user.role !== "SUPER_ADMIN")
+  const userStoreId = session.user.storeId;
+  if (!userStoreId && session.user.role !== "SUPER_ADMIN")
     return { error: true, message: "Toko tidak ditemukan" };
 
   try {
-    const fromDate = startDate ? new Date(startDate) : null;
-    const toDate = endDate ? new Date(endDate) : null;
-    const paidAtFilter: Record<string, string> = {};
-    if (fromDate) paidAtFilter.gte = fromDate.toISOString();
-    if (toDate) paidAtFilter.lte = toDate.toISOString();
+    const { from, to } = getDateRange(timeRange);
 
     const where: Prisma.TransactionWhereInput = {
-      order: { storeId },
-      ...(Object.keys(paidAtFilter).length > 0 && { paidAt: paidAtFilter }),
+      order: { storeId: userStoreId || storeId },
+      paidAt: {
+        gte: from.toISOString(),
+        lte: to.toISOString(),
+      },
     };
 
     const transactions = await prisma.transaction.aggregate({
@@ -95,26 +117,24 @@ export const getTotalTransactionReport = async (
 };
 
 export const getTransactionMethodReport = async (
-  startDate: Date | string | null,
-  endDate: Date | string | null,
+  timeRange: TimeRange = "today",
+  storeId?: string,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
-  const storeId = session.user.storeId;
-  if (!storeId && session.user.role !== "SUPER_ADMIN")
+  const userStoreId = session.user.storeId;
+  if (!userStoreId && session.user.role !== "SUPER_ADMIN")
     return { error: true, message: "Toko tidak ditemukan" };
 
   try {
-    const fromDate = startDate ? new Date(startDate) : null;
-    const toDate = endDate ? new Date(endDate) : null;
-    const paidAtFilter: Record<string, string> = {};
-    if (fromDate) paidAtFilter.gte = fromDate.toISOString();
-    if (toDate) paidAtFilter.lte = toDate.toISOString();
-
+    const { from, to } = getDateRange(timeRange);
     const where: Prisma.TransactionWhereInput = {
-      order: { storeId },
-      ...(Object.keys(paidAtFilter).length > 0 && { paidAt: paidAtFilter }),
+      order: { storeId: storeId || userStoreId },
+      paidAt: {
+        gte: from.toISOString(),
+        lte: to.toISOString(),
+      },
     };
 
     const paymentData = await prisma.transaction.groupBy({
@@ -136,35 +156,8 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
 
   if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
 
-  let from: Date;
-  const to: Date = endOfDay(new Date());
-  let interval: "hour" | "day";
-
-  switch (timeRange) {
-    case "today":
-      from = startOfDay(new Date());
-      interval = "hour";
-      break;
-    case "3days":
-      from = subDays(startOfDay(new Date()), 2);
-      interval = "day";
-      break;
-    case "7days":
-      from = subDays(startOfDay(new Date()), 6);
-      interval = "day";
-      break;
-    case "15days":
-      from = subDays(startOfDay(new Date()), 14);
-      interval = "day";
-      break;
-    case "1month":
-      from = subMonths(startOfDay(new Date()), 1);
-      interval = "day";
-      break;
-    default:
-      from = startOfDay(new Date());
-      interval = "hour";
-  }
+  const { from, to } = getDateRange(timeRange);
+  const interval: "hour" | "day" = timeRange === "today" ? "hour" : "day";
 
   try {
     const transactions = await prisma.transaction.findMany({
