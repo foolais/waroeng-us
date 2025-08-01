@@ -14,7 +14,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { getAllTable } from "@/lib/action/action-table";
 import { orderTypeOptions, paymentTypeOptions } from "@/lib/data";
-import { formatPrice } from "@/lib/utils";
+import {
+  formatNumberInput,
+  formatPrice,
+  parseFormattedNumber,
+} from "@/lib/utils";
 import { useCartStore } from "@/store/cart/useCartFilter";
 import { orderType, paymentType } from "@/types/types";
 import { debounce } from "lodash";
@@ -39,6 +43,8 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
     { value: string; label: string }[]
   >([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [totalPayment, setTotalPayment] = useState<number>(0);
+  const [paymentInput, setPaymentInput] = useState("");
 
   const storeId = session?.user.storeId;
 
@@ -90,6 +96,17 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
       debouncedFetchTables.cancel();
     };
   }, [debouncedFetchTables]);
+
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedValue = formatNumberInput(e.target.value);
+    setPaymentInput(formattedValue);
+    setTotalPayment(parseFormattedNumber(formattedValue));
+  };
+
+  const totalChange = useMemo(() => {
+    const change = +totalPayment - totalPrice;
+    return change > 0 ? change : 0;
+  }, [totalPayment, totalPrice]);
 
   return (
     <div className="w-full space-y-4 px-4">
@@ -155,6 +172,15 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
           </SelectContent>
         </Select>
       </div>
+
+      <div className="flex flex-col gap-2">
+        <Label>Catatan</Label>
+        <Textarea
+          placeholder="Masukkan catatan disini..."
+          value={notes || ""}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+      </div>
       <div className="flex flex-col gap-2">
         <Label>Total Harga</Label>
         <Input
@@ -166,11 +192,28 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label>Catatan</Label>
-        <Textarea
-          placeholder="Masukkan catatan disini..."
-          value={notes || ""}
-          onChange={(e) => setNotes(e.target.value)}
+        <Label>Total Pembayaran</Label>
+        <div className="relative">
+          <Input
+            placeholder="Total Pembayaran"
+            value={paymentInput}
+            onChange={handlePaymentChange}
+            className="pl-8"
+          />
+          <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+            Rp
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Total Kembalian</Label>
+        <Input
+          type="string"
+          placeholder="Total Kembalian"
+          value={formatPrice(totalChange)}
+          disabled
+          readOnly
+          style={{ opacity: 100 }}
         />
       </div>
     </div>

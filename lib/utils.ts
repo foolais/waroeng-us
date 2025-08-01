@@ -37,3 +37,13 @@ export const rateLimiter = new RateLimiterMemory({
   points: 5,
   duration: 15 * 60,
 });
+
+export const formatNumberInput = (value: string): string => {
+  const numericValue = value.replace(/\D/g, "");
+
+  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
+export const parseFormattedNumber = (formattedValue: string): number => {
+  return parseInt(formattedValue.replace(/\D/g, "")) || 0;
+};
