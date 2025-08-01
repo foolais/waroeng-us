@@ -75,6 +75,7 @@ export const useCartStore = create<CartState>()(
           orderType: "DINE_IN",
           tableId: null,
           paymentType: "CASH",
+          notes: null,
         }),
     }),
     {

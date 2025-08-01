@@ -70,6 +70,7 @@ const CartButton = () => {
         if ("success" in res) {
           toast.success(res.message, { duration: 1500 });
           clearCart();
+          setOnFinishOrder(false);
         } else toast.error(res.message as string, { duration: 1500 });
       } catch (error) {
         console.log(error);
