@@ -19,7 +19,7 @@ import { formatPrice } from "@/lib/utils";
 import FormOrder from "../form/order/form-order";
 import DialogForm from "../dialog/dialog-form";
 
-const ChartTableLatestTransaction = () => {
+const ChartTableLatestTransaction = ({ isToday }: { isToday?: boolean }) => {
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
   const [orderData, setOrderData] = useState<TableOrderProps[]>([]);
@@ -27,7 +27,14 @@ const ChartTableLatestTransaction = () => {
   const [selectedOrder, setSelectedOrder] = useState<string>();
 
   const fetchOrder = async () => {
-    const result = await getAllOrder(1, "", "ALL", null, null, 7);
+    const result = await getAllOrder(
+      1,
+      "",
+      "ALL",
+      isToday ? new Date() : null,
+      isToday ? new Date() : null,
+      7,
+    );
     if (result && "data" in result && result.data) {
       setOrderData(result.data);
       setOnRefresh(false);
@@ -78,62 +85,62 @@ const ChartTableLatestTransaction = () => {
               </Button>
             </CardHeader>
             <CardContent>
-              <Table className="border-b">
-                <TableBody>
-                  {orderData.length ? (
-                    orderData.map((order) => (
-                      <TableRow key={order.id}>
-                        <TableCell>{order.orderNumber}</TableCell>
-                        <TableCell>
-                          <Badge
-                            option={
-                              orderStatusBadgeOptions.find(
-                                (option) => option.value === order.status,
-                              ) ?? orderStatusBadgeOptions[0]
-                            }
-                          />
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge
-                            option={
-                              orderTypeBadgeOptions.find(
-                                (option) => option.value === order.type,
-                              ) ?? orderTypeBadgeOptions[0]
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>{formatPrice(order.total)}</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge
-                            option={
-                              paymentTypeBadgeOptions.find(
-                                (option) =>
-                                  option.value === order.transaction?.method,
-                              ) ?? paymentTypeBadgeOptions[0]
-                            }
-                          />
-                        </TableCell>
-                        <TableCell className="w-[5%]">
-                          <Button
-                            className="size-8 p-0"
-                            variant="ghost"
-                            onClick={() => handleOpenform(order.id)}
-                          >
-                            <span className="sr-only">Open Detail</span>
-                            <InfoIcon />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center">
-                        Tidak ada Pesanan
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+              {orderData.length ? (
+                <Table className="border-b">
+                  <TableBody>
+                    {orderData.length &&
+                      orderData.map((order) => (
+                        <TableRow key={order.id}>
+                          <TableCell>{order.orderNumber}</TableCell>
+                          <TableCell>
+                            <Badge
+                              option={
+                                orderStatusBadgeOptions.find(
+                                  (option) => option.value === order.status,
+                                ) ?? orderStatusBadgeOptions[0]
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <Badge
+                              option={
+                                orderTypeBadgeOptions.find(
+                                  (option) => option.value === order.type,
+                                ) ?? orderTypeBadgeOptions[0]
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>{formatPrice(order.total)}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <Badge
+                              option={
+                                paymentTypeBadgeOptions.find(
+                                  (option) =>
+                                    option.value === order.transaction?.method,
+                                ) ?? paymentTypeBadgeOptions[0]
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="w-[5%]">
+                            <Button
+                              className="size-8 p-0"
+                              variant="ghost"
+                              onClick={() => handleOpenform(order.id)}
+                            >
+                              <span className="sr-only">Open Detail</span>
+                              <InfoIcon />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-muted-foreground flex h-[300px] w-full flex-col items-center justify-center gap-2">
+                  <NotebookText className="h-8 w-8" />
+                  <p className="text-sm">Tidak ada data pesanan</p>
+                </div>
+              )}
             </CardContent>
           </Card>
           <DialogForm

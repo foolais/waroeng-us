@@ -25,7 +25,7 @@ const CashierDashboardPage = () => {
       </div>
       <div className="flex w-full flex-col gap-4 xl:flex-row">
         <div className="w-full xl:w-[65%]">
-          <ChartTableLatestTransaction />
+          <ChartTableLatestTransaction isToday />
         </div>
         <div className="w-full xl:w-[35%]">
           <ChartTransactionMethod />

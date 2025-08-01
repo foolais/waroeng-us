@@ -99,44 +99,53 @@ const AreaChartRevenue = ({
             />
           </CardHeader>
           <CardContent className="px-0">
-            <ChartContainer
-              config={chartConfig}
-              className="h-[38vh] w-full px-4"
-            >
-              <AreaChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="period"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={10}
-                  tickFormatter={formatXAxis}
-                  interval={
-                    timeRange === "1month" ? Math.ceil(chartData.length / 8) : 0
-                  }
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickCount={5}
-                  tickFormatter={(value) => `Rp${value.toLocaleString()}`}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Area
-                  dataKey="revenue"
-                  type="monotone"
-                  fill="var(--color-primary)"
-                  fillOpacity={0.2}
-                  stroke="var(--color-primary)"
-                  strokeWidth={2}
-                  activeDot={{ r: 6 }}
-                />
-              </AreaChart>
-            </ChartContainer>
+            {chartData.length ? (
+              <ChartContainer
+                config={chartConfig}
+                className="h-[38vh] w-full px-4"
+              >
+                <AreaChart accessibilityLayer data={chartData}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="period"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={10}
+                    tickFormatter={formatXAxis}
+                    interval={
+                      timeRange === "1month"
+                        ? Math.ceil(chartData.length / 8)
+                        : 0
+                    }
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickCount={5}
+                    tickFormatter={(value) => `Rp${value.toLocaleString()}`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />}
+                  />
+                  <Area
+                    dataKey="revenue"
+                    type="monotone"
+                    fill="var(--color-primary)"
+                    fillOpacity={0.2}
+                    stroke="var(--color-primary)"
+                    strokeWidth={2}
+                    activeDot={{ r: 6 }}
+                  />
+                </AreaChart>
+              </ChartContainer>
+            ) : (
+              <div className="text-muted-foreground flex h-[37vh] w-full flex-col items-center justify-center gap-2">
+                <Wallet className="h-8 w-8" />
+                <p className="text-sm">Tidak ada data pesanan</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

@@ -134,7 +134,7 @@ const ChartTransactionMethod = ({
               ) : (
                 <div className="text-muted-foreground flex h-[300px] w-full flex-col items-center justify-center gap-2">
                   <HandCoins className="h-8 w-8" />
-                  <p className="text-sm">Tidak ada data transaksi</p>
+                  <p className="text-sm">Tidak ada data pesanan</p>
                 </div>
               )}
             </div>

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatPrice } from "@/lib/utils";
+import { formatDate, formatPrice } from "@/lib/utils";
 import TableActionOrder from "../action/table-action-order";
 import { ORDER_STATUS, ORDER_TYPE } from "@prisma/client";
 import Badge from "@/components/ui/badge";
@@ -31,6 +31,7 @@ interface TableOrderProps {
     transaction: {
       method: "CASH" | "QR";
     } | null;
+    created_at: Date;
   }[];
 }
 
@@ -44,9 +45,10 @@ const TableOrder = ({ data }: TableOrderProps) => {
             <TableHead className="w-[20%]">No Pesanan</TableHead>
             <TableHead className="w-[20%]">Status</TableHead>
             <TableHead className="w-[20%]">Tipe</TableHead>
-            <TableHead className="w-[15%]">Meja</TableHead>
+            <TableHead className="w-[10%]">Meja</TableHead>
             <TableHead>Total</TableHead>
             <TableHead className="w-[15%]">Metode</TableHead>
+            <TableHead className="w-[5%]">Tanggal</TableHead>
             <TableHead className="w-[5%]"></TableHead>
           </TableRow>
         </TableHeader>
@@ -85,6 +87,7 @@ const TableOrder = ({ data }: TableOrderProps) => {
                     }
                   />
                 </TableCell>
+                <TableCell>{formatDate(order.created_at)}</TableCell>
                 <TableCell>
                   <TableActionOrder id={order.id} no={order.orderNumber} />
                 </TableCell>
