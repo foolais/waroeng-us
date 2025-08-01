@@ -4,8 +4,9 @@ import { getAllCategory } from "@/lib/action/action-category";
 import CategoryCard from "./category-card";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 const ScrollButton = ({
   direction,
@@ -74,12 +75,7 @@ const ContainerCategoryCard = () => {
           ref={scrollRef}
           className="no-scrollbar flex w-full gap-3 overflow-x-auto scroll-smooth px-4"
         >
-          {isFetching && (
-            <div className="flex-center gap-2 text-sm">
-              <p>Mengambil data list kategori</p>
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </div>
-          )}
+          {isFetching && <Skeleton className="h-10 w-full" />}
 
           {!isFetching &&
             categories.map((category) => (

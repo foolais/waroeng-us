@@ -13,6 +13,7 @@ import {
 } from "react";
 import MenuCard from "./menu-card";
 import { TriangleAlert } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 const ContainerCardMenu = () => {
   const { data: session, status } = useSession();
@@ -59,7 +60,15 @@ const ContainerCardMenu = () => {
 
   return (
     <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-      {!isFetching && renderMenuCards()}
+      {isFetching ? (
+        <>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <Skeleton key={i} className="h-50 w-full" />
+          ))}
+        </>
+      ) : (
+        renderMenuCards()
+      )}
       {filteredData.length === 0 && !isFetching && (
         <div className="flex-center col-span-2 gap-2 pt-10 md:col-span-4">
           <TriangleAlert />
