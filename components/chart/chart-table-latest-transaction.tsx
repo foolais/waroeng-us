@@ -18,6 +18,7 @@ import {
 import { formatPrice } from "@/lib/utils";
 import FormOrder from "../form/order/form-order";
 import DialogForm from "../dialog/dialog-form";
+import { endOfDay, startOfDay } from "date-fns";
 
 const ChartTableLatestTransaction = ({ isToday }: { isToday?: boolean }) => {
   const [isFetching, startFetching] = useTransition();
@@ -31,9 +32,9 @@ const ChartTableLatestTransaction = ({ isToday }: { isToday?: boolean }) => {
       1,
       "",
       "ALL",
-      isToday ? new Date() : null,
-      isToday ? new Date() : null,
-      7,
+      isToday ? startOfDay(new Date()) : null,
+      isToday ? endOfDay(new Date()) : null,
+      4,
     );
     if (result && "data" in result && result.data) {
       setOrderData(result.data);
@@ -64,10 +65,10 @@ const ChartTableLatestTransaction = ({ isToday }: { isToday?: boolean }) => {
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="h-[40vh] w-full" />
+        <Skeleton className="h-[400px] w-full" />
       ) : (
         <>
-          <Card className="h-[40vh] w-full">
+          <Card className="h-[400px] w-full">
             <CardHeader className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-1">
                 <NotebookText color="var(--color-primary)" />
@@ -136,7 +137,7 @@ const ChartTableLatestTransaction = ({ isToday }: { isToday?: boolean }) => {
                   </TableBody>
                 </Table>
               ) : (
-                <div className="text-muted-foreground flex h-[300px] w-full flex-col items-center justify-center gap-2">
+                <div className="text-muted-foreground flex h-[400px] w-full flex-col items-center justify-center gap-2">
                   <NotebookText className="h-8 w-8" />
                   <p className="text-sm">Tidak ada data pesanan</p>
                 </div>

@@ -89,9 +89,9 @@ const ChartTransactionMethod = ({
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="aspect-square h-[40vh]" />
+        <Skeleton className="aspect-square h-[400px]" />
       ) : (
-        <Card className="flex aspect-square h-[40vh] w-full flex-col gap-0">
+        <Card className="flex aspect-square h-[400px] w-full flex-col gap-0">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-1">
               <HandCoins color="var(--color-primary)" />
@@ -132,7 +132,7 @@ const ChartTransactionMethod = ({
                   </ChartContainer>
                 </div>
               ) : (
-                <div className="text-muted-foreground flex h-[300px] w-full flex-col items-center justify-center gap-2">
+                <div className="text-muted-foreground flex h-[400px] w-full flex-col items-center justify-center gap-2">
                   <HandCoins className="h-8 w-8" />
                   <p className="text-sm">Tidak ada data pesanan</p>
                 </div>

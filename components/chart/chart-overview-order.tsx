@@ -94,9 +94,9 @@ const ChartOverviewOrder = ({
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="h-[48vh] w-full" />
+        <Skeleton className="h-[450px] w-full" />
       ) : (
-        <Card className="h-full w-full gap-4 py-6">
+        <Card className="h-[450px] w-full gap-4 py-6">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-1">
               <TrendingUp color="var(--color-primary)" />
@@ -111,7 +111,7 @@ const ChartOverviewOrder = ({
               isWithAll={isWithSelector}
             />
           </CardHeader>
-          <CardContent className="h-max lg:h-[38vh]">
+          <CardContent>
             <div className="grid gap-4">
               <div className="grid gap-4">
                 {chartOrder &&

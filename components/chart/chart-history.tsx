@@ -52,9 +52,9 @@ const ChartHistory = () => {
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="h-[48vh] w-full" />
+        <Skeleton className="h-[450px] w-full" />
       ) : (
-        <Card className="h-[48vh] w-full">
+        <Card className="h-[450px] w-full">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-1">
               <History color="var(--color-primary)" />

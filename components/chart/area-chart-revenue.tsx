@@ -82,9 +82,9 @@ const AreaChartRevenue = ({
   return (
     <>
       {isFetching && !onRefresh ? (
-        <Skeleton className="h-[48vh] w-full" />
+        <Skeleton className="h-[450px] w-full" />
       ) : (
-        <Card className="w-full">
+        <Card className="h-[450px] w-full">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-1">
               <Wallet color="var(--color-primary)" />
@@ -98,11 +98,11 @@ const AreaChartRevenue = ({
               isWithSelector={isWithSelector}
             />
           </CardHeader>
-          <CardContent className="px-0">
+          <CardContent className="px-4">
             {chartData.length ? (
               <ChartContainer
                 config={chartConfig}
-                className="h-[38vh] w-full px-4"
+                className="h-[340px] w-full px-4"
               >
                 <AreaChart accessibilityLayer data={chartData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
@@ -141,7 +141,7 @@ const AreaChartRevenue = ({
                 </AreaChart>
               </ChartContainer>
             ) : (
-              <div className="text-muted-foreground flex h-[37vh] w-full flex-col items-center justify-center gap-2">
+              <div className="text-muted-foreground flex h-[450px] w-full flex-col items-center justify-center gap-2">
                 <Wallet className="h-8 w-8" />
                 <p className="text-sm">Tidak ada data pesanan</p>
               </div>

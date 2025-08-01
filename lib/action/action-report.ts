@@ -13,36 +13,6 @@ import {
 } from "date-fns";
 import { TimeRange } from "@/types/types";
 
-function getDateRange(timeRange: TimeRange) {
-  let from: Date;
-  const to: Date = endOfDay(new Date());
-
-  switch (timeRange) {
-    case "today":
-      from = startOfDay(new Date());
-      break;
-    case "3days":
-      from = subDays(startOfDay(new Date()), 2);
-      break;
-    case "7days":
-      from = subDays(startOfDay(new Date()), 6);
-      break;
-    case "15days":
-      from = subDays(startOfDay(new Date()), 14);
-      break;
-    case "1month":
-      from = subMonths(startOfDay(new Date()), 1);
-      break;
-    case "all":
-      from = new Date(0);
-      break;
-    default:
-      from = startOfDay(new Date());
-  }
-
-  return { from, to };
-}
-
 export const getOrderProcessReport = async (
   timeRange: TimeRange = "today",
   storeId?: string,
@@ -99,7 +69,7 @@ export const getTotalTransactionReport = async (
     const { from, to } = getDateRange(timeRange);
 
     const where: Prisma.TransactionWhereInput = {
-      order: { storeId: userStoreId || storeId },
+      order: { storeId: userStoreId || storeId, status: "PAID" },
       paidAt: {
         gte: from.toISOString(),
         lte: to.toISOString(),
@@ -157,6 +127,7 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
+  const userStoreId = session.user.storeId;
   if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
 
   const { from, to } = getDateRange(timeRange);
@@ -171,7 +142,8 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
     const transactions = await prisma.transaction.findMany({
       where: {
         order: {
-          storeId,
+          storeId: userStoreId || storeId,
+          status: "PAID",
         },
         paidAt: {
           gte: from.toISOString(),
@@ -187,79 +159,14 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
       },
     });
 
+    console.log({ transactions });
+
     return processRevenueData(transactions, from, to, interval, timeRange);
   } catch (error) {
     console.log(error);
     return { error: true, message: error };
   }
 };
-
-function processRevenueData(
-  transactions: { amount: number; paidAt: Date }[],
-  from: Date,
-  to: Date,
-  interval: "hour" | "day" | "month",
-  timeRange: TimeRange,
-) {
-  let groupedData: { period: string; revenue: number }[] = [];
-
-  if (interval === "hour") {
-    // Existing hour logic...
-  } else if (interval === "month") {
-    // Group by month for "all" time range
-    const monthsMap = new Map<string, number>();
-
-    // Initialize all months in range
-    let current = new Date(from);
-    while (current <= to) {
-      const period = format(current, "yyyy-MM");
-      monthsMap.set(period, 0);
-      current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
-    }
-
-    // Add actual transaction data
-    transactions.forEach((transaction) => {
-      const period = format(new Date(transaction.paidAt), "yyyy-MM");
-      monthsMap.set(period, (monthsMap.get(period) || 0) + transaction.amount);
-    });
-
-    groupedData = Array.from(monthsMap.entries())
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([period, revenue]) => ({
-        period: format(new Date(`${period}-01`), "MMM yyyy"),
-        revenue,
-      }));
-  } else {
-    // Group by day for multi-day views
-    const daysMap = new Map<string, number>();
-
-    // Initialize all days in range
-    const days = eachDayOfInterval({ start: from, end: to });
-    days.forEach((day) => {
-      const period = format(day, "yyyy-MM-dd");
-      daysMap.set(period, 0);
-    });
-
-    // Add actual transaction data
-    transactions.forEach((transaction) => {
-      const period = format(new Date(transaction.paidAt), "yyyy-MM-dd");
-      daysMap.set(period, (daysMap.get(period) || 0) + transaction.amount);
-    });
-
-    // Convert to display format
-    groupedData = Array.from(daysMap.entries())
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([period, revenue]) => ({
-        period:
-          timeRange === "1month"
-            ? format(new Date(period), "MMM dd")
-            : format(new Date(period), "MMM dd"),
-        revenue,
-      }));
-  }
-
-  return groupedData;
-}
 
 export const getOverviewStore = async (
   timeRange: TimeRange,
@@ -342,3 +249,109 @@ export const getTotalStore = async (timeRange: TimeRange) => {
     return { error: true, message: error };
   }
 };
+
+function getDateRange(timeRange: TimeRange) {
+  let from: Date = startOfDay(new Date());
+  const to: Date = endOfDay(new Date());
+
+  switch (timeRange) {
+    case "today":
+      from = startOfDay(new Date());
+      break;
+    case "3days":
+      from = subDays(startOfDay(new Date()), 2);
+      break;
+    case "7days":
+      from = subDays(startOfDay(new Date()), 6);
+      break;
+    case "15days":
+      from = subDays(startOfDay(new Date()), 14);
+      break;
+    case "1month":
+      from = subMonths(startOfDay(new Date()), 1);
+      break;
+    case "all":
+      from = new Date(0);
+      break;
+    default:
+      from = startOfDay(new Date());
+  }
+
+  return { from, to };
+}
+
+function processRevenueData(
+  transactions: { amount: number; paidAt: Date }[],
+  from: Date,
+  to: Date,
+  interval: "hour" | "day" | "month",
+  timeRange: TimeRange,
+) {
+  let groupedData: { period: string; revenue: number }[] = [];
+
+  if (interval === "hour") {
+    const hoursMap = new Map<string, number>();
+
+    for (let h = 0; h < 24; h += 3) {
+      const period = `${h.toString().padStart(2, "0")}:00`;
+      hoursMap.set(period, 0);
+    }
+
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.paidAt);
+      const hour = Math.floor(date.getHours() / 3) * 3;
+      const period = `${hour.toString().padStart(2, "0")}:00`;
+      hoursMap.set(period, (hoursMap.get(period) || 0) + transaction.amount);
+    });
+
+    groupedData = Array.from(hoursMap.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([period, revenue]) => ({ period, revenue }));
+  } else if (interval === "month") {
+    const monthsMap = new Map<string, number>();
+
+    let current = new Date(from);
+    while (current <= to) {
+      const period = format(current, "yyyy-MM");
+      monthsMap.set(period, 0);
+      current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    }
+
+    transactions.forEach((transaction) => {
+      const period = format(new Date(transaction.paidAt), "yyyy-MM");
+      monthsMap.set(period, (monthsMap.get(period) || 0) + transaction.amount);
+    });
+
+    groupedData = Array.from(monthsMap.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([period, revenue]) => ({
+        period: format(new Date(`${period}-01`), "MMM yyyy"),
+        revenue,
+      }));
+  } else {
+    const daysMap = new Map<string, number>();
+
+    const days = eachDayOfInterval({ start: from, end: to });
+    days.forEach((day) => {
+      const period = format(day, "yyyy-MM-dd");
+      daysMap.set(period, 0);
+    });
+
+    transactions.forEach((transaction) => {
+      const period = format(new Date(transaction.paidAt), "yyyy-MM-dd");
+      daysMap.set(period, (daysMap.get(period) || 0) + transaction.amount);
+    });
+
+    groupedData = Array.from(daysMap.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([period, revenue]) => ({
+        period:
+          timeRange === "1month"
+            ? format(new Date(period), "MMM dd")
+            : format(new Date(period), "MMM dd"),
+        revenue,
+      }));
+  }
+
+  return groupedData;
+}
