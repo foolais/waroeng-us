@@ -45,8 +45,8 @@ const AreaChartRevenue = ({
 
   const fetchRevenue = async (range: TimeRange) => {
     try {
-      if (!storeId) return null;
-      const result = await getRevenueData(storeId, range);
+      const result = await getRevenueData(storeId as string, range);
+      console.log({ result });
       if (Array.isArray(result)) {
         setOnRefresh(false);
         setChartData(result);

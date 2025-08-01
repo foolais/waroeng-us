@@ -128,7 +128,7 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
   if (!session) return { error: true, message: "Autentikasi gagal" };
 
   const userStoreId = session.user.storeId;
-  if (!storeId) return { error: true, message: "Toko tidak ditemukan" };
+  if (!userStoreId) return { error: true, message: "Toko tidak ditemukan" };
 
   const { from, to } = getDateRange(timeRange);
   let interval: "hour" | "day" | "month" =
