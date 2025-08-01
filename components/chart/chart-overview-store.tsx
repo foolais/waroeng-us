@@ -14,16 +14,20 @@ import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import SelectorRefreshButton from "./selector-refresh-button";
 import { TimeRange } from "@/types/types";
-import { getOverviewStore } from "@/lib/action/action-report";
+import { getOverviewStore, getTotalStore } from "@/lib/action/action-report";
 
 const ChartOverviewStore = ({
   isWithStore = false,
+  isAll = false,
 }: {
   isWithStore?: boolean;
+  isAll?: boolean;
 }) => {
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
-  const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    isAll ? "all" : "today",
+  );
   const [chartOrder, setChartOrder] = useState<
     [number, number, number, number, number]
   >([0, 0, 0, 0, 0]);
@@ -51,22 +55,43 @@ const ChartOverviewStore = ({
     ]);
     setOnRefresh(false);
   };
+  const fetchTotalStore = async (range: TimeRange) => {
+    try {
+      const result = await getTotalStore(range);
+
+      if (!result || "error" in result) return;
+
+      setChartOrder((prev) => [
+        result.totalStore || 0,
+        prev[1],
+        prev[2],
+        prev[3],
+        prev[4],
+      ]);
+      setOnRefresh(false);
+    } catch (error) {
+      console.error("Error in fetchTotalStore:", error);
+    }
+  };
 
   const loadData = () => {
     startFetching(async () => {
       await fetchOverview(timeRange);
+      if (isWithStore) await fetchTotalStore(timeRange);
     });
   };
 
   const handleRefresh = async () => {
     setOnRefresh(true);
     await fetchOverview(timeRange);
+    if (isWithStore) await fetchTotalStore(timeRange);
   };
 
   const handleTimeRangeChange = async (value: TimeRange) => {
     setTimeRange(value);
     setOnRefresh(true);
     await fetchOverview(value);
+    if (isWithStore) await fetchTotalStore(value);
   };
 
   useEffect(() => {

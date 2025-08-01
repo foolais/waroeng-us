@@ -62,3 +62,17 @@ export type TimeRange =
   | "15days"
   | "1month"
   | "all";
+
+export interface TableHistoryProps {
+  no: number;
+  id: string;
+  actions: string;
+  record_id: string;
+  store: {
+    name: string;
+  };
+  createdBy: {
+    name: string;
+  };
+  created_at: Date;
+}

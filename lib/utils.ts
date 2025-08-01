@@ -27,3 +27,7 @@ export function formatPrice(price: number) {
     currency: "IDR",
   }).format(price);
 }
+
+export const isCuid = (value: string) => {
+  return /^c[a-z0-9]{24,}$/i.test(value);
+};

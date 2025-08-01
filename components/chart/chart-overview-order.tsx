@@ -22,15 +22,19 @@ import SelectorRefreshButton from "./selector-refresh-button";
 
 const ChartOverviewOrder = ({
   isWithSelector = false,
+  isAll = false,
 }: {
   isWithSelector?: boolean;
+  isAll?: boolean;
 }) => {
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [chartOrder, setChartOrder] =
     useState<[number, number, number, number]>();
-  const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    isAll ? "all" : "today",
+  );
 
   const dataLabel = [
     "Total Pesanan",

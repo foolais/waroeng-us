@@ -321,3 +321,24 @@ export const getOverviewStore = async (
     return { error: true, message: error };
   }
 };
+
+export const getTotalStore = async (timeRange: TimeRange) => {
+  const session = await auth();
+  if (!session) return { error: true, message: "Autentikasi gagal" };
+
+  const { from, to } = getDateRange(timeRange);
+  try {
+    const totalStore = await prisma.store.count({
+      where: {
+        created_at: {
+          gte: from.toISOString(),
+          lte: to.toISOString(),
+        },
+      },
+    });
+    return { totalStore };
+  } catch (error) {
+    console.log(error);
+    return { error: true, message: error };
+  }
+};
