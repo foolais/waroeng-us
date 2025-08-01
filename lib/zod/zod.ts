@@ -26,13 +26,13 @@ export const UserSchema = z
         })
         .refine((file) => file.size <= 5 * 1024 * 1024, {
           message: "Gambar harus kurang dari 5MB",
-        })
-        .optional(),
-      z.string().url().optional(),
+        }),
+      z.string().url(),
+      z.literal(""),
     ]),
     name: z
       .string()
-      .min(5, "Nama harus lebih dari 5 karakter")
+      .min(3, "Nama harus lebih dari 3 karakter")
       .max(20, "Nama harus kurang dari 20 karakter"),
     email: z
       .string()

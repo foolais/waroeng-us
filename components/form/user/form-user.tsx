@@ -39,6 +39,7 @@ import { Loader2 } from "lucide-react";
 import { createUser, getUserById, updateUser } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 interface FormUserProps {
   userId?: string;
@@ -50,7 +51,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
-      image: undefined,
+      image: "",
       name: "",
       email: "",
       gender: "MALE",
@@ -72,6 +73,7 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
 
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
+  const pathName = usePathname();
 
   const { setUrl } = useUserImage();
 
@@ -437,7 +439,9 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                         onSearch={handleSearch}
                         isLoading={isSearching}
                         placeholder="Pilih Toko"
-                        disabled={formDisabled || isAdmin}
+                        disabled={
+                          formDisabled || isAdmin || pathName.includes("admin")
+                        }
                       />
                     </FormControl>
                     <FormMessage />
