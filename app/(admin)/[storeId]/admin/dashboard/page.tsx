@@ -27,10 +27,10 @@ const AdminDashboardPage = async () => {
         </div>
         <CartButton />
       </div>
-      <ChartOverviewStore />
+      <ChartOverviewStore isAll />
       <div className="flex flex-col gap-4 py-4 xl:flex-row">
         <div className="w-full xl:w-[35%]">
-          <ChartOverviewOrder isWithSelector />
+          <ChartOverviewOrder isWithSelector isAll />
         </div>
         <div className="w-full xl:w-[65%]">
           <AreaChartRevenue isWithSelector />
@@ -41,7 +41,7 @@ const AdminDashboardPage = async () => {
           <ChartTableLatestTransaction />
         </div>
         <div className="w-full xl:w-[35%]">
-          <ChartTransactionMethod isWithSelector />
+          <ChartTransactionMethod isWithSelector isAll />
         </div>
       </div>
     </div>

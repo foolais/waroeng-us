@@ -26,14 +26,18 @@ const chartConfig = {
 
 const AreaChartRevenue = ({
   isWithSelector = false,
+  isAll = false,
 }: {
   isWithSelector?: boolean;
+  isAll?: boolean;
 }) => {
   const { data: session, status } = useSession();
   const storeId = session?.user?.storeId;
 
   const [isFetching, startFetching] = useTransition();
-  const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    isAll ? "all" : "today",
+  );
   const [onRefresh, setOnRefresh] = useState(false);
   const [chartData, setChartData] = useState<
     { period: string; revenue: number }[]

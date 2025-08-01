@@ -25,15 +25,19 @@ const COLORS = {
 
 const ChartTransactionMethod = ({
   isWithSelector = false,
+  isAll = false,
 }: {
   isWithSelector?: boolean;
+  isAll?: boolean;
 }) => {
   const [chartData, setChartData] = useState<
     { method: string; count: number; fill: string }[]
   >([]);
   const [isFetching, startFetching] = useTransition();
   const [onRefresh, setOnRefresh] = useState(false);
-  const [timeRange, setTimeRange] = useState<TimeRange>("today");
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    isAll ? "all" : "today",
+  );
   const [hasData, setHasData] = useState(false);
 
   const chartConfig = {
