@@ -86,7 +86,7 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="johndoe@me.com"
+                      placeholder="**********"
                       {...field}
                     />
                   </FormControl>

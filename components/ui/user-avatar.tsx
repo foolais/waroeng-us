@@ -37,7 +37,7 @@ const UserAvatar = async () => {
           </div>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-max">
+      <PopoverContent className="mr-8 w-max">
         <DialogProfileButton />
         <DialogChangePassword />
         <Separator className="my-2" />
