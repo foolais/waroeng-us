@@ -3,9 +3,10 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
-import { hashSync } from "bcrypt-ts";
+import { compareSync, hashSync } from "bcrypt-ts";
 import { ITEM_PER_PAGE } from "../data";
 import { Prisma } from "@prisma/client";
+import { rateLimiter } from "../utils";
 
 interface IUser {
   image?: string;
@@ -206,6 +207,41 @@ export const deleteUser = async (id: string) => {
     return { success: true, message: "Pengguna berhasil dihapus" };
   } catch (error) {
     console.log(error);
+    return { error: true, message: error };
+  }
+};
+
+export const changePassword = async (oldPassword: string, password: string) => {
+  const session = await auth();
+  if (!session || !session.user || !session.user.id)
+    return { error: true, message: "Autentikasi gagal" };
+
+  try {
+    await rateLimiter.consume(session.user.id);
+  } catch (error) {
+    console.log(error);
+    return {
+      error: true,
+      message: "Terlalu banyak permintaan. Silakan coba lagi nanti.",
+    };
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!user) return { error: true, message: "Pengguna tidak ditemukan" };
+
+  const isMatchedPassword = compareSync(oldPassword, user.password);
+  if (!isMatchedPassword)
+    return { error: true, message: "Password lama salah" };
+
+  const hashedPassword = hashSync(password, 10);
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { password: hashedPassword },
+    });
+    return { success: true, message: "Password berhasil diubah" };
+  } catch (error) {
+    console.error(error);
     return { error: true, message: error };
   }
 };

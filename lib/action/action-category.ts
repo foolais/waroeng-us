@@ -65,7 +65,6 @@ export const getAllCategory = async (
 };
 
 export const getCategoryById = async (id: string) => {
-  console.log({ id });
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
 

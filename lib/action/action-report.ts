@@ -159,8 +159,6 @@ export const getRevenueData = async (storeId: string, timeRange: TimeRange) => {
       },
     });
 
-    console.log({ transactions });
-
     return processRevenueData(transactions, from, to, interval, timeRange);
   } catch (error) {
     console.log(error);

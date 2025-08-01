@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -31,3 +32,8 @@ export function formatPrice(price: number) {
 export const isCuid = (value: string) => {
   return /^c[a-z0-9]{24,}$/i.test(value);
 };
+
+export const rateLimiter = new RateLimiterMemory({
+  points: 5,
+  duration: 15 * 60,
+});

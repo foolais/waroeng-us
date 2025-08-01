@@ -129,3 +129,24 @@ export const orderSchema = z.object({
     method: z.enum(["CASH", "QR"]),
   }),
 });
+
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().nonempty("Password lama tidak boleh kosong"),
+    newPassword: z
+      .string()
+      .min(3, "Password baru harus lebih dari 3 karakter")
+      .max(32, "Password baru harus kurang dari 32 karakter"),
+    confirmPassword: z
+      .string()
+      .min(3, "Password harus lebih dari 3 karakter")
+      .max(32, "Password harus kurang dari 32 karakter"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Password tidak sama",
+    path: ["confirmPassword"],
+  })
+  .refine((data) => data.newPassword !== data.oldPassword, {
+    message: "Password baru tidak boleh sama dengan password lama",
+    path: ["newPassword"],
+  });
