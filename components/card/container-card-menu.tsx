@@ -26,7 +26,7 @@ const ContainerCardMenu = () => {
   useEffect(() => {
     if (!store || status !== "authenticated") return;
     startFetching(async () => {
-      const { data } = await getAllMenu(1, "", "ALL", store);
+      const { data } = await getAllMenu(1, "", "AVAILABLE", store, 100);
       const mappedData =
         data && data.length > 0
           ? data.map((item) => ({

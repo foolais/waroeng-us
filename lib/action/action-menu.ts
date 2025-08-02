@@ -21,6 +21,7 @@ export const getAllMenu = async (
   search: string,
   status: "ALL" | MENU_STATUS,
   store: string,
+  itemPerPage?: number,
 ) => {
   const session = await auth();
   if (!session) return { error: true, message: "Autentikasi gagal" };
@@ -30,7 +31,7 @@ export const getAllMenu = async (
   const storeId = isAdmin ? session.user.storeId : store;
 
   try {
-    const pageSize = ITEM_PER_PAGE;
+    const pageSize = itemPerPage ? itemPerPage : ITEM_PER_PAGE;
 
     const where: Prisma.MenuWhereInput = {
       name: {
