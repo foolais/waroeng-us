@@ -26,7 +26,12 @@ import {
   orderTypeOptions,
   paymentTypeOptions,
 } from "@/lib/data";
-import { formatPrice, getButtonText } from "@/lib/utils";
+import {
+  formatNumberInput,
+  formatPrice,
+  getButtonText,
+  parseFormattedNumber,
+} from "@/lib/utils";
 import { orderSchema } from "@/lib/zod/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
@@ -48,6 +53,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { getOrderById, updateOrder } from "@/lib/action/action-order";
 import { useOrderSelectedTable } from "@/store/order/useOrderFilter";
+import { Label } from "@/components/ui/label";
 
 interface FormOrderProps {
   orderId?: string;
@@ -104,6 +110,8 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   }>({});
   const [selectedQuantity, setSelectedQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPayment, setTotalPayment] = useState<number>(0);
+  const [paymentInput, setPaymentInput] = useState("");
 
   const [isPending, startTransition] = useTransition();
   const [isFetching, startFetching] = useTransition();
@@ -376,6 +384,17 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
     form.setValue("total", totalPrice);
   }, [selectedQuantity]);
 
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedValue = formatNumberInput(e.target.value);
+    setPaymentInput(formattedValue);
+    setTotalPayment(parseFormattedNumber(formattedValue));
+  };
+
+  const totalChange = useMemo(() => {
+    const change = +totalPayment - totalPrice;
+    return change > 0 ? change : 0;
+  }, [totalPayment, totalPrice]);
+
   return (
     <>
       <Form {...form}>
@@ -534,6 +553,23 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Catatan</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Masukkan catatan disini..."
+                        {...field}
+                        disabled={formDisabled}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="total"
@@ -553,22 +589,31 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Catatan</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Masukkan catatan disini..."
-                        {...field}
-                        disabled={formDisabled}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              <div className="flex flex-col gap-2">
+                <Label>Total Pembayaran</Label>
+                <div className="relative">
+                  <Input
+                    placeholder="Total Pembayaran"
+                    value={paymentInput}
+                    onChange={handlePaymentChange}
+                    className="pl-8"
+                  />
+                  <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                    Rp
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Total Kembalian</Label>
+                <Input
+                  type="string"
+                  placeholder="Total Kembalian"
+                  value={formatPrice(totalChange)}
+                  disabled
+                  readOnly
+                  style={{ opacity: 100 }}
+                />
+              </div>
             </div>
             <div className="w-full md:w-3/5">
               <h3 className="text-xl font-medium">Detail Pesanan</h3>
@@ -687,12 +732,18 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
               </div>
             </div>
           </div>
-          {type !== "DETAIL" && (
-            <Button type="submit" className="ml-auto flex" disabled={isPending}>
-              {getButtonText(type, "Order", isPending)}
-              {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-            </Button>
-          )}
+          <div className="flex py-6">
+            {type !== "DETAIL" && (
+              <Button
+                type="submit"
+                className="ml-auto flex"
+                disabled={isPending}
+              >
+                {getButtonText(type, "Order", isPending)}
+                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+              </Button>
+            )}
+          </div>
         </form>
       </Form>
     </>
