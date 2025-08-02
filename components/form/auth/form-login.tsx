@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { loginCredentials } from "@/lib/action/action-auth";
 import { toast } from "sonner";
 
-const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
+const FormLogin = () => {
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
@@ -104,20 +104,9 @@ const FormLogin = ({ onToggleForm }: { onToggleForm?: () => void }) => {
           form="form-login"
           disabled={isPending}
         >
-          {isPending ? "Logging in..." : "Login"}
+          {isPending ? "Loading..." : "Login"}
           {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
-        <p>
-          Don&apos;t have an account?{" "}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="px-1.5"
-            onClick={onToggleForm}
-          >
-            Sign up
-          </Button>
-        </p>
       </CardFooter>
     </Card>
   );
