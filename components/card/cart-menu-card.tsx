@@ -59,7 +59,7 @@ const CartMenuCard = ({ data }: { data: ICardMenu }) => {
           <div className="">
             <h2 className="truncate text-sm md:text-lg">{data.name}</h2>
             <span className="text-primary text-sm font-semibold md:text-lg">
-              {formatPrice(+data.price)}
+              {formatPrice(+data.price * quantity)}
             </span>
           </div>
         </div>
