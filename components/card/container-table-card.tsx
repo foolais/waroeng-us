@@ -62,7 +62,7 @@ const ContainerTableCard = ({ data }: TableTableProps) => {
     if (orderData.length === 0 || getTable.status === "AVAILABLE")
       return toast.error("Meja tidak memiliki pesanan", { duration: 1500 });
 
-    setOrderId(orderData[orderData.length - 1]?.id || "");
+    setOrderId(orderData[0]?.id || "");
     setIsOpenForm(true);
   };
 
