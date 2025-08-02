@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/auth.ts", request.url));
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
 
   if (
