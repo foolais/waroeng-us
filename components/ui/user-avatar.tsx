@@ -7,6 +7,7 @@ import { Separator } from "./separator";
 import LogoutButton from "@/components/button/logout-btn";
 import DialogProfileButton from "../dialog/dialog-profile-button";
 import DialogChangePassword from "../dialog/dialog-change-password";
+import ChangeDashboardButton from "../button/change-dashboard-btn";
 
 const UserAvatar = async () => {
   const session = await auth();
@@ -40,6 +41,9 @@ const UserAvatar = async () => {
       <PopoverContent className="mr-8 w-max">
         <DialogProfileButton />
         <DialogChangePassword />
+        {session.user?.role === "ADMIN" && (
+          <ChangeDashboardButton storeId={session.user.storeId} />
+        )}
         <Separator className="my-2" />
         <LogoutButton isCollapsed={false} />
       </PopoverContent>
