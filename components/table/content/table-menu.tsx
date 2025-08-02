@@ -12,6 +12,7 @@ import { MENU_STATUS } from "@prisma/client";
 import TableActionMenu from "../action/table-action-menu";
 import Badge from "@/components/ui/badge";
 import { menuStatusBadgeOptions } from "@/lib/data";
+import { formatPrice } from "@/lib/utils";
 
 interface TableMenuProps {
   data: {
@@ -65,7 +66,7 @@ const TableMenu = ({ data }: TableMenuProps) => {
                   </Avatar>
                 </TableCell>
                 <TableCell>{menu.name}</TableCell>
-                <TableCell>{menu.price}</TableCell>
+                <TableCell>{formatPrice(menu.price)}</TableCell>
                 <TableCell>{menu.store.name}</TableCell>
                 <TableCell>
                   <Badge

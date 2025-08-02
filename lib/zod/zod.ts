@@ -82,7 +82,7 @@ export const MenuSchema = z.object({
   name: z
     .string()
     .min(2, "Nama menu harus lebih dari 2 karakter")
-    .max(20, "Nama menu harus kurang dari 30 karakter"),
+    .max(40, "Nama menu harus kurang dari 40 karakter"),
   image: z
     .union([
       z
