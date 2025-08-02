@@ -48,7 +48,7 @@ export const getAllTable = async (
           id: true,
           name: true,
           status: true,
-          orders: { select: { id: true } },
+          orders: { select: { id: true, status: true } },
           store: {
             select: {
               id: true,

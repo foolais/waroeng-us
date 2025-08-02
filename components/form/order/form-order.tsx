@@ -594,6 +594,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                 <Label>Total Pembayaran</Label>
                 <div className="relative">
                   <Input
+                    disabled={formDisabled}
                     placeholder="Total Pembayaran"
                     value={paymentInput}
                     onChange={handlePaymentChange}

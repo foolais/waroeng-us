@@ -3,7 +3,7 @@
 
 import { tableStatusBadgeOptions } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { TABLE_STATUS } from "@prisma/client";
+import { ORDER_STATUS, TABLE_STATUS } from "@prisma/client";
 import { FilterSearchTable } from "../filter/filter-search";
 import { FilterTableStatus } from "../filter/table/filter-table";
 import { useCallback, useMemo, useState } from "react";
@@ -23,7 +23,7 @@ interface TableTableProps {
       id: string;
       name: string;
     };
-    orders: { id: string }[];
+    orders: { id: string; status: ORDER_STATUS }[];
   }[];
 }
 
@@ -62,7 +62,9 @@ const ContainerTableCard = ({ data }: TableTableProps) => {
     if (orderData.length === 0 || getTable.status === "AVAILABLE")
       return toast.error("Meja tidak memiliki pesanan", { duration: 1500 });
 
-    setOrderId(orderData[0]?.id || "");
+    const selectedOrder = orderData.find((item) => item.status === "PENDING");
+
+    setOrderId(selectedOrder?.id || "");
     setIsOpenForm(true);
   };
 
