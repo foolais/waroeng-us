@@ -119,7 +119,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   const formDisabled = type === "DETAIL" || isFetching;
   const storeId = session?.user.storeId;
 
-  const { fields, append, update } = useFieldArray({
+  const { fields, append, update, remove } = useFieldArray({
     control: form.control,
     name: "orderItem",
   });
@@ -266,6 +266,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
 
   const handleRemoveItem = (index: number) => {
     update(index, { menuId: "", quantity: 0, price: 0 });
+    remove(index);
     setMenuSearchData((prev) => {
       const newData = { ...prev };
       delete newData[index];
