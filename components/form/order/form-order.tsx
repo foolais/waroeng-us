@@ -111,7 +111,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
   const formDisabled = type === "DETAIL" || isFetching;
   const storeId = session?.user.storeId;
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, update } = useFieldArray({
     control: form.control,
     name: "orderItem",
   });
@@ -244,17 +244,20 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
 
   const handleAddItem = () => {
     const newIndex = fields.length;
-    append({
-      menuId: "",
-      quantity: 1,
-      price: 0,
-    });
+    append(
+      {
+        menuId: "",
+        quantity: 1,
+        price: 0,
+      },
+      { shouldFocus: true },
+    );
     setMenuSearchData((prev) => ({ ...prev, [newIndex]: [] }));
     setSelectedQuantity((prev) => prev + 1);
   };
 
   const handleRemoveItem = (index: number) => {
-    remove(index);
+    update(index, { menuId: "", quantity: 0, price: 0 });
     setMenuSearchData((prev) => {
       const newData = { ...prev };
       delete newData[index];
@@ -282,20 +285,26 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
           paymentType: values.transaction.method,
           tableId: values.tableId ?? null,
           notes: values.notes ?? null,
-          totalPrice: values.total,
-          items: values.orderItem.map((item) => ({
-            id: item.menuId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+          totalPrice,
+          items: values.orderItem
+            .map((item) => ({
+              id: item.menuId,
+              quantity: item.quantity,
+              price: item.price,
+            }))
+            .filter((item) => item.id !== ""),
           status: values.status,
         };
+
         if (type === "UPDATE" && orderId) {
           const res = await updateOrder(orderId, payload);
           if ("success" in res && res.success) {
             toast.success(res.message, { duration: 1500 });
             onClose();
-          } else if ("error" in res) toast.error(res.error, { duration: 1500 });
+          } else if ("error" in res) {
+            console.log(res);
+            toast.error(res.message as string, { duration: 1500 });
+          }
         }
       } catch (error) {
         console.log(error);
@@ -569,6 +578,7 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                   className="border-primary mt-2 w-full"
                   onClick={handleAddItem}
                   disabled={formDisabled}
+                  type="button"
                 >
                   Tambah Pesanan Baru <Plus />
                 </Button>

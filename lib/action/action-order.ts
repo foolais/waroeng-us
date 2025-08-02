@@ -282,6 +282,20 @@ export const updateOrder = async (orderId: string, data: IUpdateOrder) => {
         const menus = await prisma.menu.findMany({
           where: { id: { in: menusId }, storeId },
         });
+        const findDuplicates = menusId.filter(
+          (item, index) => menusId.indexOf(item) !== index,
+        );
+
+        if (findDuplicates.length) {
+          const duplicateMenu = findDuplicates.map((id) => {
+            const menu = menus.find((menu) => menu.id === id);
+            return menu?.name;
+          });
+          return {
+            error: true,
+            message: `Menu ${duplicateMenu.join(", ")} tidak boleh duplikat`,
+          };
+        }
 
         if (menus.length !== items.length) {
           const missingMenus = items.filter(
@@ -359,6 +373,9 @@ export const updateOrder = async (orderId: string, data: IUpdateOrder) => {
 
       // Update order items if provided
       if (items && items.length > 0) {
+        await prisma.orderItem.deleteMany({
+          where: { orderId },
+        });
         // Create new items
         await prisma.orderItem.createMany({
           data: items.map((item) => ({
