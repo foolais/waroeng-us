@@ -23,6 +23,10 @@ export async function middleware(request: NextRequest) {
       break;
   }
 
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL("/auth.ts", request.url));
+  }
+
   if (
     !isLoggedIn &&
     ProtectedRoutes.some((route) => pathname.startsWith(route)) &&
