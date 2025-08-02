@@ -58,11 +58,11 @@ const ContainerTableCard = ({ data }: TableTableProps) => {
     if (!getTable)
       return toast.error("Meja tidak ditemukan", { duration: 1500 });
 
-    const orderData = getTable.orders.find((item) => item.id !== null);
-    if (!orderData)
+    const orderData = getTable.orders;
+    if (orderData.length === 0 || getTable.status === "AVAILABLE")
       return toast.error("Meja tidak memiliki pesanan", { duration: 1500 });
 
-    setOrderId(orderData?.id || "");
+    setOrderId(orderData[orderData.length - 1]?.id || "");
     setIsOpenForm(true);
   };
 
