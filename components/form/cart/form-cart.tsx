@@ -109,7 +109,7 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
   }, [totalPayment, totalPrice]);
 
   return (
-    <div className="w-full space-y-4 px-4">
+    <div className="max-h-full w-full space-y-4 overflow-y-auto px-4">
       <div className="flex flex-col gap-2">
         <Label htmlFor="orderType" className="required">
           Tipe Pesanan
@@ -172,7 +172,6 @@ const FormCart = ({ totalPrice }: { totalPrice: number }) => {
           </SelectContent>
         </Select>
       </div>
-
       <div className="flex flex-col gap-2">
         <Label>Catatan</Label>
         <Textarea
