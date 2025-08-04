@@ -70,6 +70,7 @@ const AppSidebar = ({ type }: { type: "SUPER" | "ADMIN" }) => {
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuButton asChild>
                             <Link
+                              prefetch={true}
                               href={
                                 type === "SUPER"
                                   ? subItem.url

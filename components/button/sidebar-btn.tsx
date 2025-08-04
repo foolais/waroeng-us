@@ -31,7 +31,11 @@ const SidebarButton = async () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {cashierSidenavItems.map((item) => (
-            <Link href={`/${session.user.storeId}${item.url}`} key={item.title}>
+            <Link
+              href={`/${session.user.storeId}${item.url}`}
+              key={item.title}
+              prefetch={true}
+            >
               <DropdownMenuItem
                 key={item.title}
                 className="my-1 cursor-pointer"
