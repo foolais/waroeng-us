@@ -253,7 +253,7 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
                           setUrl(url);
                         }}
                         onImageRemove={() => {
-                          field.onChange(undefined);
+                          field.onChange("");
                         }}
                         disabled={formDisabled}
                         type={type}
