@@ -40,6 +40,7 @@ import { Button } from "@/components/ui/button";
 import { getButtonText } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { createMenu, getMenuById, updateMenu } from "@/lib/action/action-menu";
+import FormMenuSkeleton from "./form-menu-skeleton";
 
 interface iProps {
   menuId?: string;
@@ -225,182 +226,195 @@ const FormMenu = ({ menuId, type, onClose }: iProps) => {
   const categoriesDisabled = !storeValue;
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-          <div className="flex flex-col gap-6">
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <ImageUploader
-                    initialImage={
-                      field.value instanceof File
-                        ? URL.createObjectURL(field.value)
-                        : field.value
-                    }
-                    onImageUpload={(url) => {
-                      field.onChange(url);
-                      setUrl(url);
-                    }}
-                    onImageRemove={() => {
-                      field.onChange(undefined);
-                    }}
-                    disabled={formDisabled}
-                    type={type}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="hidden w-full items-center gap-4 md:grid">
-              <FormField
-                control={form.control}
-                name="storeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Toko</FormLabel>
-                    <FormControl>
-                      <Combobox
-                        options={storesData}
-                        value={field.value}
-                        onChange={field.onChange}
-                        onSetStore={setStoreValue}
-                        onSearch={handleSearchStore}
-                        isLoading={isSearchingStore}
-                        placeholder="Pilih Toko"
-                        disabled={formDisabled || isAdmin}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-          <div className="grid w-full items-center gap-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Masukkan Nama"
-                      {...field}
-                      disabled={formDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Harga</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Masukkan Harga"
-                      {...field}
-                      type="number"
-                      disabled={formDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue="ACTIVE"
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger
-                        className="w-full cursor-pointer"
+    <>
+      {isFetching ? (
+        <FormMenuSkeleton />
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+              <div className="flex flex-col gap-6">
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <ImageUploader
+                        initialImage={
+                          field.value instanceof File
+                            ? URL.createObjectURL(field.value)
+                            : field.value
+                        }
+                        onImageUpload={(url) => {
+                          field.onChange(url);
+                          setUrl(url);
+                        }}
+                        onImageRemove={() => {
+                          field.onChange(undefined);
+                        }}
                         disabled={formDisabled}
-                      >
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {menuStatusOption.map((status) => (
-                        <SelectItem key={status.value} value={status.value}>
-                          {status.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kategori</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={categoriesData}
-                      value={field.value}
-                      onChange={field.onChange}
-                      onSearch={handleSearchCategory}
-                      isLoading={isSearchingCategory}
-                      placeholder="Pilih Kategori"
-                      disabled={formDisabled || categoriesDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="md:hidden">
-              <FormField
-                control={form.control}
-                name="storeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Toko</FormLabel>
-                    <FormControl>
-                      <Combobox
-                        options={storesData}
-                        value={field.value}
-                        onChange={field.onChange}
-                        onSetStore={setStoreValue}
-                        onSearch={handleSearchStore}
-                        isLoading={isSearchingStore}
-                        placeholder="Pilih Toko"
-                        disabled={formDisabled || isAdmin}
+                        type={type}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="hidden w-full items-center gap-4 md:grid">
+                  <FormField
+                    control={form.control}
+                    name="storeId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Toko</FormLabel>
+                        <FormControl>
+                          <Combobox
+                            options={storesData}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onSetStore={setStoreValue}
+                            onSearch={handleSearchStore}
+                            isLoading={isSearchingStore}
+                            placeholder="Pilih Toko"
+                            disabled={formDisabled || isAdmin}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid w-full items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Masukkan Nama"
+                          {...field}
+                          disabled={formDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Harga</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Masukkan Harga"
+                          {...field}
+                          type="number"
+                          disabled={formDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="ACTIVE"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {menuStatusOption.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="categoryId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kategori</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          options={categoriesData}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onSearch={handleSearchCategory}
+                          isLoading={isSearchingCategory}
+                          placeholder="Pilih Kategori"
+                          disabled={formDisabled || categoriesDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="md:hidden">
+                  <FormField
+                    control={form.control}
+                    name="storeId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Toko</FormLabel>
+                        <FormControl>
+                          <Combobox
+                            options={storesData}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onSetStore={setStoreValue}
+                            onSearch={handleSearchStore}
+                            isLoading={isSearchingStore}
+                            placeholder="Pilih Toko"
+                            disabled={formDisabled || isAdmin}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        {type !== "DETAIL" && (
-          <Button type="submit" className="ml-auto flex" disabled={isPending}>
-            {getButtonText(type, "Menu", isPending)}
-            {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-          </Button>
-        )}
-      </form>
-    </Form>
+            {type !== "DETAIL" && (
+              <Button
+                type="submit"
+                className="ml-auto flex"
+                disabled={isPending}
+              >
+                {getButtonText(type, "Menu", isPending)}
+                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+              </Button>
+            )}
+          </form>
+        </Form>
+      )}
+    </>
   );
 };
 

@@ -54,6 +54,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getOrderById, updateOrder } from "@/lib/action/action-order";
 import { useOrderSelectedTable } from "@/store/order/useOrderFilter";
 import { Label } from "@/components/ui/label";
+import FormOrderSkeleton from "./form-order-skeleton";
 
 interface FormOrderProps {
   orderId?: string;
@@ -398,322 +399,292 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
 
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="pb-8 md:pb-0"
-        >
-          <div className="flex h-full flex-1 flex-col gap-4 md:flex-row">
-            <div className="w-full space-y-4 py-3.5 md:w-2/5">
-              <FormField
-                control={form.control}
-                name="orderNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No Pesanan</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="No Pesanan"
-                        {...field}
-                        disabled
-                        readOnly
-                        style={{ opacity: 100 }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="required">Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue="PENDING"
-                      value={field.value}
-                    >
+      {isFetching ? (
+        <FormOrderSkeleton type={type} />
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="pb-8 md:pb-0"
+          >
+            <div className="flex h-full flex-1 flex-col gap-4 md:flex-row">
+              <div className="w-full space-y-4 py-3.5 md:w-2/5">
+                <FormField
+                  control={form.control}
+                  name="orderNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>No Pesanan</FormLabel>
                       <FormControl>
-                        <SelectTrigger
-                          className="w-full cursor-pointer"
-                          disabled={formDisabled}
-                        >
-                          <SelectValue placeholder="Pilih Status" />
-                        </SelectTrigger>
+                        <Input
+                          placeholder="No Pesanan"
+                          {...field}
+                          disabled
+                          readOnly
+                          style={{ opacity: 100 }}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {orderStatusOptions.map((item) => (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            className="cursor-pointer"
-                          >
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="required">Tipe Pesanan</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue="DINE_IN"
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger
-                          className="w-full cursor-pointer"
-                          disabled={formDisabled}
-                        >
-                          <SelectValue placeholder="Pilih Tipe" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {orderTypeOptions.map((item) => (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            className="cursor-pointer"
-                          >
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="tableId"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Meja</FormLabel>
-                    <FormControl>
-                      <Combobox
-                        disabled={isFetchingTable || formDisabled}
-                        options={tableData}
-                        placeholder="Pilih Meja"
-                        value={tableId || ""}
-                        onChange={(value) => {
-                          setTableId(value || null);
-                          form.setValue("tableId", value || "");
-                        }}
-                        onSearch={handleSearchTable}
-                        isLoading={isFetchingTable}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="transaction.method"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="required">
-                      Metode Pembayaran
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue="CASH"
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger
-                          className="w-full cursor-pointer"
-                          disabled={formDisabled}
-                        >
-                          <SelectValue placeholder="Pilih metode pembayaran" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {paymentTypeOptions.map((item) => (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            className="cursor-pointer"
-                          >
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Catatan</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Masukkan catatan disini..."
-                        {...field}
-                        disabled={formDisabled}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="total"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Total</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Total Harga"
-                        value={formatPrice(totalPrice)}
-                        disabled
-                        readOnly
-                        style={{ opacity: 100 }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-col gap-2">
-                <Label>Total Pembayaran</Label>
-                <div className="relative">
-                  <Input
-                    disabled={formDisabled}
-                    placeholder="Total Pembayaran"
-                    value={paymentInput}
-                    onChange={handlePaymentChange}
-                    className="pl-8"
-                  />
-                  <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm">
-                    Rp
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label>Total Kembalian</Label>
-                <Input
-                  type="string"
-                  placeholder="Total Kembalian"
-                  value={formatPrice(totalChange)}
-                  disabled
-                  readOnly
-                  style={{ opacity: 100 }}
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </div>
-            <div className="w-full md:w-3/5">
-              <h3 className="text-xl font-medium">Detail Pesanan</h3>
-              {type === "UPDATE" && (
-                <Button
-                  variant="outline"
-                  className="border-primary mt-2 w-full"
-                  onClick={handleAddItem}
-                  disabled={formDisabled}
-                  type="button"
-                >
-                  Tambah Pesanan Baru <Plus />
-                </Button>
-              )}
-              <Separator className="bg-primary my-4" />
-              <div className="no-scrollbar grid h-full max-h-[50vh] flex-1 auto-rows-min gap-4 overflow-y-auto md:min-h-[50vh]">
-                {fields.map((field, index) => {
-                  const selectedMenuId = form.watch(
-                    `orderItem.${index}.menuId`,
-                  );
-                  const menuList = menuSearchData[index] || [];
-                  const selectedMenu = menuList.find(
-                    (menu) => menu.value === selectedMenuId,
-                  );
-                  const quantity = form.watch(`orderItem.${index}.quantity`);
-                  const price = form.watch(`orderItem.${index}.price`);
-
-                  return (
-                    <div
-                      key={field.id}
-                      className="flex items-center gap-2 rounded-md border-[1.5px] px-2 py-3"
-                    >
-                      {selectedMenu && (
-                        <div className="relative h-16 w-16 overflow-hidden rounded-md">
-                          <Image
-                            src={selectedMenu.image || LogoImage}
-                            alt={selectedMenu.label}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Combobox
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="required">Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="PENDING"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
                             disabled={formDisabled}
-                            options={menuList}
-                            placeholder="Pilih Menu"
-                            value={selectedMenuId || ""}
-                            onChange={(value) => handleMenuSelect(index, value)}
-                            onSearch={(query) => handleSearchMenu(query, index)}
-                            isLoading={menuFetchingStates[index] || false}
-                            className={
-                              selectedMenu ? "w-full" : "w-[85%] md:w-[90%]"
-                            }
-                          />
-                          {!selectedMenu && (
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => handleRemoveItem(index)}
-                              disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Pilih Status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {orderStatusOptions.map((item) => (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              className="cursor-pointer"
                             >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="required">Tipe Pesanan</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="DINE_IN"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Pilih Tipe" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {orderTypeOptions.map((item) => (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              className="cursor-pointer"
+                            >
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tableId"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Meja</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          disabled={isFetchingTable || formDisabled}
+                          options={tableData}
+                          placeholder="Pilih Meja"
+                          value={tableId || ""}
+                          onChange={(value) => {
+                            setTableId(value || null);
+                            form.setValue("tableId", value || "");
+                          }}
+                          onSearch={handleSearchTable}
+                          isLoading={isFetchingTable}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="transaction.method"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="required">
+                        Metode Pembayaran
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="CASH"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Pilih metode pembayaran" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {paymentTypeOptions.map((item) => (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              className="cursor-pointer"
+                            >
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Catatan</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Masukkan catatan disini..."
+                          {...field}
+                          disabled={formDisabled}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="total"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Total Harga</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Total Harga"
+                          value={formatPrice(totalPrice)}
+                          disabled
+                          readOnly
+                          style={{ opacity: 100 }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {type === "UPDATE" && (
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <Label>Total Pembayaran</Label>
+                      <div className="relative">
+                        <Input
+                          disabled={formDisabled}
+                          placeholder="Total Pembayaran"
+                          value={paymentInput}
+                          onChange={handlePaymentChange}
+                          className="pl-8"
+                        />
+                        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm">
+                          Rp
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label>Total Kembalian</Label>
+                      <Input
+                        type="string"
+                        placeholder="Total Kembalian"
+                        value={formatPrice(totalChange)}
+                        disabled
+                        readOnly
+                        style={{ opacity: 100 }}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="w-full md:w-3/5">
+                <h3 className="text-xl font-medium">Detail Pesanan</h3>
+                {type === "UPDATE" && (
+                  <Button
+                    variant="outline"
+                    className="border-primary mt-2 w-full"
+                    onClick={handleAddItem}
+                    disabled={formDisabled}
+                    type="button"
+                  >
+                    Tambah Pesanan Baru <Plus />
+                  </Button>
+                )}
+                <Separator className="bg-primary my-4" />
+                <div className="no-scrollbar grid h-full max-h-[50vh] flex-1 auto-rows-min gap-4 overflow-y-auto md:min-h-[50vh]">
+                  {fields.map((field, index) => {
+                    const selectedMenuId = form.watch(
+                      `orderItem.${index}.menuId`,
+                    );
+                    const menuList = menuSearchData[index] || [];
+                    const selectedMenu = menuList.find(
+                      (menu) => menu.value === selectedMenuId,
+                    );
+                    const quantity = form.watch(`orderItem.${index}.quantity`);
+                    const price = form.watch(`orderItem.${index}.price`);
+
+                    return (
+                      <div
+                        key={field.id}
+                        className="flex items-center gap-2 rounded-md border-[1.5px] px-2 py-3"
+                      >
                         {selectedMenu && (
-                          <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
-                            <div className="mb-2 ml-2 text-sm font-medium md:my-0 md:ml-0">
-                              {formatPrice(price * quantity)}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => handleQuantityChange(index, -1)}
-                                disabled={formDisabled}
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                              <span className="w-8 text-center">
-                                {quantity}
-                              </span>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => handleQuantityChange(index, 1)}
-                                disabled={formDisabled}
-                              >
-                                <Plus className="h-4 w-4" />
-                              </Button>
+                          <div className="relative h-16 w-16 overflow-hidden rounded-md">
+                            <Image
+                              src={selectedMenu.image || LogoImage}
+                              alt={selectedMenu.label}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Combobox
+                              disabled={formDisabled}
+                              options={menuList}
+                              placeholder="Pilih Menu"
+                              value={selectedMenuId || ""}
+                              onChange={(value) =>
+                                handleMenuSelect(index, value)
+                              }
+                              onSearch={(query) =>
+                                handleSearchMenu(query, index)
+                              }
+                              isLoading={menuFetchingStates[index] || false}
+                              className={
+                                selectedMenu ? "w-full" : "w-[85%] md:w-[90%]"
+                              }
+                            />
+                            {!selectedMenu && (
                               <Button
                                 type="button"
                                 variant="destructive"
@@ -724,30 +695,76 @@ const FormOrder = ({ orderId, type, onClose }: FormOrderProps) => {
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
-                            </div>
+                            )}
                           </div>
-                        )}
+                          {selectedMenu && (
+                            <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
+                              <div className="mb-2 ml-2 text-sm font-medium md:my-0 md:ml-0">
+                                {formatPrice(price * quantity)}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() =>
+                                    handleQuantityChange(index, -1)
+                                  }
+                                  disabled={formDisabled}
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </Button>
+                                <span className="w-8 text-center">
+                                  {quantity}
+                                </span>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleQuantityChange(index, 1)}
+                                  disabled={formDisabled}
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleRemoveItem(index)}
+                                  disabled={formDisabled}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex py-6">
-            {type !== "DETAIL" && (
-              <Button
-                type="submit"
-                className="ml-auto flex"
-                disabled={isPending}
-              >
-                {getButtonText(type, "Order", isPending)}
-                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-              </Button>
-            )}
-          </div>
-        </form>
-      </Form>
+            <div className="flex py-6">
+              {type !== "DETAIL" && (
+                <Button
+                  type="submit"
+                  className="ml-auto flex"
+                  disabled={isPending}
+                >
+                  {getButtonText(type, "Order", isPending)}
+                  {isPending && (
+                    <Loader2 className="ml-2 size-4 animate-spin" />
+                  )}
+                </Button>
+              )}
+            </div>
+          </form>
+        </Form>
+      )}
     </>
   );
 };

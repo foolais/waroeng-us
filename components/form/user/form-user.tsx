@@ -40,6 +40,7 @@ import { createUser, getUserById, updateUser } from "@/lib/action/action-user";
 import { useUserImage } from "@/store/user/useUserFilter";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import FormUserSkeleton from "./form-user-skeleton";
 
 interface FormUserProps {
   userId?: string;
@@ -186,39 +187,277 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-            <div className="flex flex-col gap-6">
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <ImageUploader
-                      initialImage={
-                        field.value instanceof File
-                          ? URL.createObjectURL(field.value)
-                          : field.value
-                      }
-                      onImageUpload={(url) => {
-                        field.onChange(url);
-                        setUrl(url);
-                      }}
-                      onImageRemove={() => {
-                        field.onChange(undefined);
-                      }}
-                      disabled={formDisabled}
-                      type={type}
+      {isFetching ? (
+        <FormUserSkeleton type={type} />
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+              <div className="flex flex-col gap-6">
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <ImageUploader
+                        initialImage={
+                          field.value instanceof File
+                            ? URL.createObjectURL(field.value)
+                            : field.value
+                        }
+                        onImageUpload={(url) => {
+                          field.onChange(url);
+                          setUrl(url);
+                        }}
+                        onImageRemove={() => {
+                          field.onChange(undefined);
+                        }}
+                        disabled={formDisabled}
+                        type={type}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Desktop only fields */}
+                <div className="hidden w-full items-center gap-4 md:grid">
+                  {/* Hide role field for CREATE to change it bellow storeId */}
+                  {type === "CREATE" && (
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Peran</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue="CASHIER"
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                className="w-full cursor-pointer"
+                                disabled={formDisabled}
+                              >
+                                <SelectValue placeholder="Pilih Peran" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {roleOptions.map((role) => (
+                                <SelectItem key={role.value} value={role.value}>
+                                  {role.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Desktop only fields */}
-              <div className="hidden w-full items-center gap-4 md:grid">
-                {/* Hide role field for CREATE to change it bellow storeId */}
-                {type === "CREATE" && (
+                  )}
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nomor Telepon</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="phone"
+                            placeholder="Masukkan Nomor Telepon"
+                            disabled={formDisabled}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Alamat</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Masukkan Alamat"
+                            {...field}
+                            disabled={formDisabled}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid w-full items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nama</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Masukkan Nama"
+                          {...field}
+                          disabled={formDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Masukkan Email"
+                          disabled={formDisabled}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jenis Kelamin</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue="MALE"
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full cursor-pointer"
+                            disabled={formDisabled}
+                          >
+                            <SelectValue placeholder="Pilih Jenis Kelamin" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {genderOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Mobile only fields */}
+                <div className="grid w-full items-center gap-4 md:hidden">
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nomor Telepon</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="phone"
+                            placeholder="Masukkan Nomor Telepon"
+                            disabled={formDisabled}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Alamat</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Masukkan Alamat"
+                            {...field}
+                            disabled={formDisabled}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Peran</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue="CASHIER"
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              className="w-full cursor-pointer"
+                              disabled={formDisabled}
+                            >
+                              <SelectValue placeholder="Pilih Peran" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {roleOptions.map((role) => (
+                              <SelectItem key={role.value} value={role.value}>
+                                {role.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {/* END of Mobile only fields */}
+                <FormField
+                  control={form.control}
+                  name="storeId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Toko</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          options={storesData}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onSearch={handleSearch}
+                          isLoading={isSearching}
+                          placeholder="Pilih Toko"
+                          disabled={
+                            formDisabled ||
+                            isAdmin ||
+                            pathName.includes("admin")
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {type !== "CREATE" && (
                   <FormField
                     control={form.control}
                     name="role"
@@ -251,284 +490,59 @@ const FormUser = ({ userId, type, onClose }: FormUserProps) => {
                     )}
                   />
                 )}
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nomor Telepon</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="phone"
-                          placeholder="Masukkan Nomor Telepon"
-                          disabled={formDisabled}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Alamat</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Masukkan Alamat"
-                          {...field}
-                          disabled={formDisabled}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {type === "CREATE" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Masukkan Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Konfirmasi Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Masukkan Konfirmasi Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </div>
             </div>
-            <div className="grid w-full items-center gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nama</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Masukkan Nama"
-                        {...field}
-                        disabled={formDisabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Masukkan Email"
-                        disabled={formDisabled}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Jenis Kelamin</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue="MALE"
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger
-                          className="w-full cursor-pointer"
-                          disabled={formDisabled}
-                        >
-                          <SelectValue placeholder="Pilih Jenis Kelamin" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {genderOptions.map((role) => (
-                          <SelectItem key={role.value} value={role.value}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Mobile only fields */}
-              <div className="grid w-full items-center gap-4 md:hidden">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nomor Telepon</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="phone"
-                          placeholder="Masukkan Nomor Telepon"
-                          disabled={formDisabled}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Alamat</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Masukkan Alamat"
-                          {...field}
-                          disabled={formDisabled}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Peran</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue="CASHIER"
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className="w-full cursor-pointer"
-                            disabled={formDisabled}
-                          >
-                            <SelectValue placeholder="Pilih Peran" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {roleOptions.map((role) => (
-                            <SelectItem key={role.value} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              {/* END of Mobile only fields */}
-              <FormField
-                control={form.control}
-                name="storeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Toko</FormLabel>
-                    <FormControl>
-                      <Combobox
-                        options={storesData}
-                        value={field.value}
-                        onChange={field.onChange}
-                        onSearch={handleSearch}
-                        isLoading={isSearching}
-                        placeholder="Pilih Toko"
-                        disabled={
-                          formDisabled || isAdmin || pathName.includes("admin")
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {type !== "CREATE" && (
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Peran</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue="CASHIER"
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className="w-full cursor-pointer"
-                            disabled={formDisabled}
-                          >
-                            <SelectValue placeholder="Pilih Peran" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {roleOptions.map((role) => (
-                            <SelectItem key={role.value} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-              {type === "CREATE" && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="Masukkan Password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Konfirmasi Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="Masukkan Konfirmasi Password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-          {type !== "DETAIL" && (
-            <Button type="submit" className="ml-auto flex" disabled={isPending}>
-              {getButtonText(type, "Pengguna", isPending)}
-              {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-            </Button>
-          )}
-        </form>
-      </Form>
+            {type !== "DETAIL" && (
+              <Button
+                type="submit"
+                className="ml-auto flex"
+                disabled={isPending}
+              >
+                {getButtonText(type, "Pengguna", isPending)}
+                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+              </Button>
+            )}
+          </form>
+        </Form>
+      )}
     </>
   );
 };

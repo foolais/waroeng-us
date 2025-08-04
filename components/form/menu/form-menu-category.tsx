@@ -33,6 +33,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import FormMenuCategorySkeleton from "./form-menu-category-skeleton";
 
 interface iProps {
   categoryId?: string;
@@ -159,56 +160,69 @@ const FormMenuCategory = ({ categoryId, type, onClose }: iProps) => {
   const formDisabled = isFetching || isPending || type === "DETAIL";
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nama</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Masukkan Nama Kategori"
-                  className="input input-bordered w-full"
-                  {...field}
-                  disabled={formDisabled}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="storeId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Toko</FormLabel>
-              <FormControl>
-                <Combobox
-                  options={storesData}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onSearch={handleSearch}
-                  isLoading={isSearching}
-                  placeholder="Pilih Toko"
-                  disabled={formDisabled || isAdmin}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {type !== "DETAIL" && (
-          <Button type="submit" className="ml-auto flex" disabled={isPending}>
-            {getButtonText(type, "Kategori", isPending)}
-            {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-          </Button>
-        )}
-      </form>
-    </Form>
+    <>
+      {isFetching ? (
+        <FormMenuCategorySkeleton />
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Masukkan Nama Kategori"
+                      className="input input-bordered w-full"
+                      {...field}
+                      disabled={formDisabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="storeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Toko</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={storesData}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onSearch={handleSearch}
+                      isLoading={isSearching}
+                      placeholder="Pilih Toko"
+                      disabled={formDisabled || isAdmin}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {type !== "DETAIL" && (
+              <Button
+                type="submit"
+                className="ml-auto flex"
+                disabled={isPending}
+              >
+                {getButtonText(type, "Kategori", isPending)}
+                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+              </Button>
+            )}
+          </form>
+        </Form>
+      )}
+    </>
   );
 };
 

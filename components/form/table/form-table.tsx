@@ -41,6 +41,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import FormTableSkeleton from "./form-table-skeleton";
 
 interface FormTableProps {
   tableId?: string;
@@ -167,85 +168,96 @@ const FormTable = ({ tableId, type, onClose }: FormTableProps) => {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nama</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    {...field}
-                    disabled={formDisabled}
-                    placeholder="Masukan Nama"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="storeId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Toko</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={storesData}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onSearch={handleSearch}
-                    isLoading={isSearching}
-                    placeholder="Pilih Toko"
-                    disabled={formDisabled || isAdmin}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue="AVAILABLE"
-                  value={field.value}
-                >
+      {isFetching ? (
+        <FormTableSkeleton />
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <SelectTrigger
-                      className="w-full cursor-pointer"
+                    <Input
+                      type="text"
+                      {...field}
                       disabled={formDisabled}
-                    >
-                      <SelectValue placeholder="Pilih Status" />
-                    </SelectTrigger>
+                      placeholder="Masukan Nama"
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {tableStatusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="storeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Toko</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={storesData}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onSearch={handleSearch}
+                      isLoading={isSearching}
+                      placeholder="Pilih Toko"
+                      disabled={formDisabled || isAdmin}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue="AVAILABLE"
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger
+                        className="w-full cursor-pointer"
+                        disabled={formDisabled}
+                      >
+                        <SelectValue placeholder="Pilih Status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {tableStatusOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            {type !== "DETAIL" && (
+              <Button
+                type="submit"
+                className="ml-auto flex"
+                disabled={isPending}
+              >
+                {getButtonText(type, "Meja", isPending)}
+                {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
+              </Button>
             )}
-          />
-          {type !== "DETAIL" && (
-            <Button type="submit" className="ml-auto flex" disabled={isPending}>
-              {getButtonText(type, "Meja", isPending)}
-              {isPending && <Loader2 className="ml-2 size-4 animate-spin" />}
-            </Button>
-          )}
-        </form>
-      </Form>
+          </form>
+        </Form>
+      )}
     </>
   );
 };
