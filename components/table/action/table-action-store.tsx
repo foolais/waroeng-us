@@ -112,7 +112,7 @@ const TableActionStore = ({ id, name }: iProps) => {
       <DialogForm
         isOpen={openStatus.value}
         onClose={() => setOpenStatus({ value: false, type: "" })}
-        title={openStatus.type === "detail" ? `Detail Toko` : `Update Toko`}
+        title={openStatus.type === "detail" ? `Detail Toko` : `Perbarui Toko`}
       >
         {openStatus.type === "detail" ? (
           <FormStore

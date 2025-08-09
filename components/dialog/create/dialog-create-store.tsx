@@ -22,7 +22,7 @@ const DialogCreateStore = ({ className }: { className?: string }) => {
       <DialogForm
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Create a New Store"
+        title="Buat Toko Baru"
       >
         <FormStore type="CREATE" onClose={() => setIsOpen(false)} />
       </DialogForm>

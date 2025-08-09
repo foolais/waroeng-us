@@ -104,7 +104,7 @@ const FormStore = ({ type, onClose, storeId }: FormStoreProps) => {
                   <FormLabel>Nama</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter Store Name"
+                      placeholder="Masukkan Nama Toko"
                       className="w-full"
                       disabled={isPending || type === "DETAIL"}
                       {...field}
