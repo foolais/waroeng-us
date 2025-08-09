@@ -30,7 +30,7 @@ const UserAvatar = async () => {
           </Avatar>
           <div className="hidden flex-col sm:flex">
             <p className="text-sm font-semibold text-gray-900">
-              {session?.user?.email}
+              {session?.user?.name}
             </p>
             <p className="text-xs font-semibold text-gray-600 capitalize md:text-sm">
               {session?.user?.role}

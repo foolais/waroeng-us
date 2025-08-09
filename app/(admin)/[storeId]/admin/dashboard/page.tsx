@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import CartButton from "@/components/button/cart-btn";
 import AreaChartRevenue from "@/components/chart/area-chart-revenue";
 import ChartOverviewOrder from "@/components/chart/chart-overview-order";
 import ChartOverviewStore from "@/components/chart/chart-overview-store";
@@ -25,7 +24,6 @@ const AdminDashboardPage = async () => {
           <ChartColumn color="var(--color-primary)" />
           <h1 className="header-title">Laporan Warung {store.name}</h1>
         </div>
-        <CartButton />
       </div>
       <ChartOverviewStore isAll />
       <div className="flex flex-col gap-4 py-4 xl:flex-row">

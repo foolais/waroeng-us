@@ -1,4 +1,3 @@
-import CartButton from "@/components/button/cart-btn";
 import ChartHistory from "@/components/chart/chart-history";
 import ChartOverviewOrder from "@/components/chart/chart-overview-order";
 import ChartOverviewStore from "@/components/chart/chart-overview-store";
@@ -12,7 +11,6 @@ const AdminDashboardPage = () => {
           <ChartColumn color="var(--color-primary)" />
           <h1 className="header-title">Laporan Waroeng US</h1>
         </div>
-        <CartButton />
       </div>
       <ChartOverviewStore isWithStore isAll />
       <div className="flex flex-col gap-4 py-4 xl:flex-row">
