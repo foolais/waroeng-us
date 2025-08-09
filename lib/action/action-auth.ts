@@ -57,7 +57,7 @@ export const loginCredentials = async (data: {
     return {
       error: true,
       type: "credentials",
-      message: "Invalid email or password",
+      message: "Autentikasi Gagal",
     };
 
   const { role, storeId } = res || {};
@@ -81,7 +81,7 @@ export const loginCredentials = async (data: {
       password,
       redirectTo: redirectUrl,
     });
-    return { success: true, message: "Login successful" };
+    return { success: true, message: "Berhasil Login" };
   } catch (error) {
     console.error(error);
     if (error instanceof AuthError) {
@@ -90,13 +90,13 @@ export const loginCredentials = async (data: {
           return {
             error: true,
             type: "credentials",
-            message: "Invalid email or password",
+            message: "Autentikasi Gagal",
           };
         default:
           return {
             error: true,
             type: "credentials",
-            message: "Authentication failed",
+            message: "Autentikasi Gagal",
           };
       }
     }

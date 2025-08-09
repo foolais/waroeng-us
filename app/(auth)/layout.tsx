@@ -16,8 +16,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 z-10 flex items-center justify-center p-6 text-center">
-          <h1 className="max-w-lg text-3xl leading-tight font-extrabold text-white">
-            Boost Efficiency and Productivity with
+          <h1 className="max-w-md text-3xl leading-tight font-extrabold text-white">
+            Tingkatkan Efisiensi dan Produktivitas dengan
             <span className="bg-primary ml-2 rounded-xl px-2">Waroeng Us</span>
           </h1>
         </div>

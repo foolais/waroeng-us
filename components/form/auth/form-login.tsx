@@ -51,7 +51,7 @@ const FormLogin = () => {
   return (
     <Card className="w-[350px]">
       <CardHeader className="text-center">
-        <CardTitle className="auth-title">Welcome Back</CardTitle>
+        <CardTitle className="auth-title">Selamat Datang Kembali</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
