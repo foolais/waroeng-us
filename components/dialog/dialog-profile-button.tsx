@@ -21,7 +21,7 @@ const DialogProfileButton = () => {
   }, [session, status]);
 
   const handleOpenDialog = () => {
-    if (userId) setIsOpen(true);
+    setIsOpen(true);
   };
 
   return (
