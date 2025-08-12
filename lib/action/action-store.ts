@@ -17,7 +17,7 @@ export const getAllStore = async (
   status: "ALL" | STORE_STATUS,
 ) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi Gagal" };
 
   const pageSize = ITEM_PER_PAGE;
 
@@ -58,7 +58,7 @@ export const getAllStore = async (
 
 export const createStore = async (data: IStore) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi Gagal" };
 
   const { name, status } = data;
   try {
@@ -71,16 +71,16 @@ export const createStore = async (data: IStore) => {
     });
 
     revalidatePath(`/super/store`);
-    return { success: true, message: "Store created successfully" };
+    return { success: true, message: "Toko berhasil dibuat" };
   } catch (error) {
     console.error(error);
-    return { error: { error: [error] } };
+    return { error: true, message: error };
   }
 };
 
 export const getStoreById = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi Gagal" };
 
   try {
     const store = await prisma.store.findUnique({
@@ -96,20 +96,18 @@ export const getStoreById = async (id: string) => {
       },
     });
 
-    if (!store) return { error: { store: ["Store not found"] } };
+    if (!store) return { error: true, message: "Toko tidak ditemukan" };
 
     return store;
   } catch (error) {
     console.log({ error });
-    return {
-      error: { general: ["An error occurred while fetching the store"] },
-    };
+    return { error: true, message: error };
   }
 };
 
 export const updateStore = async (id: string, data: IStore) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi Gagal" };
 
   const { name, status } = data;
 
@@ -124,29 +122,25 @@ export const updateStore = async (id: string, data: IStore) => {
     });
 
     revalidatePath(`/super/store`);
-    return { success: true, message: "Store updated successfully" };
+    return { success: true, message: "Toko berhasi diubah" };
   } catch (error) {
     console.log({ error });
-    return {
-      error: { general: ["An error occurred while fetching the store"] },
-    };
+    return { error: true, message: error };
   }
 };
 
 export const deleteStore = async (id: string) => {
   const session = await auth();
-  if (!session) return { error: true, message: "You must be logged in" };
+  if (!session) return { error: true, message: "Autentikasi Gagal" };
 
   try {
     await prisma.store.delete({
       where: { id },
     });
     revalidatePath(`/super/store`);
-    return { success: true, message: "Store deleted successfully" };
+    return { success: true, message: "Toko berhasil dihapus" };
   } catch (error) {
     console.log({ error });
-    return {
-      error: { general: ["An error occurred while fetching the store"] },
-    };
+    return { error: true, message: error };
   }
 };
